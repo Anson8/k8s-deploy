@@ -1,0 +1,22 @@
+# Kubernetes
+## Version
+### TODO:  预安装的K8S版本号
+K8S_VERSION=""
+
+## Master 
+### TODO: 集群资源管理，根据自身集群情况配置IPs
+K8S_MASTER=()
+K8S_ETCD=()
+
+## TODO: 集群资源Node资源部署
+K8S_SLAVES=()
+
+## SSH for ansible
+### TODO: 安全账号, 防止滥用root权限
+SECURITY_SUDOER="admin"
+### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
+USER="admin"
+PASSWD="4dops.com"
+
+
+
