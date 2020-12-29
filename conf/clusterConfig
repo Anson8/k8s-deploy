@@ -17,6 +17,3 @@ SECURITY_SUDOER="admin"
 ### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
 USER="admin"
 PASSWD="4dops.com"
-
-
-

@@ -1,0 +1,96 @@
+---
+- name: "environment init"
+  hosts: all
+  remote_user: root
+  tasks:
+  #TODO: 设置主机名
+  - name: Set Hostname
+    shell : hostnamectl set-hostname {{hostname}}
+  #TODO: 安装依赖包 
+  - name: yum packages depend
+    yum: name={{ item }}
+    with_items:
+      - epel-release
+      - conntrack
+      - ntpdate
+      - ntp
+      - ipvsadm
+      - ipset
+      - jq
+      - iptables
+      - curl
+      - sysstat
+      - libseccomp
+      - wget
+      - vim
+      - net-tools       
+
+  #关闭防火墙
+  - name: stop firewalld and disable firewalld
+    service:
+      name: firewalld
+      state: stopped
+      enabled: no
+  #设置iptable空规则
+  - name: set iptables    
+    shell: iptables -F && iptables -X && iptables -F -t nat && iptables -X -t nat
+  #关闭selinux
+  - name: setenforce 0
+    shell: "setenforce 0"
+    failed_when: false
+  #关闭selinx开机启动  
+  - name: set selinux disabled
+    replace:
+      path: /etc/selinux/config
+      regexp: '^SELINUX=enforcing'
+      replace: 'SELINUX=disabled'  
+  #关闭swap分区
+  - name: stop
+    shell: swapoff -a && sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+  #TODO: 调整内核参数
+  - name:
+    shell:
+      cmd: |
+      cat <EOF >/etc/sysctl.d/kubernetes.conf
+      net.bridge.bridge-nf-call-iptables=1
+      net.bridge.bridge-nf-call-ip6tables=1
+      net.ipv4.ip_forward=1
+      net.ipv4.tcp_tw_recycle=0
+      # 禁止使用 swap 空间，只有当系统 OOM 时才允许使用它
+      vm.swappiness=0
+      # 不检查物理内存是否够用
+      vm.overcommit_memory=1
+      # 开启 OOM
+      vm.panic_on_oom=0
+      fs.inotify.max_user_instances=8192
+      fs.inotify.max_user_watches=1048576
+      fs.file-max=52706963
+      fs.nr_open=52706963
+      net.ipv6.conf.all.disable_ipv6=1
+      net.netfilter.nf_conntrack_max=2310720
+      vm.max_map_count=655360
+      EOF
+
+  #调整系统时区
+  - name: update time
+    shell: timedatectl set-timezone Asia/Shanghai && timedatectl set-local-rtc 0
+  - name: restart rsyslog
+    service:
+      name: rsyslog
+      state: restart
+  - name: restart crond
+    service:
+      name: crond
+      state: restart    
+  #关闭系统不需要的服务
+  - name: stop postfix
+    service:
+      name: postfix
+      state: stopped
+      enabled: no
+  #升级系统内核为4.44
+  - name: update system kernel
+    shell: rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm && yum --enablerepo=elrepo-kernel install -y kernel-lt && grub2-set-default 'CentoS Linux(4.4.202-1.el7.elrepo.×86_64) 7 (Core)'
+  # 重启服务器
+  - name: reboot system
+    reboot:

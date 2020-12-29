@@ -29,3 +29,6 @@
 
 
 
+# 修改配置
+  1. docker的daemon文件（路径：k8s-deploy/boot/genconf/daemon.json）
+
