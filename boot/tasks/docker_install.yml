@@ -5,37 +5,30 @@
   become_user: root
 
   tasks:
-  - name: Ensure docker history packages are removed.
-    yum: "name={{ item }} state=removed"
-    with_items: "{{ docker_old }}"
-
-  - name: Ensure docker packages are installed.
-    yum: "name={{ docker_packages }} state=installed  update_cache=yes"
-     
-  - name: Install docker repo.
-    shell: "yum-config-manager --add-repo {{ docker_repo }}"
-    
-  - name: Modify the docker software source for keda. 
-    replace:
-      path: /etc/yum.repos.d/docker-ce.repo
-      regexp: 'download\.docker\.com' 
-      replace: "mirrors.ustc.edu.cn/docker-ce" 
-  
+  - name: remove old docker
+    yum:
+      name: docker,docker-common,docker-selinux,docker-engine
+      state: removed
+    tags: docker-ce
+  - name: download docker repo
+    shell: yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+    tags: docker-ce  
+  - name: Install docker by yum 
+    yum:
+      name: docker-ce-{{ docker_version }}
+      state: present
+    tags: docker-ce
   - name: Create Docker config directory. 
-   
-    file: path=/etc/docker state=directory
-  
+    file: path=/etc/docker state=directory 
+  - name: Create Docker running directory. 
+    file: path=/data/docker state=directory       
   - name: Configure docker startup parameters.
     template:
       src: ../genconf/daemon.json
-      dest: "/etc/docker/daemon.json"
-  
-  - name: Ensure docker-ce are installed.
-    yum: "name={{ docker_ce_packages }} state=installed update_cache=yes enablerepo=docker-ce-stable"
-  
-  - name: Set docker completion.
-    copy: src=/usr/share/bash-completion/completions/docker dest=/etc/bash_completion.d/docker remote_src=yes
-  
-  - name: Ensure docker is started and enabled at boot.
-    systemd: name=docker state=started enabled=yes
-    when: docker_start
+      dest: "/etc/docker/daemon.json"  
+  - name: startup docker
+    service:
+      name: docker
+      state: started
+      enabled: yes
+    tags: docker-ce
