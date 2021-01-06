@@ -7,7 +7,7 @@ function DownLoadCFSSL(){
   sudo wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
   sudo wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
 
-  chmod +x cfssl*
+  sudo chmod +x cfssl*
   sudo mv cfssl_linux-amd64 /usr/local/bin/cfssl
   sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
   sudo mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
@@ -17,7 +17,7 @@ function DownLoadCFSSL(){
 
 #生成证书
 function CreateCert-CA(){
-cat > ca-config.json <<EOF
+sudo cat > ca-config.json <<EOF
 {
   "signing": {
     "default": {
@@ -38,7 +38,7 @@ cat > ca-config.json <<EOF
 }
 EOF
 
-cat > ca-csr.json <<EOF
+sudo cat > ca-csr.json <<EOF
 {
     "CN": "kubernetes",
     "key": {
