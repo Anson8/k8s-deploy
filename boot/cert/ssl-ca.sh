@@ -2,12 +2,13 @@
 
 # 下载生成证书工具
 function DownLoadCFSSL(){
-  sudo mkdir -p /opt/kubernetes/ssl && cd /opt/kubernetes/ssl
-  sudo wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
-  sudo wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
-  sudo wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+  sudo mkdir -p /opt/kubernetes/ssl 
+  sudo chown -R admin:admin /opt/kubernetes && cd /opt/kubernetes/ssl
+  wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+  wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+  wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
 
-  sudo chmod +x cfssl*
+  chmod +x cfssl*
   sudo mv cfssl_linux-amd64 /usr/local/bin/cfssl
   sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
   sudo mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
@@ -18,7 +19,7 @@ function DownLoadCFSSL(){
 #生成证书
 function CreateCert-CA(){
   cd /opt/kubernetes/ssl
-  sudo bash -c "cat > ca-config.json" <<EOF
+  cat > ca-config.json <<EOF
   {
     "signing": {
       "default": {
@@ -39,7 +40,7 @@ function CreateCert-CA(){
   }
 EOF
   
-  sudo bash -c "cat > ca-csr.json" <<EOF
+  cat > ca-csr.json <<EOF
   {
       "CN": "kubernetes",
       "key": {
