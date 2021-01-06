@@ -17,6 +17,7 @@ function DownLoadCFSSL(){
 
 #生成证书
 function CreateCert-CA(){
+  cd /opt/kubernetes/ssl
   sudo bash -c "cat > ca-config.json" <<EOF
   {
     "signing": {
