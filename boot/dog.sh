@@ -77,7 +77,7 @@ function SSLGEN(){
         echo "Start to create ssl."
         # 下载生成证书工具
         echo "Start to download cfssl_linux-amd64."
-        DownLoadCFSSL
+        #DownLoadCFSSL
         #生成跟证书
         echo "Start to create ca-cert."
         CreateCert-CA

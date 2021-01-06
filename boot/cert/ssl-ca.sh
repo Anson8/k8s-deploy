@@ -17,47 +17,49 @@ function DownLoadCFSSL(){
 
 #生成证书
 function CreateCert-CA(){
-sudo cat > ca-config.json <<EOF
-{
-  "signing": {
-    "default": {
-      "expiry": "87600h"
-    },
-    "profiles": {
-      "kubernetes": {
-         "expiry": "87600h",
-         "usages": [
-            "signing",
-            "key encipherment",
-            "server auth",
-            "client auth"
-        ]
+  sudo mkdir /opt/kubenetes/ssl/
+  cd /opt/kubenetes/ssl/
+  sudo cat > ca-config.json <<EOF
+  {
+    "signing": {
+      "default": {
+        "expiry": "87600h"
+      },
+      "profiles": {
+        "kubernetes": {
+           "expiry": "87600h",
+           "usages": [
+              "signing",
+              "key encipherment",
+              "server auth",
+              "client auth"
+          ]
+        }
       }
     }
   }
-}
 EOF
-
-sudo cat > ca-csr.json <<EOF
-{
-    "CN": "kubernetes",
-    "key": {
-        "algo": "rsa",
-        "size": 2048
-    },
-    "names": [
-        {
-            "C": "CN",
-            "L": "Beijing",
-            "ST": "Beijing",
-            "O": "k8s",
-            "OU": "System"
-        }
-    ]
-}
+  
+  sudo cat > ca-csr.json <<EOF
+  {
+      "CN": "kubernetes",
+      "key": {
+          "algo": "rsa",
+          "size": 2048
+      },
+      "names": [
+          {
+              "C": "CN",
+              "L": "Beijing",
+              "ST": "Beijing",
+              "O": "k8s",
+              "OU": "System"
+          }
+      ]
+  }
 EOF
-
-sudo cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
+  
+  sudo cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
 
 }
 
