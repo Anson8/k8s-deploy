@@ -59,6 +59,8 @@ EOF
 
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
 
+}
+
 function RemovePem() {
   #保留.pem文件删除其他文件
   ls |grep -v pem |xargs -i rm {}
