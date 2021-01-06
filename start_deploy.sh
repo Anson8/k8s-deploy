@@ -23,7 +23,7 @@ case $answer in
 Y | y)
     echo "Start to operate $1 Kuberbetes node..."
     ## 初始化环境
-    PathInit
+    #PathInit
     ## SSL生成
     SSLGEN
     ;;
