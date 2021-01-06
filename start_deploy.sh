@@ -6,17 +6,6 @@ echo $OPS_ROOT
 . $OPS_ROOT/boot/dog.sh
 
 ## TODO k8s服务器服务部署
-options=("ipath" "deploy")
-if [ $# -ne 1 ];then
-	echo "Input invalid! Support: ipath | deploy"
-	exit 1
-fi
-
-if [ $1 = "help" ];then
-	echo "start_deploy.sh args: ipath | deploy"
-	exit 0
-fi
-
 read -p "Are you sure to operate $1 Kuberbetes?[Y/N/J]:" answer
 answer=$(echo $answer)
 case $answer in

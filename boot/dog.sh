@@ -78,10 +78,13 @@ function SSLGEN(){
         for ip in $masters;
         do
             # 下载生成证书工具
+            echo "Start to download cfssl_linux-amd64."
             DownLoadCFSSL
             #生成证书
+            echo "Start to create cert."
             CreateCert
             #保留.pem文件删除其他文件
+            echo "Start to rm .pem."
             RemovePem
         done
         echo "Create ssl $ip path...................Successfully!";;
