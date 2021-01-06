@@ -17,7 +17,7 @@ function DownLoadCFSSL(){
 
 #生成证书
 function CreateCert-CA(){
-  sudo mkdir /opt/kubenetes/ssl/
+  sudo mkdir -p /opt/kubenetes/ssl/
   cd /opt/kubenetes/ssl/
   sudo cat > ca-config.json <<EOF
   {
@@ -65,5 +65,6 @@ EOF
 
 function RemovePem() {
   #保留.pem文件删除其他文件
+  cd /opt/kubenetes/ssl/
   ls |grep -v pem |xargs -i rm {}
 }
