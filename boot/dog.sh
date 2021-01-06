@@ -4,7 +4,7 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 引入deployConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
-. $DEPLOY_PATH/cert/ssl.sh
+. $DEPLOY_PATH/cert/ssl-ca.sh
 
 ## TODO 部署Kubernetes Node节点
 function PathInit(){
@@ -75,18 +75,15 @@ function SSLGEN(){
     case $answer in
     Y | y)
         echo "Start to create ssl."
-        for ip in $masters;
-        do
-            # 下载生成证书工具
-            echo "Start to download cfssl_linux-amd64."
-            DownLoadCFSSL
-            #生成证书
-            echo "Start to create cert."
-            CreateCert
-            #保留.pem文件删除其他文件
-            echo "Start to rm .pem."
-            RemovePem
-        done
+        # 下载生成证书工具
+        echo "Start to download cfssl_linux-amd64."
+        DownLoadCFSSL
+        #生成跟证书
+        echo "Start to create ca-cert."
+        CreateCert-CA
+        #保留.pem文件删除其他文件
+        echo "Start to rm .pem."
+        RemovePem
         echo "Create ssl $ip path...................Successfully!";;
     N | n)
         echo "Exit."
