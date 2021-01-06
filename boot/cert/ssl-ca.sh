@@ -3,9 +3,9 @@
 # 下载生成证书工具
 function DownLoadCFSSL(){
   sudo mkdir -p /opt/kubernetes/ssl && cd /opt/kubernetes/ssl
-  wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
-  wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
-  wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+  sudo wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+  sudo wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+  sudo wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
 
   chmod +x cfssl*
   sudo mv cfssl_linux-amd64 /usr/local/bin/cfssl
@@ -57,7 +57,7 @@ cat > ca-csr.json <<EOF
 }
 EOF
 
-cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
+sudo cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
 
 }
 
