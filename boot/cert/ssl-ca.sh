@@ -17,9 +17,7 @@ function DownLoadCFSSL(){
 
 #生成证书
 function CreateCert-CA(){
-  sudo mkdir -p /opt/kubenetes/ssl/
-  cd /opt/kubenetes/ssl/
-  sudo cat > ca-config.json <<EOF
+  sudo bash -c "cat > ca-config.json" <<EOF
   {
     "signing": {
       "default": {
@@ -40,7 +38,7 @@ function CreateCert-CA(){
   }
 EOF
   
-  sudo cat > ca-csr.json <<EOF
+  sudo bash -c "cat > ca-csr.json" <<EOF
   {
       "CN": "kubernetes",
       "key": {
@@ -65,6 +63,6 @@ EOF
 
 function RemovePem() {
   #保留.pem文件删除其他文件
-  cd /opt/kubenetes/ssl/
+  cd /opt/kubernetes/ssl/
   ls |grep -v pem |xargs -i rm {}
 }
