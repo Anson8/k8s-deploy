@@ -21,6 +21,8 @@ function PathInit(){
             hname=master+"0"+i
             echo "ansible-playbook init kubernetes master path on this $ip"
             ansible-playbook $TASKS_PATH/bootstrap.yaml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
+            echo "ansible-playbook install docker"
+            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
             if [ $? -ne 0 ];then
                  echo "Init kubernetes master $ip path...................Failed! Ret=$ret"
                 return 1
@@ -49,6 +51,8 @@ function PathInit(){
             hname=slave+"0"+i
             echo "ansible-playbook init kubernetes slave path on this $ip"
             ansible-playbook $TASKS_PATH/bootstrap.yaml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
+            echo "ansible-playbook install docker"
+            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
             if [ $? -ne 0 ];then
                  echo "Init kubernetes slave $ip path...................Failed! Ret=$ret"
                 return 1
