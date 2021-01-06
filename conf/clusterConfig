@@ -7,11 +7,11 @@ K8S_VERSION=""
 
 ## Master 
 ### TODO: 集群资源管理，根据自身集群情况配置IPs
-K8S_MASTER=()
-K8S_ETCD=()
+K8S_MASTER=(192.168.20.11 192.168.20.12 192.168.20.13)
+K8S_ETCD=(192.168.20.16 192.168.20.17 192.168.20.18)
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=()
+K8S_SLAVES=(192.168.20.21 192.168.20.22 192.168.20.23)
 
 ## SSH for ansible
 ### TODO: 安全账号, 防止滥用root权限
@@ -19,3 +19,6 @@ SECURITY_SUDOER="admin"
 ### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
 USER="admin"
 PASSWD="4dops.com"
+
+# kubernetes 服务 IP (一般是 SERVICE_CIDR 中第一个IP)
+CLUSTER_KUBERNETES_SVC_IP="10.254.0.1"

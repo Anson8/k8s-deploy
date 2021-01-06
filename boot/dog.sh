@@ -77,13 +77,13 @@ function SSLGEN(){
         echo "Start to create ssl."
         # 下载生成证书工具
         echo "Start to download cfssl_linux-amd64."
-        DownLoadCFSSL
-        #生成跟证书
+        #DownLoadCFSSL
+        #生成证书
         echo "Start to create ca-cert."
         CreateCert-CA
         #保留.pem文件删除其他文件
         echo "Start to rm .pem."
-        RemovePem
+        #RemovePem
         echo "Create ssl $ip path...................Successfully!";;
     N | n)
         echo "Exit."
