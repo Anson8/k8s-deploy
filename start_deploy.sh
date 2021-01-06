@@ -2,7 +2,7 @@
 OPS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 echo $OPS_ROOT
 ## TODO 引入deployConfig配置文件
-. $OPS_ROOT/config/clusterConfig
+. $OPS_ROOT/conf/clusterConfig
 . $OPS_ROOT/boot/dog.sh
 
 ## TODO k8s服务器服务部署

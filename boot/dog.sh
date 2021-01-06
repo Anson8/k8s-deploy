@@ -3,7 +3,7 @@
 DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 引入deployConfig配置文件
-. $DEPLOY_PATH/../config/clusterConfig
+. $DEPLOY_PATH/../conf/clusterConfig
 . $DEPLOY_PATH/cert/ssl.sh
 
 ## TODO 部署Kubernetes Node节点
@@ -27,7 +27,6 @@ function PathInit(){
                  echo "Init kubernetes master $ip path...................Failed! Ret=$ret"
                 return 1
             fi
-            i++;
         done
         echo "Init kubernetes master $ip path...................Successfully!";;
         i=1;
@@ -60,7 +59,6 @@ function PathInit(){
             i++;
         done
         echo "Init kubernetes slave $ip path...................Successfully!";;
-        i=1;
     N | n)
         echo "Exit."
         exit 0;;
