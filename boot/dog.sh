@@ -12,13 +12,13 @@ function PathInit(){
     masters=${K8S_MASTER[@]}
     read -p "Do you want to init master path on all [$nodes] nodes?[Y/N]:" answer
     answer=$(echo $answer)
-    var i=1
+    let m=1
     case $answer in
     Y | y)
         echo "Start to init kubernetes master path."
         for ip in $masters;
         do
-            hname=master+"0"+i
+            hname=master+"0"+m
             echo "ansible-playbook init kubernetes master path on this $ip"
             ansible-playbook $TASKS_PATH/bootstrap.yaml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
             echo "ansible-playbook install docker"
@@ -28,8 +28,8 @@ function PathInit(){
                 return 1
             fi
         done
+        m=$(($m+1))
         echo "Init kubernetes master $ip path...................Successfully!";;
-        i=1;
     N | n)
         echo "Exit."
         exit 0;;
@@ -41,13 +41,13 @@ function PathInit(){
     slaves=${K8S_SLAVES[@]}
     read -p "Do you want to init slave path on all [$nodes] nodes?[Y/N]:" answer
     answer=$(echo $answer)
-    var i=1
+    let m=1
     case $answer in
     Y | y)
         echo "Start to init kubernetes slave path."
         for ip in $masters;
         do
-            hname=slave+"0"+i
+            hname=slave+"0"+m
             echo "ansible-playbook init kubernetes slave path on this $ip"
             ansible-playbook $TASKS_PATH/bootstrap.yaml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
             echo "ansible-playbook install docker"
@@ -56,8 +56,8 @@ function PathInit(){
                  echo "Init kubernetes slave $ip path...................Failed! Ret=$ret"
                 return 1
             fi
-            i++;
         done
+        m=$(($m+1))
         echo "Init kubernetes slave $ip path...................Successfully!";;
     N | n)
         echo "Exit."
@@ -72,7 +72,6 @@ function PathInit(){
 function SSLGEN(){
     read -p "Do you want to create ssl ?[Y/N]:" answer
     answer=$(echo $answer)
-    var i=1
     case $answer in
     Y | y)
         echo "Start to create ssl."
@@ -86,7 +85,6 @@ function SSLGEN(){
             RemovePem
         done
         echo "Create ssl $ip path...................Successfully!";;
-        i=1;
     N | n)
         echo "Exit."
         exit 0;;
