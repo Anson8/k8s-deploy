@@ -6,7 +6,7 @@ CONF_PATH=$DEPLOY_PATH/../../conf/clusterConfig
 . $DEPLOY_PATH/../../conf/clusterConfig
 # 下载生成证书工具
 function DownLoadCFSSL(){
-  sudo mkdir -p /opt/kubernetes/ssl 
+  sudo mkdir -p /opt/kubernetes/{bin,cfg,ssl}
   sudo chown -R admin:admin /opt/kubernetes && cd /opt/kubernetes/ssl
   wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
   wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64

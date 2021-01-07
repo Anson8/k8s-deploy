@@ -10,7 +10,7 @@ read -p "Are you sure to operate $1 Kuberbetes?[Y/N/J]:" answer
 answer=$(echo $answer)
 case $answer in
 Y | y)
-    echo "Start to operate $1 Kuberbetes node..."
+    echo "Start to operate $1 Kuberbetes cluster..."
     ## 初始化环境
     #PathInit
     ## SSL生成

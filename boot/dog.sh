@@ -4,7 +4,9 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 引入deployConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
-. $DEPLOY_PATH/cert/ssl-ca.sh
+. $DEPLOY_PATH/etcd_cfg.sh
+. $DEPLOY_PATH/cert/ssl_ca.sh
+
 
 ## TODO 部署Kubernetes Node节点
 function PathInit(){
@@ -81,6 +83,9 @@ function SSLGEN(){
         #生成证书
         echo "Start to create ca-cert."
         CreateCert-CA
+        #ETCD配置cfg文件
+        echo "Start to create etct CFG_ETCD."
+        CFG_ETCD
         #保留.pem文件删除其他文件
         echo "Start to rm .pem."
         #RemovePem

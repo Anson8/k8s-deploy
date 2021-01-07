@@ -1,6 +1,18 @@
 # k8s-deploy
+# 环境初始化
+# 生成证书
+  - 根证书
+  - etcd证书
+  - apiserver证书
+  - flannel证书
+  - kube-proxy证书
 
-# 部署etcd（3台）
+# 部署etcd节点
+  - etcd master节点
+
+  - etcd node节点
+
+
 
 # 部署Master
   ## 复制二进制程序
@@ -11,7 +23,7 @@
   ## 配置flanneld服务
   ## 启动服务
   - daemon-reload 
-  - kube-apiserver 
+  - kube-apiserver
   - kube-controller-manager 
   - kube-scheduler 
   - flanneld

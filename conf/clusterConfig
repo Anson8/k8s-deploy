@@ -8,7 +8,10 @@ K8S_VERSION=""
 ## Master 
 ### TODO: 集群资源管理，根据自身集群情况配置IPs
 K8S_MASTER=(192.168.20.11 192.168.20.12 192.168.20.13)
+## ETCD配置
 K8S_ETCD=(192.168.20.16 192.168.20.17 192.168.20.18)
+### TODO: etcd 数据目录
+ETCD_DATA_DIR="/data/kubernetes/etcd/data"
 
 ## TODO: 集群资源Node资源部署
 K8S_SLAVES=(192.168.20.21 192.168.20.22 192.168.20.23)
