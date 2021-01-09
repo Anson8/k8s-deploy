@@ -11,10 +11,12 @@ answer=$(echo $answer)
 case $answer in
 Y | y)
     echo "Start to operate $1 Kuberbetes cluster..."
+    ## 创建用户
+    CreateUser
     ## 初始化环境
-    #PathInit
+    PathInit
     ## SSL生成
-    SSLGEN
+    #SSLGEN
     ;;
 N | n)
     echo "Exit."

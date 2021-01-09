@@ -1,0 +1,35 @@
+- hosts: node1
+  hosts: all
+  become: yes
+  become_user: root
+  vars:                          # 执行时可以通过-e指定变量，默认为sdb
+    wpath: /home/admin/k8s-deploy/boot 
+    disk: /dev/vdb
+    diskfullpath: /dev/vdb1
+    mountDir: /data
+  tasks:                         # 创建分区，把变量传给disk.sh
+    - name: New Disk Partition
+      script: "{{ wpath }}/gen/disk.sh {{ disk }}"
+      become: yes
+      become_user: root
+      become_method: sudo
+
+    - name: New Disk Format(xfs) # 格式化为xfs
+      filesystem: fstype=xfs dev="{{ diskfullpath }}" force=yes
+      become: yes
+      become_user: root
+      become_method: sudo
+      notify: ADD TO fstab
+
+    - name: New Disk Mount       # 挂载到开头指定的变量，默认/data
+      mount: name="{{ mountDir }}" src="{{ diskfullpath }}" fstype=xfs state=mounted
+      become_user: root
+      become: yes
+      become_method: sudo
+
+  handlers:                      # 通过脚本添加到fstab
+    - name: ADD TO fstab
+      script: "{{ wpath }}/gen/addfstab.sh {{ diskfullpath }}"
+      become: yes
+      become_user: root
+      become_method: sudo

@@ -1,0 +1,53 @@
+version: '3.5'
+services:
+  rmqnamesrv:
+    image: registry.cn-shenzhen.aliyuncs.com/sdtc/rocketmq:4.4.0
+    container_name: rmqnamesrv
+    ports:
+      - 9876:9876
+    volumes:
+      - /data/rmqnamesrv/store:/opt/rocketmq-4.4.0/conf:rw
+      - /data/rmqnamesrv/logs:/var/app/logs:rw
+    networks:
+        rmq:
+          aliases:
+            - rmqnamesrv
+
+  rmqbroker:
+    image: registry.cn-shenzhen.aliyuncs.com/sdtc/rocketmq:4.4.0
+    container_name: rmqbroker
+    ports:
+      - 10909:10909
+      - 10911:10911
+    volumes:
+      - /data/rmqbroker/logs:/var/app/logs:rw
+      - /data/rmqbroker/conf:/opt/rocketmq-4.4.0/conf:rw
+    environment:
+        NAMESRV_ADDR: "rmqnamesrv:9876"
+        JAVA_OPTS: " -Duser.home=/opt"
+        JAVA_OPT_EXT: "-server -Xms2g -Xmx2g -Xmn2g"
+    depends_on:
+      - rmqnamesrv
+    networks:
+      rmq:
+        aliases:
+          - rmqbroker
+
+  rmqconsole:
+    image: registry.cn-shenzhen.aliyuncs.com/sdtc/rocketmq-console:1.0
+    container_name: rmqconsole
+    ports:
+      - 8080:8080
+    environment:
+        JAVA_OPTS: "-Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
+    depends_on:
+      - rmqnamesrv
+    networks:
+      rmq:
+        aliases:
+          - rmqconsole
+
+networks:
+  rmq:
+    name: rmq
+    driver: bridge

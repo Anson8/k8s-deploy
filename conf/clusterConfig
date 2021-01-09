@@ -1,9 +1,22 @@
 # Kubernetes
 ## Version
 ### TODO:  预安装的Docker版本号
-DOCKER_VERSION="3:19.03.8-3.el7"
+DOCKER_VERSION="19.03.7-3.el7"
+DOCKER_COMPOSE_VERSION="1.27.0"
 ### TODO:  预安装的K8S版本号
 K8S_VERSION=""
+
+## SSH for ansible
+### TODO: 安全账号, 防止滥用root权限
+USER_INIT="root"
+PASSWD_INIT="4duat.com"
+### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
+USER="admin"
+PASSWD="4dops.com"
+### TODO: USER切换成admin后，使用密钥操作
+PRIVATEKEY="id_ed25519"
+### ansible服务器的known_hosts-sha
+KNOWN_HOSTS_SHA="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF4Vtq03x2BasmfOiMIfrANwUI4/9zh8uQO0If1rTjZtHpK7WF1OdU5XsWYmywH93LZbSpYObPi2cabvvAIj+j4="
 
 ## Master 
 ### TODO: 集群资源管理，根据自身集群情况配置IPs
@@ -14,14 +27,8 @@ K8S_ETCD=(192.168.20.16 192.168.20.17 192.168.20.18)
 ETCD_DATA_DIR="/data/kubernetes/etcd/data"
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(192.168.20.21 192.168.20.22 192.168.20.23)
+K8S_SLAVES=(192.168.3.43 192.168.3.44 192.168.3.45)
 
-## SSH for ansible
-### TODO: 安全账号, 防止滥用root权限
-SECURITY_SUDOER="admin"
-### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
-USER="admin"
-PASSWD="4dops.com"
 
 # kubernetes 服务 IP (一般是 SERVICE_CIDR 中第一个IP)
 CLUSTER_KUBERNETES_SVC_IP="10.254.0.1"

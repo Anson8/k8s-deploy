@@ -1,0 +1,11 @@
+version: '3.5'
+services:
+  zookeeper:
+    image: registry.cn-shenzhen.aliyuncs.com/sdtc/zookeeper:3.5.7
+    restart: always
+    volumes:
+      - "/data/zookeeper/data:/data"
+      - "/data/zookeeper/datalog:/datalog"
+      - "/data/zookeeper/conf:/conf"
+    ports:
+      - "2181:2181"

@@ -26,9 +26,17 @@
     template:
       src: ../genconf/daemon.json
       dest: "/etc/docker/daemon.json"  
+  - name: docker run for admin
+    shell: usermod -a -G docker admin    
   - name: startup docker
     service:
       name: docker
       state: started
       enabled: yes
     tags: docker-ce
+  # 安装docker-compose 不需要可去掉  
+  #- name: Ensure docker-compose is installed and available
+  #  get_url: 
+  #    url : 
+  #    dest: /usr/local/bin/docker-compose
+  #    mode: 'u+x,g+x'  

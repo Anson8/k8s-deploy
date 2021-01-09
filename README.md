@@ -44,3 +44,21 @@
 # 修改配置
   1. docker的daemon文件（路径：k8s-deploy/boot/genconf/daemon.json）
 
+
+etcd
+etcdctl
+helm
+kubeadm
+kube-apiserver
+kube-controller-manager
+kubectl
+kubelet
+kube-scheduler
+
+sudo mv docker-compose /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+sudo usermod -a -G docker admin
+sudo systemctl restart docker
+
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+echo 'Asia/Shanghai' > /etc/timezone

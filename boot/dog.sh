@@ -7,59 +7,94 @@ TASKS_PATH=$DEPLOY_PATH/tasks
 . $DEPLOY_PATH/etcd_cfg.sh
 . $DEPLOY_PATH/cert/ssl_ca.sh
 
+function CreateUser() {
+    # 给节点创建admin user
+    nodes=${K8S_SLAVES[@]}
+    read -p "Do you want to create user admin on all [$nodes] nodes?[Y/N/J]:" answer
+    answer=$(echo $answer)
+    let m=1
+    case $answer in
+    Y | y)
+        echo "Start to create user admin."
+        for ip in $nodes;
+        do
+            #echo "Start to add [$ip] to known_hosts."
+            #echo "$ip $KNOWN_HOSTS_SHA" >> ~/.ssh/known_hosts
+            echo "ansible-playbook create user admin on this $ip"
+            ansible-playbook $TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
+            echo "ansible-playbook mount disk on this $ip"
+            ansible-playbook $TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
+            if [ $? -ne 0 ];then
+                 echo "Create user admin on $ip ...................Failed! Ret=$ret"
+                return 1
+            fi
+        done
+        echo "Create user admin on $ip ...................Successfully!";;
+    N | n)
+        echo "Exit."
+        exit 0;;
+    J | j)
+        echo "Skip the operate $1 of the Kuberbetes.";;    
+    *)
+        echo "Input error, please try again."
+        exit 2;;
+    esac
 
+}
 ## TODO 部署Kubernetes Node节点
 function PathInit(){
     # 初始化master节点环境
-    masters=${K8S_MASTER[@]}
-    read -p "Do you want to init master path on all [$nodes] nodes?[Y/N]:" answer
+    nodes=${K8S_MASTER[@]}
+    read -p "Do you want to init master path on all [$nodes] nodes?[Y/N/J]:" answer
     answer=$(echo $answer)
     let m=1
     case $answer in
     Y | y)
         echo "Start to init kubernetes master path."
-        for ip in $masters;
+        for ip in $nodes;
         do
             hname=master+"0"+m
             echo "ansible-playbook init kubernetes master path on this $ip"
-            ansible-playbook $TASKS_PATH/bootstrap.yaml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
+            ansible-playbook $TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
             echo "ansible-playbook install docker"
-            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
+            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
             if [ $? -ne 0 ];then
                  echo "Init kubernetes master $ip path...................Failed! Ret=$ret"
                 return 1
             fi
+            m=$(($m+1))
         done
-        m=$(($m+1))
         echo "Init kubernetes master $ip path...................Successfully!";;
     N | n)
         echo "Exit."
         exit 0;;
+    J | j)
+        echo "Skip the operate $1 of the Kuberbetes.";;            
     *)
         echo "Input error, please try again."
         exit 2;;
     esac
     # 初始化slaves节点环境
-    slaves=${K8S_SLAVES[@]}
+    nodes=${K8S_SLAVES[@]}
     read -p "Do you want to init slave path on all [$nodes] nodes?[Y/N]:" answer
     answer=$(echo $answer)
     let m=1
     case $answer in
     Y | y)
         echo "Start to init kubernetes slave path."
-        for ip in $masters;
+        for ip in $nodes;
         do
-            hname=slave+"0"+m
+            hname=slave"0"$m
             echo "ansible-playbook init kubernetes slave path on this $ip"
-            ansible-playbook $TASKS_PATH/bootstrap.yaml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
-            echo "ansible-playbook install docker"
-            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
+            ansible-playbook $TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
+            echo "ansible-playbook install docker $DOCKER_VERSION"
+            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION docker_compose_v=$DOCKER_COMPOSE_VERSION ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
             if [ $? -ne 0 ];then
                  echo "Init kubernetes slave $ip path...................Failed! Ret=$ret"
                 return 1
             fi
+            m=$(($m+1))
         done
-        m=$(($m+1))
         echo "Init kubernetes slave $ip path...................Successfully!";;
     N | n)
         echo "Exit."
