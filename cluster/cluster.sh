@@ -3,15 +3,11 @@
 DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 引入clusterConfig配置文件
-. $DEPLOY_PATH/../config/clusterConfig
+. $DEPLOY_PATH/../conf/clusterConfig
 
 ## TODO 部署Kubernetes 集群
 
 ## TODO 部署Kubernetes 集群
-function Deploy_CLUSTER(){
-
-}
-
 function Deploy_ETCD(){
     nodes=${K8S_ETCD[@]}
     let len=${#K8S_ETCD[*]}
@@ -24,7 +20,7 @@ function Deploy_ETCD(){
         do
           let n=$i+1
             echo "ansible-playbook deploy etcd on this ${K8S_ETCD[i]}"
-            ansible-playbook $TASKS_PATH/kubernetes-node.yaml -i ${K8S_ETCD[i]}, -e "etcd_n=$n  ansible_user=$USER ansible_port=22 ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD"
+            ansible-playbook $TASKS_PATH/etcd.yml -i ${K8S_ETCD[i]}, -e "etcd_n=$n" --private-key=/home/admin/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Deploy etcd on $ip..................Failed! Ret=$ret"
                 return 1

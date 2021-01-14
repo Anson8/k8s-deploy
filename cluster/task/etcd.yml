@@ -1,87 +1,89 @@
+---
 - name: etcd deploy
   hosts: all
   become: yes
   become_user: root
   vars:
-    bin_path: /data/kubernetes/bin
-    pem_path: /data/kubernetes/ssl
-    cfs_path: /data/kubernetes/cfs
-    system_path: /lib/systemd/system
+    file_path: /opt/kubernetes
 
   tasks:
-      ignore_errors: yes
-  ## 添加 证书、配置及组件bin文件
-    - name: Create bin dir
-      file: path=/opt/bin state=directory recurse=yes
-    - name: Create ssl dir
-      file: path=/opt/kubernetes/ssl state=directory recurse=yes
-    - name: Create cfg dir
-      file: path=/opt/kubernetes/cfg state=directory recurse=yes
-    - name: copy etcd bin
-      copy:
-        src: "{{item.src}}"
-        dest: "{{item.dest}}"
-        remote_src: yes
-        mode: 0755
-      with_items:
-        - { src: "{{bin_path}}/etcd",dest: "{{bin_path}}/etcd"}
-        - { src: "{{bin_path}}/etcdctl",dest: "{{bin_path}}/etcdctl"}
-    - name: copy ssl and cfs
-      copy:
-        src: "{{item.src}}"
-        dest: "{{item.dest}}"
-        remote_src: yes
-      with_items:
-        - { src: "{{pem_path}}/etcd.pem",dest: "{{pem_path}}/etcd.pem"} 
-        - { src: "{{pem_path}}/etcd-key.pem",dest: "{{pem_path}}/etcd-key.pem"} 
-        - { src: "{{pem_path}}/ca.pem",dest: "{{pem_path}}/ca.pem"} 
-        - { src: "{{cfs_path}}/etcd0{{etcd_n}}",dest: "{{cfs_path}}/etcd"}
-    ## 创建etcd.service
-    - name: create etcd.service
-      shell:
-        cmd: |
-          cat <<EOF > {{system_path}}/etcd.service
-           [Unit]
-           Description=Etcd Server
-           After=network.target
-           After=network-online.target
-           Wants=network-online.target
-           Documentation=https://github.com/coreos
-           
-           [Service]
-           Type=notify
-           WorkingDirectory=${ETCD_DATA_DIR}
-           EnvironmentFile=-/opt/kubernetes/cfg/etcd
-           ExecStart=/opt/kubernetes/bin/etcd \\
-             --data-dir=${ETCD_DATA_DIR} \\
-             --wal-dir=${ETCD_WAL_DIR} \\
-             --name=etcd0{{etcd_n}} \\
-             --cert-file=/data/kubernetes/ssl/etcd.pem \\
-             --key-file=/data/kubernetes/ssl/etcd-key.pem \\
-             --trusted-ca-file=/data/kubernetes/ssl/ca.pem \\
-             --peer-cert-file=/data/kubernetes/ssl/etcd.pem \\
-             --peer-key-file=/data/kubernetes/ssl/etcd-key.pem \\
-             --peer-trusted-ca-file=/data/kubernetes/ssl/ca.pem \\
-             --peer-client-cert-auth \\
-             --client-cert-auth \\
-             --listen-peer-urls=${ETCD_LISTEN_PEER_URLS}\\
-             --initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS} \\
-             --listen-client-urls=${ETCD_LISTEN_CLIENT_URLS},http://127.0.0.1:2379 \\
-             --advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS} \\
-             --initial-cluster-token=etcd-cluster-0 \\
-             --initial-cluster=etcd0{{etcd_n}} \\
-             --initial-cluster-state=new \\
-             --auto-compaction-mode=periodic \\
-             --auto-compaction-retention=1 \\
-             --max-request-bytes=33554432 \\
-             --quota-backend-bytes=6442450944 \\
-             --heartbeat-interval=250 \\
-             --election-timeout=2000
-           Restart=on-failure
-           RestartSec=5
-           LimitNOFILE=65536
-           
-           [Install]
-           WantedBy=multi-user.target
-           EOF
-               
+  #- name: Create bin dir
+  #  shell: mkdir -p {{file_path}}/{bin,cfg,ssl} && chown -R admin:admin {{file_path}}
+  - name: Create bin dir
+    file: path={{file_path}}/bin state=directory recurse=yes  
+  - name: Create ssl dir
+    file: path={{file_path}}/ssl state=directory recurse=yes
+  - name: Create cfg dir
+    file: path={{file_path}}/cfs state=directory recurse=yes
+  - name: copy etcd bin
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      remote_src: yes
+      mode: 0755
+    with_items:
+      - { src: "{{file_path}}/bin/etcd",dest: "{{file_path}}/bin/etcd"}
+      - { src: "{{file_path}}/bin/etcdctl",dest: "{{file_path}}/bin/etcdctl"}
+  - name: copy ssl and cfs
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      remote_src: yes
+    with_items:
+      - { src: "{{file_path}}/ssl/etcd.pem",dest: "{{file_path}}/ssl/tcd.pem"} 
+      - { src: "{{file_path}}/ssl/etcd-key.pem",dest: "{{file_path}}/ssl/etcd-key.pem"} 
+      - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem"} 
+      - { src: "{{file_path}}/cfs/etcd0{{etcd_n}}",dest: "{{file_path}}/cfs/etcd"}
+  ## 创建etcd.service
+  - name: create etcd.service
+    shell:
+      cmd: |
+        cat <<EOF > {{system_path}}/etcd.service
+         [Unit]
+         Description=Etcd Server
+         After=network.target
+         After=network-online.target
+         Wants=network-online.target
+         Documentation=https://github.com/coreos
+         
+         [Service]
+         Type=notify
+         WorkingDirectory=${ETCD_DATA_DIR}
+         EnvironmentFile=-/opt/kubernetes/cfg/etcd
+         ExecStart=/opt/kubernetes/bin/etcd \\
+           --data-dir=${ETCD_DATA_DIR} \\
+           --wal-dir=${ETCD_WAL_DIR} \\
+           --name=etcd0{{etcd_n}} \\
+           --cert-file=/data/kubernetes/ssl/etcd.pem \\
+           --key-file=/data/kubernetes/ssl/etcd-key.pem \\
+           --trusted-ca-file=/data/kubernetes/ssl/ca.pem \\
+           --peer-cert-file=/data/kubernetes/ssl/etcd.pem \\
+           --peer-key-file=/data/kubernetes/ssl/etcd-key.pem \\
+           --peer-trusted-ca-file=/data/kubernetes/ssl/ca.pem \\
+           --peer-client-cert-auth \\
+           --client-cert-auth \\
+           --listen-peer-urls=${ETCD_LISTEN_PEER_URLS}\\
+           --initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS} \\
+           --listen-client-urls=${ETCD_LISTEN_CLIENT_URLS},http://127.0.0.1:2379 \\
+           --advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS} \\
+           --initial-cluster-token=etcd-cluster-0 \\
+           --initial-cluster=etcd0{{etcd_n}} \\
+           --initial-cluster-state=new \\
+           --auto-compaction-mode=periodic \\
+           --auto-compaction-retention=1 \\
+           --max-request-bytes=33554432 \\
+           --quota-backend-bytes=6442450944 \\
+           --heartbeat-interval=250 \\
+           --election-timeout=2000
+         Restart=on-failure
+         RestartSec=5
+         LimitNOFILE=65536
+         
+         [Install]
+         WantedBy=multi-user.target
+         EOF
+  - name: startup etcd
+    service:
+      name: etcd
+      state: started
+      enabled: yes               
