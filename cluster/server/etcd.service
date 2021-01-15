@@ -1,0 +1,42 @@
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+Documentation=https://github.com/coreos
+
+[Service]
+Type=notify
+WorkingDirectory=${ETCD_DATA_DIR}
+EnvironmentFile=-/opt/kubernetes/cfg/etcd
+ExecStart=/opt/kubernetes/bin/etcd \
+  --data-dir=${ETCD_DATA_DIR} \
+  --wal-dir=${ETCD_WAL_DIR} \
+  --name=${ETCD_NAME} \
+  --cert-file=/opt/kubernetes/ssl/etcd.pem \
+  --key-file=/opt/kubernetes/ssl/etcd-key.pem \
+  --trusted-ca-file=/opt/kubernetes/ssl/ca.pem \
+  --peer-cert-file=/opt/kubernetes/ssl/etcd.pem \
+  --peer-key-file=/opt/kubernetes/ssl/etcd-key.pem \
+  --peer-trusted-ca-file=/opt/kubernetes/ssl/ca.pem \
+  --peer-client-cert-auth \
+  --client-cert-auth \
+  --listen-peer-urls=${ETCD_LISTEN_PEER_URLS} \
+  --listen-client-urls=${ETCD_LISTEN_CLIENT_URLS},http://127.0.0.1:2379 \
+  --advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS} \
+  --initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS} \
+  --initial-cluster=${ETCD_INITIAL_CLUSTER} \
+  --initial-cluster-token=${ETCD_INITIAL_CLUSTER} \
+  --initial-cluster-state=new \
+  --auto-compaction-mode=periodic \
+  --auto-compaction-retention=1 \
+  --max-request-bytes=33554432 \
+  --quota-backend-bytes=6442450944 \
+  --heartbeat-interval=250 \
+  --election-timeout=2000
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

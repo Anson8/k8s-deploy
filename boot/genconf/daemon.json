@@ -1,6 +1,6 @@
 {
   "data-root": "/data/docker",
-  "registry-mirrors": ["https://mirror.ccs.tencentyun.com"],
+  "registry-mirrors": ["https://8ko4gu39.mirror.aliyuncs.com"],
   "storage-opts": ["overlay2.override_kernel_check=true" ],
   "log-driver": "json-file",
   "log-opts": { "max-size": "200m", "max-file": "3" }

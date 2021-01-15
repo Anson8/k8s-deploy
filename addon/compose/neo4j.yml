@@ -8,6 +8,5 @@ services:
       - 7474:7474
       - 7687:7687
     volumes:
-      - /etc/localtime:/etc/localtime
       - /data/neo4j/data/:/data:rw
       - /data/neo4j/logs/:/logs

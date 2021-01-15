@@ -15,19 +15,18 @@ USER="admin"
 PASSWD="4dops.com"
 ### TODO: USER切换成admin后，使用密钥操作
 PRIVATEKEY="id_ed25519"
-### ansible服务器的known_hosts-sha
-KNOWN_HOSTS_SHA="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF4Vtq03x2BasmfOiMIfrANwUI4/9zh8uQO0If1rTjZtHpK7WF1OdU5XsWYmywH93LZbSpYObPi2cabvvAIj+j4="
 
 ## Master 
 ### TODO: 集群资源管理，根据自身集群情况配置IPs
-K8S_MASTER=(192.168.20.11 192.168.20.12 192.168.20.13)
+K8S_MASTER=(192.168.3.42 192.168.3.43 192.168.3.44)
 ## ETCD配置
-K8S_ETCD=(192.168.20.16 192.168.20.17 192.168.20.18)
+K8S_ETCD=(192.168.3.42 192.168.3.43 192.168.3.44)
 ### TODO: etcd 数据目录
 ETCD_DATA_DIR="/data/kubernetes/etcd/data"
+ETCD_WAL_DIR="/data/kubernetes/etcd/wal"
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(192.168.3.43 192.168.3.44 192.168.3.45)
+K8S_SLAVES=(192.168.3.41)
 
 
 # kubernetes 服务 IP (一般是 SERVICE_CIDR 中第一个IP)

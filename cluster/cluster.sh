@@ -20,7 +20,7 @@ function Deploy_ETCD(){
         do
           let n=$i+1
             echo "ansible-playbook deploy etcd on this ${K8S_ETCD[i]}"
-            ansible-playbook $TASKS_PATH/etcd.yml -i ${K8S_ETCD[i]}, -e "etcd_n=$n" --private-key=/home/admin/$PRIVATEKEY
+            ansible-playbook $TASKS_PATH/etcd.yml -i ${K8S_ETCD[i]}, -e "etcd_n=$n etcd_data=$ETCD_DATA_DIR etcd_awl=$ETCD_WAL_DIR" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Deploy etcd on $ip..................Failed! Ret=$ret"
                 return 1

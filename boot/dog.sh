@@ -18,12 +18,12 @@ function CreateUser() {
         echo "Start to create user admin."
         for ip in $nodes;
         do
-            #echo "Start to add [$ip] to known_hosts."
-            #echo "$ip $KNOWN_HOSTS_SHA" >> ~/.ssh/known_hosts
+            echo "Start to add [$ip] to known_hosts."
+            ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
             ansible-playbook $TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
             echo "ansible-playbook mount disk on this $ip"
-            ansible-playbook $TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
+            ansible-playbook $TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/./ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Create user admin on $ip ...................Failed! Ret=$ret"
                 return 1
@@ -53,11 +53,17 @@ function PathInit(){
         echo "Start to init kubernetes master path."
         for ip in $nodes;
         do
-            hname=master+"0"+m
+            hname=master+"0"$m
+            echo "Start to add [$ip] to known_hosts."
+            ssh-keyscan -H $ip >> ~/.ssh/known_hosts
+            echo "ansible-playbook create user admin on this $ip"
+            ansible-playbook $TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
+            echo "ansible-playbook mount disk on this $ip"
+            ansible-playbook $TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes master path on this $ip"
-            ansible-playbook $TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
+            ansible-playbook $TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook install docker"
-            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
+            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Init kubernetes master $ip path...................Failed! Ret=$ret"
                 return 1
@@ -86,9 +92,9 @@ function PathInit(){
         do
             hname=slave"0"$m
             echo "ansible-playbook init kubernetes slave path on this $ip"
-            ansible-playbook $TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname  ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
+            ansible-playbook $TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/$PRIVATEKEY
             echo "ansible-playbook install docker $DOCKER_VERSION"
-            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION docker_compose_v=$DOCKER_COMPOSE_VERSION ansible_user=$USER ansible_ssh_pass=$PASSWD ansible_become_pass=$PASSWD condition=false"
+            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION docker_compose_v=$DOCKER_COMPOSE_VERSION" --private-key=/home/admin/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Init kubernetes slave $ip path...................Failed! Ret=$ret"
                 return 1
@@ -113,12 +119,12 @@ function SSLGEN(){
     Y | y)
         echo "Start to create ssl."
         # 下载生成证书工具
-        echo "Start to download cfssl_linux-amd64."
+        #echo "Start to download cfssl_linux-amd64."
         #DownLoadCFSSL
         #生成证书
         echo "Start to create ca-cert."
         CreateCert-CA
-        #ETCD配置cfg文件
+        #生成ETCD配置cfg文件
         echo "Start to create etct CFG_ETCD."
         CFG_ETCD
         #保留.pem文件删除其他文件

@@ -29,7 +29,7 @@
 
   handlers:                      # 通过脚本添加到fstab
     - name: ADD TO fstab
-      script: "{{ wpath }}/gen/addfstab.sh {{ diskfullpath }}"
+      script: "{{   }}/gen/addfstab.sh {{ diskfullpath }}"
       become: yes
       become_user: root
       become_method: sudo
