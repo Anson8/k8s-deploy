@@ -26,7 +26,7 @@ ETCD_DATA_DIR="/data/kubernetes/etcd/data"
 ETCD_WAL_DIR="/data/kubernetes/etcd/wal"
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(192.168.3.41)
+K8S_SLAVES=(192.168.3.45)
 
 
 # kubernetes 服务 IP (一般是 SERVICE_CIDR 中第一个IP)

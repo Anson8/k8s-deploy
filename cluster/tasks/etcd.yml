@@ -8,14 +8,6 @@
     system_path: /lib/systemd/system
 
   tasks:
-  #- name: Create bin dir
-  #  shell: mkdir -p {{file_path}}/{bin,cfg,ssl} && chown -R admin:admin {{file_path}}
-  - name: Create bin dir
-    file: path={{file_path}}/bin state=directory recurse=yes  
-  - name: Create ssl dir
-    file: path={{file_path}}/ssl state=directory recurse=yes
-  - name: Create cfg dir
-    file: path={{file_path}}/cfg state=directory recurse=yes
   - name: copy etcd bin
     copy:
       src: "{{item.src}}"
@@ -33,7 +25,7 @@
       - { src: "{{file_path}}/ssl/etcd-key.pem",dest: "{{file_path}}/ssl/etcd-key.pem" } 
       - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" } 
       - { src: "{{file_path}}/cfg/etcd0{{etcd_n}}",dest: "{{file_path}}/cfg/etcd" }  
-  - name: etcd.service
+  - name: cp etcd.service
     copy:
       src: "/home/admin/k8s-deploy/cluster/server/etcd.service"
       dest: "/lib/systemd/system/etcd.service"

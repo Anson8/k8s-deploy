@@ -1,0 +1,36 @@
+---
+- name: etcd deploy
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    file_path: /opt/kubernetes
+    system_path: /lib/systemd/system
+
+  tasks:
+  - name: copy flanneld bin
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      mode: 0755
+    with_items:
+      - { src: "{{file_path}}/bin/flanneld",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/mk-docker-opts.sh",dest: "{{file_path}}/bin/" }
+  - name: copy ssl
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: "{{file_path}}/ssl/flanneld.pem",dest: "{{file_path}}/ssl/flanneld.pem" } 
+      - { src: "{{file_path}}/ssl/flanneld-key.pem",dest: "{{file_path}}/ssl/flanneld-key.pem" } 
+      - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" }
+  - name: cp flanneld.service
+    copy:
+      src: "/home/admin/k8s-deploy/cluster/server/flanneld.service"
+      dest: "/lib/systemd/system/flanneld.service"
+  - name: startup flanneld
+    service:
+      name: flanneld
+      state: started
+      daemon_reload: yes
+      enabled: yes               
