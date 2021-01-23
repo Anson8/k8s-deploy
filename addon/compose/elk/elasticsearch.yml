@@ -1,0 +1,5 @@
+cluster.name: "uat-poc-es-cluster"
+node.name: master
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+network.host: 0.0.0.0

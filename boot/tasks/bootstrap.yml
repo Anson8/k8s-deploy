@@ -3,6 +3,8 @@
   hosts: all
   become: yes
   become_user: root
+  vars:
+    file_path: /opt/kubernetes
   tasks:
   #TODO: 设置主机名
   - name: Set Hostname

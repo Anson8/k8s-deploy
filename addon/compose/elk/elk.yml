@@ -7,7 +7,7 @@ services:
       discovery.type: "single-node" 
     volumes:
       - /data/es/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml 
-      - /data/es/data/:/usr/share/elasticsearch/data
+      - /data/es/data/:/usr/share/elasticsearch/data:rw
     container_name: elasticsearch
     hostname: elasticsearch
     restart: always

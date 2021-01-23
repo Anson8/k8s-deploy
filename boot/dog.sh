@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
-TASKS_PATH=$DEPLOY_PATH/tasks
+BOOT_TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 引入deployConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
 . $DEPLOY_PATH/etcd_cfg.sh
@@ -21,9 +21,9 @@ function CreateUser() {
             echo "Start to add [$ip] to known_hosts."
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
-            ansible-playbook $TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
+            ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
             echo "ansible-playbook mount disk on this $ip"
-            ansible-playbook $TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/./ssh/$PRIVATEKEY
+            ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/./ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Create user admin on $ip ...................Failed! Ret=$ret"
                 return 1
@@ -57,13 +57,13 @@ function PathInit(){
             echo "Start to add [$ip] to known_hosts."
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
-            ansible-playbook $TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
+            ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
             echo "ansible-playbook mount disk on this $ip"
-            ansible-playbook $TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes master path on this $ip"
-            ansible-playbook $TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $BOOT_TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook install docker"
-            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Init kubernetes master $ip path...................Failed! Ret=$ret"
                 return 1
@@ -91,10 +91,16 @@ function PathInit(){
         for ip in $nodes;
         do
             hname=slave"0"$m
+            echo "Start to add [$ip] to known_hosts."
+            ssh-keyscan -H $ip >> ~/.ssh/known_hosts
+            echo "ansible-playbook create user admin on this $ip"
+            ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
+            echo "ansible-playbook mount disk on this $ip"
+            ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes slave path on this $ip"
-            ansible-playbook $TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/$PRIVATEKEY
+            ansible-playbook $BOOT_TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/$PRIVATEKEY
             echo "ansible-playbook install docker $DOCKER_VERSION"
-            ansible-playbook $TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION docker_compose_v=$DOCKER_COMPOSE_VERSION" --private-key=/home/admin/$PRIVATEKEY
+            ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION docker_compose_v=$DOCKER_COMPOSE_VERSION" --private-key=/home/admin/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Init kubernetes slave $ip path...................Failed! Ret=$ret"
                 return 1

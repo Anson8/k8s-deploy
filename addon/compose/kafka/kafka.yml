@@ -7,7 +7,6 @@ services:
     ports:
       - 9092:9092
     volumes:
-      - /etc/localtime:/etc/localtime
       - /etc/hosts:/etc/hosts
       - /data/kafka/data:/kafka:rw
     environment:
@@ -15,4 +14,4 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "192.168.3.42:2181" 
       KAFKA_ADVERTISED_HOST_NAME: "192.168.3.43" 
       KAFKA_ADVERTISED_PORT: "9092" 
-      KAFKA_HEAP_OPTS: "-Xmx3G -Xms3G"
+      KAFKA_HEAP_OPTS: "-Xmx4G -Xms4G"

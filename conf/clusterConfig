@@ -9,7 +9,7 @@ K8S_VERSION=""
 ## SSH for ansible
 ### TODO: 安全账号, 防止滥用root权限
 USER_INIT="root"
-PASSWD_INIT="4duat.com"
+PASSWD_INIT="4ddev.com"
 ### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
 USER="admin"
 PASSWD="4dops.com"
@@ -26,7 +26,7 @@ ETCD_DATA_DIR="/data/kubernetes/etcd/data"
 ETCD_WAL_DIR="/data/kubernetes/etcd/wal"
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(192.168.3.45)
+K8S_SLAVES=(192.168.20.19)
 
 
 # kubernetes 服务 IP (一般是 SERVICE_CIDR 中第一个IP)
