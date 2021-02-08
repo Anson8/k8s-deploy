@@ -4,7 +4,7 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 BOOT_TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 引入deployConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
-. $DEPLOY_PATH/etcd_cfg.sh
+. $DEPLOY_PATH/kube_cfg.sh
 . $DEPLOY_PATH/cert/ssl_ca.sh
 
 function CreateUser() {
@@ -95,8 +95,8 @@ function PathInit(){
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
-            echo "ansible-playbook mount disk on this $ip"
-            ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            #echo "ansible-playbook mount disk on this $ip"
+            #ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes slave path on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/$PRIVATEKEY
             echo "ansible-playbook install docker $DOCKER_VERSION"
@@ -133,6 +133,7 @@ function SSLGEN(){
         #生成ETCD配置cfg文件
         echo "Start to create etct CFG_ETCD."
         CFG_ETCD
+        CFG_KUBE_NGINX
         #保留.pem文件删除其他文件
         echo "Start to rm .pem."
         #RemovePem

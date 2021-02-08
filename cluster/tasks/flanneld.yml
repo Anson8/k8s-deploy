@@ -5,7 +5,7 @@
   become_user: root
   vars:
     file_path: /opt/kubernetes
-    system_path: /lib/systemd/system
+    system_path: /etc/systemd/system
 
   tasks:
   - name: copy flanneld bin
@@ -27,8 +27,9 @@
   - name: cp flanneld.service
     copy:
       src: "/home/admin/k8s-deploy/cluster/server/flanneld.service"
-      dest: "/lib/systemd/system/flanneld.service"
+      dest: "{{system_path}}/flanneld.service"
   - name: startup flanneld
+    service:
     service:
       name: flanneld
       state: started

@@ -5,7 +5,7 @@
   become_user: root
   vars:
     file_path: /opt/kubernetes
-    system_path: /lib/systemd/system
+    system_path: /etc/systemd/system
 
   tasks:
   - name: copy etcd bin
@@ -16,7 +16,7 @@
     with_items:
       - { src: "{{file_path}}/bin/etcd",dest: "{{file_path}}/bin/" }
       - { src: "{{file_path}}/bin/etcdctl",dest: "{{file_path}}/bin/" }
-  - name: copy ssl and cfs
+  - name: copy ssl && cfg && services
     copy:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
@@ -24,11 +24,8 @@
       - { src: "{{file_path}}/ssl/etcd.pem",dest: "{{file_path}}/ssl/etcd.pem" } 
       - { src: "{{file_path}}/ssl/etcd-key.pem",dest: "{{file_path}}/ssl/etcd-key.pem" } 
       - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" } 
-      - { src: "{{file_path}}/cfg/etcd0{{etcd_n}}",dest: "{{file_path}}/cfg/etcd" }  
-  - name: cp etcd.service
-    copy:
-      src: "/home/admin/k8s-deploy/cluster/server/etcd.service"
-      dest: "/lib/systemd/system/etcd.service"
+      - { src: "{{file_path}}/cfg/etcd0{{etcd_n}}",dest: "{{file_path}}/cfg/etcd" } 
+      - { src: "/home/admin/k8s-deploy/cluster/server/etcd.service",dest: "{{system_path}}/etcd.service" } 
   - name: startup etcd
     service:
       name: etcd

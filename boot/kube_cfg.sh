@@ -42,3 +42,36 @@ EOF
 
 }
 
+#生成kube-nginx配置文件
+function CFG_KUBE_NGINX(){
+  cd /opt/kubernetes/cfg
+
+  nodes=${K8S_MASTER[@]}
+  SERVER_CLUSTER=
+  for ip in $nodes;
+  do
+    SERVER_CLUSTER+="server ${ip}:6443  max_fails=3 fail_timeout=30s;"
+  done
+
+  cat > kube-nginx.conf <<EOF
+worker_processes 1;
+
+events {
+    worker_connections  1024;
+}
+
+stream {
+    upstream backend {
+        hash $remote_addr consistent;
+        ${SERVER_CLUSTER}
+    }
+
+    server {
+        listen 127.0.0.1:8443;
+        proxy_connect_timeout 1s;
+        proxy_pass backend;
+    }
+}
+EOF
+}
+
