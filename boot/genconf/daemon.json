@@ -1,7 +1,14 @@
 {
-  "data-root": "/data/docker",
-  "registry-mirrors": ["https://8ko4gu39.mirror.aliyuncs.com"],
-  "storage-opts": ["overlay2.override_kernel_check=true" ],
+  "insecure-registries": ["docker02:35000"],
+  "max-concurrent-downloads": 20,
+  "live-restore": true,
+  "max-concurrent-uploads": 10,
+  "debug": false,
+  "data-root": "/data/docker/data",
+  "exec-root": "/data/docker/exec",
   "log-driver": "json-file",
-  "log-opts": { "max-size": "200m", "max-file": "3" }
+  "log-opts": {
+    "max-size": "100m",
+    "max-file": "5"
+  }
 }

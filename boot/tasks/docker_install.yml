@@ -20,8 +20,10 @@
     tags: docker-ce
   - name: Create Docker config directory. 
     file: path=/etc/docker state=directory 
-  - name: Create Docker running directory. 
-    file: path=/data/docker state=directory       
+  - name: Create Docker running data directory. 
+    file: path=/data/docker/data state=directory
+  - name: Create Docker running exec directory. 
+    file: path=/data/docker/exec state=directory                 
   - name: Configure docker startup parameters.
     template:
       src: ../genconf/daemon.json
