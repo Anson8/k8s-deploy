@@ -1,0 +1,47 @@
+---
+- name: kube-apiserver deploy
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    file_path: /opt/kubernetes
+    system_path: /lib/systemd/system
+
+  tasks:
+  - name: copy etcd bin
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      mode: 0755
+    with_items:
+      - { src: "{{file_path}}/bin/apiextensions-apiserver",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/kube-apiserver",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/kube-controller-manager",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/kube-proxy",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/kube-scheduler",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/kubectl",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/kubelet",dest: "{{file_path}}/bin/" }
+  - name: copy ssl && cfg && services
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: "{{file_path}}/ssl/kubernetes.pem",dest: "{{file_path}}/ssl/kubernetes.pem" }
+      - { src: "{{file_path}}/ssl/kubernetes-key.pem",dest: "{{file_path}}/ssl/kubernetes-key.pem" }
+      - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" }
+      - { src: "{{file_path}}/ssl/ca-key.pem",dest: "{{file_path}}/ssl/ca-key.pem" }
+      - { src: "{{file_path}}/ssl/proxy-client.pem",dest: "{{file_path}}/ssl/proxy-client.pem" }
+      - { src: "{{file_path}}/ssl/proxy-client-key.pem",dest: "{{file_path}}/ssl/proxy-client-key.pem" }
+      - { src: "{{file_path}}/cfg/kubecfg-master",dest: "{{file_path}}/cfg/kubecfg-master" }
+      - { src: "{{file_path}}/cfg/encryption-config.yaml",dest: "{{file_path}}/cfg/encryption-config.yaml" }
+      - { src: "{{file_path}}/cfg/audit-policy.yaml",dest: "{{file_path}}/cfg/audit-policy.yaml" } 
+      - { src: "/home/admin/k8s-deploy/cluster/server/etcd.service",dest: "{{system_path}}/etcd.service" }
+  #TODO: 创建目录
+  - name: Create kube-apiserver dir
+    file: path={{K8S_DIR}}/kube-apiserver state=directory recurse=yes       
+  - name: startup etcd
+    service:
+      name: etcd
+      state: started
+      daemon_reload: yes
+      enabled: yes               

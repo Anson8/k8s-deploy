@@ -130,10 +130,9 @@ function SSLGEN(){
         #生成证书
         echo "Start to create ca-cert."
         CreateCert-CA
-        #生成ETCD配置cfg文件
-        echo "Start to create etct CFG_ETCD."
-        CFG_ETCD
-        CFG_KUBE_NGINX
+        #生成cfg配置文件
+        echo "Start to create etct KUBECFG."
+        KUBECFG
         #保留.pem文件删除其他文件
         echo "Start to rm .pem."
         #RemovePem

@@ -5,7 +5,7 @@
   become_user: root
   vars:
     file_path: /opt/kubernetes
-    system_path: /etc/systemd/system
+    system_path: /lib/systemd/system
 
   tasks:
   - name: copy flanneld bin
@@ -16,7 +16,7 @@
     with_items:
       - { src: "{{file_path}}/bin/flanneld",dest: "{{file_path}}/bin/" }
       - { src: "{{file_path}}/bin/mk-docker-opts.sh",dest: "{{file_path}}/bin/" }
-  - name: copy ssl
+  - name: copy ssl && service
     copy:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
@@ -24,14 +24,20 @@
       - { src: "{{file_path}}/ssl/flanneld.pem",dest: "{{file_path}}/ssl/flanneld.pem" } 
       - { src: "{{file_path}}/ssl/flanneld-key.pem",dest: "{{file_path}}/ssl/flanneld-key.pem" } 
       - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" }
-  - name: cp flanneld.service
-    copy:
-      src: "/home/admin/k8s-deploy/cluster/server/flanneld.service"
-      dest: "{{system_path}}/flanneld.service"
+      - { src: "{{file_path}}/cfg/flannel",dest: "{{file_path}}/cfg/flannel" }
+      - { src: "/home/admin/k8s-deploy/cluster/server/flanneld.service",dest: "{{system_path}}/flanneld.service" }
+      - { src: "/home/admin/k8s-deploy/cluster/server/docker.service",dest: "{{system_path}}/docker.service" }
   - name: startup flanneld
     service:
     service:
       name: flanneld
       state: started
       daemon_reload: yes
-      enabled: yes               
+      enabled: yes         
+  - name: restart docker
+    service:
+    service:
+      name: docker
+      state: restarted
+      daemon_reload: yes
+      enabled: yes                    

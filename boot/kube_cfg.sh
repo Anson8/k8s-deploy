@@ -3,10 +3,11 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 ## TODO 引入deployConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
 
-#生成etcd的配置文件
-function CFG_ETCD(){
+#生成配置文件
+function KUBECFG(){
   cd /opt/kubernetes/cfg
 
+#生成etcd的配置文件
   ETCD_INITIAL_CLUSTER=
   let len=${#K8S_ETCD[*]}
   for ((i=0; i<$len; i++))
@@ -40,12 +41,14 @@ ETCD_INITIAL_CLUSTER_STATE="new"
 EOF
   done
 
-}
+#生成flanneld配置文件
+  cat > flannel <<EOF
+#[Clustering]
+ETCD_ENDPOINTS="${ETCD_ENDPOINTS}"
+FLANNEL_ETCD_PREFIX="${FLANNEL_ETCD_PREFIX}"
+EOF
 
 #生成kube-nginx配置文件
-function CFG_KUBE_NGINX(){
-  cd /opt/kubernetes/cfg
-
   nodes=${K8S_MASTER[@]}
   SERVER_CLUSTER=
   for ip in $nodes;
@@ -73,5 +76,14 @@ stream {
     }
 }
 EOF
-}
 
+#生成kubecfg-master配置文件
+  cat > kubecfg-master <<EOF
+#[Clustering]
+K8S_DIR="${K8S_DIR}"
+ETCD_ENDPOINTS="${ETCD_ENDPOINTS}"
+SERVICE_CIDR="${SERVICE_CIDR}"
+NODE_PORT_RANGE="${NODE_PORT_RANGE}"
+EOF
+
+}

@@ -19,15 +19,37 @@ PRIVATEKEY="id_ed25519"
 ## Master 
 ### TODO: 集群资源管理，根据自身集群情况配置IPs
 K8S_MASTER=(192.168.3.42 192.168.3.43 192.168.3.44)
+## kube-apiserver 的反向代理(kube-nginx)地址端口
+KUBE_APISERVER="https://127.0.0.1:8443"
 ## ETCD配置
 K8S_ETCD=(192.168.3.42 192.168.3.43 192.168.3.44)
+# etcd 集群服务地址列表
+export ETCD_ENDPOINTS="https://192.168.3.42:2379,https://192.168.3.43:2379,https://192.168.3.44:2379"
 ### TODO: etcd 数据目录
 ETCD_DATA_DIR="/data/kubernetes/etcd/data"
 ETCD_WAL_DIR="/data/kubernetes/etcd/wal"
 
+# k8s 各组件数据目录
+export K8S_DIR="/data/kubernetes/workspace"
+
 ## TODO: 集群资源Node资源部署
 K8S_SLAVES=(192.168.20.19)
 
+# 服务网段，部署前路由不可达，部署后集群内路由可达(kube-proxy 保证)
+SERVICE_CIDR="10.254.0.0/16"
+
+# Pod 网段，建议 /16 段地址，部署前路由不可达，部署后集群内路由可达(flanneld 保证)
+CLUSTER_CIDR="10.50.0.0/16"
 
 # kubernetes 服务 IP (一般是 SERVICE_CIDR 中第一个IP)
 CLUSTER_KUBERNETES_SVC_IP="10.254.0.1"
+
+# 集群 DNS 服务 IP (从 SERVICE_CIDR 中预分配)
+CLUSTER_DNS_SVC_IP="10.254.0.2"
+
+# 服务端口范围 (NodePort Range)
+export NODE_PORT_RANGE="30000-32767"
+
+# flanneld 网络配置前缀
+export FLANNEL_ETCD_PREFIX="/kubernetes/network"
+
