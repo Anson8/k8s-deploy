@@ -8,6 +8,7 @@ services:
     volumes:
       - /data/es/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml 
       - /data/es/data/:/usr/share/elasticsearch/data:rw
+      - /data/es/logs/:/usr/share/elasticsearch/logs:rw
     container_name: elasticsearch
     hostname: elasticsearch
     restart: always
