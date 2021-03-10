@@ -7,7 +7,6 @@
   - 将预安装ip加入known_hosts
   - 创建admin用户（授权sudo权限）
   - 部署公钥登陆
-  - 关闭密码登陆通道、重启sshd
   - 格式化并挂在磁盘
   - 初始化k8s安装环境
   - 安装docker
@@ -17,37 +16,19 @@
   - apiserver证书
   - flannel证书
   - kube-proxy证书
+  - kube-admin
 
 # 部署Master
+  - 部署kube-nginx
   - 部署etcd
-  - 部署
-
-
-# 部署Master
-  ## 复制二进制程序
-  ## 创建证书
-  ## 部署kube-apiserver服务
-  ## 部署kube-Controller服务
-  ## 配置kube-scheduler服务
-  ## 配置flanneld服务
-  ## 启动服务
-  - daemon-reload 
-  - kube-apiserver
-  - kube-controller-manager 
-  - kube-scheduler 
-  - flanneld
-  ## 修改docker服务
-
-# 部署node节点
-  ## 复制程序文件
-  ## 配置Flanned以及修改Docker服务
-  ## 配置kubelet服务
-  ## 配置kube-proxy服务
-
-# 部署附件组件
-  ## 部署DNS
-  ## 部署Dashboard
-
+  - 部署kube-scheduler
+  - 部署kube-controller-manager
+  - 部署kube-apiserver
+# 部署Node节点
+  - 部署kube-nginx
+  - 部署kube-proxy
+  - 部署kubelet
+  - 部署flanneld
 
 
 # 修改配置

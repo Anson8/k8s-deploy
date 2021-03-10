@@ -5,7 +5,7 @@
   become_user: root
   vars:
     file_path: /opt/kubernetes
-    system_path: /lib/systemd/system
+    system_path: /etc/systemd/system
 
   tasks:
   - name: copy etcd bin

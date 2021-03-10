@@ -1,0 +1,30 @@
+---
+- name: kube-proxy deploy
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    file_path: /opt/kubernetes
+    system_path: /etc/systemd/system
+
+  tasks:
+  - name: copy kube-proxy bin
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      mode: 0755
+    with_items:
+      - { src: "{{file_path}}/bin/kube-proxy",dest: "{{file_path}}/bin/" }
+  - name: copy ssl && cfg && services
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.service",dest: "{{file_path}}/cfg/kube-proxy.service" } 
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy-config-{{n}}.yaml",dest: "{{system_path}}/kube-proxy-config.yaml" } 
+  - name: startup kubelet
+    service:
+      name: kube-proxy
+      state: started
+      daemon_reload: yes
+      enabled: yes               

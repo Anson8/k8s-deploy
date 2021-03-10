@@ -1,0 +1,31 @@
+---
+- name: kubelet deploy
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    file_path: /opt/kubernetes
+    system_path: /lib/systemd/system
+
+  tasks:
+  - name: copy kubelet bin
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      mode: 0755
+    with_items:
+      - { src: "{{file_path}}/bin/kubelet",dest: "{{file_path}}/bin/" }
+  - name: copy ssl && cfg && services
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" } 
+      - { src: "{{file_path}}/cfg/kubelet/kubelet-config-slave0{{n}}.kubeconfig",dest: "{{file_path}}/cfg/kubelet-bootstrap.kubeconfig" } 
+      - { src: "{{file_path}}/cfg/kubelet/kubelet-{{n}}.service",dest: "{{system_path}}/kubelet.service" } 
+  - name: startup kubelet
+    service:
+      name: kubelet
+      state: started
+      daemon_reload: yes
+      enabled: yes               

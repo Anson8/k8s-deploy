@@ -79,6 +79,11 @@ EOF
   CreateCert-ETCD
   #生成flannel证书
   CreateCert-FLANNEL
+  #生成kube-admin证书
+  KUBE-ADMIN
+  PROXY-CLIENT
+  KUBE-CONTROLLER_MANAGER
+  KUBE-SCHEDULER
 }
 
 #生成kube-admin证书
@@ -325,7 +330,7 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
     -profile=kubernetes proxy-client-csr.json | cfssljson -bare proxy-client
 }
 
-#生成kube-controller-manager证书
+#生成kube-controller-manager配置文件
 function KUBE-CONTROLLER_MANAGER(){
   K8S_SERVERS=
   let len=${#K8S_MASTER[*]}
@@ -388,7 +393,7 @@ kubectl config use-context system:kube-controller-manager --kubeconfig=kube-cont
 
 }
 
-#生成kube-scheduler证书
+#生成kube-scheduler配置文件
 function KUBE-SCHEDULER(){
   K8S_SERVERS=
   let len=${#K8S_MASTER[*]}
