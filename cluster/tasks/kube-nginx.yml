@@ -15,7 +15,7 @@
     file: path={{file_path}}/kube-nginx/cfg state=directory recurse=yes
   - name: Create cfg dir
     file: path={{file_path}}/kube-nginx/logs state=directory recurse=yes   
-  - name: copy flanneld bin
+  - name: copy kube-nginx bin
     copy:
       src: "{{item.src}}"
       dest: "{{item.dest}}"

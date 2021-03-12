@@ -6,7 +6,7 @@ TASKS_PATH=$DEPLOY_PATH/tasks
 . $DEPLOY_PATH/../conf/clusterConfig
 
 ## TODO 部署Kubernetes 集群
-function DEPLOY_CLUSTER{
+function DEPLOY_CLUSTER(){
     DEPLOY_ETCD
     DEPLOY_MASTER
     #DEPLOY_SLAVES
@@ -60,18 +60,18 @@ function DEPLOY_MASTER(){
         for ((i=0; i<$len; i++))
         do
           let n=$i+1
-            ##  部署kube-nginx
-            echo "ansible-playbook deploy kube-nginx on this ${K8S_MASTER[i]}"
-            ansible-playbook $TASKS_PATH/kube-nginx.yml-i ${K8S_MASTER[i]},  --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kube-apiserver
             echo "ansible-playbook deploy kube-apiserver on this ${K8S_MASTER[i]}"
-            ansible-playbook $TASKS_PATH/kube-apiserver.yml-i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $TASKS_PATH/kube-apiserver.yml -i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ##  部署kube-nginx
+            echo "ansible-playbook deploy kube-nginx on this ${K8S_MASTER[i]}"
+            ansible-playbook $TASKS_PATH/kube-nginx.yml -i ${K8S_MASTER[i]},  --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kube-controller-manager
             echo "ansible-playbook deploy kube-controller-manager on this ${K8S_MASTER[i]}"
             ansible-playbook $TASKS_PATH/kube-controller-manager.yml -i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR" --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kube-scheduler
             echo "ansible-playbook deploy kube-scheduler on this ${K8S_MASTER[i]}"
-            ansible-playbook $TASKS_PATH/kube-scheduler.yml-i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $TASKS_PATH/kube-scheduler.yml -i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR" --private-key=/home/admin/.ssh/$PRIVATEKEY
 
             if [ $? -ne 0 ];then
                  echo "Deploy K8s-Master on $ip..................Failed! Ret=$ret"
@@ -102,7 +102,7 @@ function DEPLOY_SLAVES(){
           let n=$i+1
             ##  部署kube-nginx
             echo "ansible-playbook deploy kube-nginx on this ${K8S_SLAVES[i]}"
-            ansible-playbook $TASKS_PATH/kube-nginx.yml-i ${K8S_SLAVES[i]},  --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $TASKS_PATH/kube-nginx.yml -i ${K8S_SLAVES[i]},  --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kubelet
             echo "ansible-playbook deploy kubelet on this ${K8S_ETCD[i]}"
             ansible-playbook $TASKS_PATH/kubeletyml -i ${K8S_ETCD[i]}, -e "n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY

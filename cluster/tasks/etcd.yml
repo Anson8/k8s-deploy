@@ -31,4 +31,5 @@
       name: etcd
       state: started
       daemon_reload: yes
-      enabled: yes               
+      enabled: yes    
+    ignore_errors: yes             

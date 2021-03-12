@@ -23,52 +23,55 @@ function DownLoadCFSSL(){
 
 #生成根证书
 function CreateCert-CA(){
-  cd /opt/kubernetes/bin
-  chmod +x cfssl*
-  sudo mv cfssl_linux-amd64 /usr/local/bin/cfssl
-  sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
-  sudo mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
-  export PATH=/usr/local/bin:$PATH
+  #cd /opt/kubernetes/bin
+  #chmod +x cfssl*
+  #sudo mv cfssl_linux-amd64 /usr/local/bin/cfssl
+  #sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
+  #sudo mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
+  #export PATH=/usr/local/bin:$PATH
 
   cd /opt/kubernetes/ssl
   cat > ca-config.json <<EOF
-  {
-    "signing": {
-      "default": {
+{
+  "signing": {
+    "default": {
+      "expiry": "87600h"
+    },
+    "profiles": {
+      "kubernetes": {
+        "usages": [
+            "signing",
+            "key encipherment",
+            "server auth",
+            "client auth"
+        ],
         "expiry": "87600h"
-      },
-      "profiles": {
-        "kubernetes": {
-           "expiry": "87600h",
-           "usages": [
-              "signing",
-              "key encipherment",
-              "server auth",
-              "client auth"
-          ]
-        }
       }
     }
   }
+}
 EOF
   
   cat > ca-csr.json <<EOF
-  {
-      "CN": "kubernetes",
-      "key": {
-          "algo": "rsa",
-          "size": 2048
-      },
-      "names": [
-          {
-              "C": "CN",
-              "L": "Beijing",
-              "ST": "Beijing",
-              "O": "k8s",
-              "OU": "System"
-          }
-      ]
-  }
+{
+  "CN": "kubernetes",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "BeiJing",
+      "L": "BeiJing",
+      "O": "k8s",
+      "OU": "4Paradigm"
+    }
+  ],
+  "ca": {
+    "expiry": "876000h"
+ }
+}
 EOF
   
   cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
@@ -136,14 +139,14 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
 sudo cp /opt/kubernetes/bin/kubectl /usr/local/bin/
 
 kubectl config set-cluster kubernetes \
-  --certificate-authority=/opt/k8s/work/ca.pem \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
   --embed-certs=true \
   --server=${KUBE_APISERVER} \
   --kubeconfig=kubectl.kubeconfig
 
 kubectl config set-credentials admin \
-  --client-certificate=/opt/k8s/work/admin.pem \
-  --client-key=/opt/k8s/work/admin-key.pem \
+  --client-certificate=/opt/kubernetes/ssl/admin.pem \
+  --client-key=/opt/kubernetes/ssl/admin-key.pem \
   --embed-certs=true \
   --kubeconfig=kubectl.kubeconfig
 
@@ -296,15 +299,15 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
 ## 用etcd给Flannel分配网段
 /opt/kubernetes/bin/etcdctl \
   --endpoints=${ETCD_ENDPOINTS} \
-  --ca-file=/opt/k8s/work/ca.pem \
-  --cert-file=/opt/k8s/work/flanneld.pem \
-  --key-file=/opt/k8s/work/flanneld-key.pem \
+  --ca-file=/opt/kubernetes/ssl/ca.pem \
+  --cert-file=/opt/kubernetes/ssl/flanneld.pem \
+  --key-file=/opt/kubernetes/ssl/flanneld-key.pem \
   mk ${FLANNEL_ETCD_PREFIX}/config '{"Network":"'${CLUSTER_CIDR}'", "SubnetLen": 21, "Backend": {"Type": "vxlan"}}'
 }
 
 #生成proxy-client证书
 function PROXY-CLIENT(){
-  cat > flanneld-csr.json <<EOF
+  cat > proxy-client-csr.json <<EOF
 {
   "CN": "aggregator",
   "hosts": [],
@@ -349,7 +352,7 @@ function KUBE-CONTROLLER_MANAGER(){
     "CN": "system:kube-controller-manager",
     "hosts": [
       "127.0.0.1",
-      ${K8S_SERVERS},
+      ${K8S_SERVERS}
     ],
     "key": {
       "algo": "rsa",
@@ -373,7 +376,7 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
   -profile=kubernetes kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
 
 kubectl config set-cluster kubernetes \
-  --certificate-authority=/opt/k8s/work/ca.pem \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
   --embed-certs=true \
   --server=${KUBE_APISERVER} \
   --kubeconfig=kube-controller-manager.kubeconfig
@@ -407,12 +410,12 @@ function KUBE-SCHEDULER(){
       K8S_SERVERS+="\"${K8S_MASTER[i]}"\"
       echo "K8S_MASTER"==[${K8S_SERVERS}]
   done
-  cat > kube-controller-manager-csr.json <<EOF
+  cat > kube-scheduler-csr.json <<EOF
   {
     "CN": "system:kube-scheduler",
     "hosts": [
       "127.0.0.1",
-      ${K8S_SERVERS},
+      ${K8S_SERVERS}
     ],
     "key": {
       "algo": "rsa",
@@ -435,8 +438,9 @@ cfssl gencert -ca=/opt/kubernetes/ssl//ca.pem \
   -config=/opt/kubernetes/ssl//ca-config.json \
   -profile=kubernetes kube-scheduler-csr.json | cfssljson -bare kube-scheduler
 
+
 kubectl config set-cluster kubernetes \
-  --certificate-authority=/opt/k8s/work/ca.pem \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
   --embed-certs=true \
   --server=${KUBE_APISERVER} \
   --kubeconfig=kube-scheduler.kubeconfig

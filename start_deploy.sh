@@ -35,7 +35,7 @@ answer=$(echo $answer)
 case $answer in
 Y | y)
     echo "Start to depoloy Kuberbetes etcd in $1 cluster..."
-    Deploy_ETCD
+    DEPLOY_CLUSTER
     ;;
 N | n)
     echo "Exit."

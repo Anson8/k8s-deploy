@@ -5,11 +5,14 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 
 #生成配置文件
 function KUBECFG(){
-  KUBECONF
-  KUBELETCONF
+  KUBE-CONF
+  KUBE-APISERVER
+  KUBELET-CONF
+  KUBE-PROXY
+
 }
 
-function KUBECONF(){
+function KUBE-CONF(){
   cd /opt/kubernetes/cfg
 
 #生成etcd的配置文件
@@ -33,7 +36,7 @@ function KUBECONF(){
 #[Member]
 ETCD_NAME="etcd0$n"
 ETCD_DATA_DIR="$ETCD_DATA_DIR"
-ETCD_WAL_DIR="$ETCD_DATA_DIR"
+ETCD_WAL_DIR="$ETCD_WAL_DIR"
 ETCD_LISTEN_PEER_URLS="https://${K8S_ETCD[i]}:2380"
 ETCD_LISTEN_CLIENT_URLS="https://${K8S_ETCD[i]}:2379"
 
@@ -94,7 +97,7 @@ EOF
 }
 
 #生成kubelet的配置文件
-function KUBELETCONF(){
+function KUBELET-CONF(){
   mkdir -p /opt/kubernetes/cfg/kubelet
   cd /opt/kubernetes/cfg/kubelet
 
@@ -111,7 +114,7 @@ function KUBELETCONF(){
 
       # 设置集群参数
         kubectl config set-cluster kubernetes \
-          --certificate-authority=/etc/kubernetes/cert/ca.pem \
+          --certificate-authority=/opt/kubernetes/ssl/ca.pem \
           --embed-certs=true \
           --server=${KUBE_APISERVER} \
           --kubeconfig=kubelet-bootstrap-${node_name}.kubeconfig
@@ -224,7 +227,7 @@ ExecStart=/opt/kubernetes/bin/kubelet \\
 WantedBy=multi-user.target
 EOF
 
-kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --group=system:bootstrappers
+#kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --group=system:bootstrappers
 
   done
 }
@@ -257,7 +260,7 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
   -config=/opt/kubernetes/ssl/ca-config.json \
   -profile=kubernetes  kube-proxy-csr.json | cfssljson -bare kube-proxy
 
-ls kube-proxy*
+mkdir -p /opt/kubernetes/cfg/kube-proxy
 cd /opt/kubernetes/cfg/kube-proxy
 
 kubectl config set-cluster kubernetes \
@@ -267,7 +270,7 @@ kubectl config set-cluster kubernetes \
   --kubeconfig=kube-proxy.kubeconfig
 
 kubectl config set-credentials kube-proxy \
-  --client-certificate=kube-proxy.pem \
+  --client-certificate=/opt/kubernetes/ssl/kube-proxy.pem \
   --client-key=/opt/kubernetes/ssl/kube-proxy-key.pem \
   --embed-certs=true \
   --kubeconfig=kube-proxy.kubeconfig
@@ -279,8 +282,6 @@ kubectl config set-context default \
 
 kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 
-  mkdir -p /opt/kubernetes/cfg/kubelet
-  cd /opt/kubernetes/cfg/kube-proxy
 
   let len=${#K8S_SLAVES[*]}
   for ((i=0; i<$len; i++))
@@ -330,6 +331,84 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
 EOF
+}
 
-  }
+#生成kube-apiserver的配置文件
+function KUBE-APISERVER() {
+  mkdir -p /opt/kubernetes/cfg/kube-apiserver
+  cd /opt/kubernetes/cfg/kube-apiserver
+  let len=${#K8S_MASTER[*]}
+  for ((i=0; i<$len; i++))
+  do
+    let n=$i+1
+    cat > kube-apiserver0$n.service <<EOF
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=network.target
+
+[Service]
+WorkingDirectory=${K8S_DIR}/kube-apiserver
+ExecStart=/usr/local/bin/kube-apiserver \\
+  --advertise-address=${K8S_MASTER[i]} \\
+  --default-not-ready-toleration-seconds=360 \\
+  --default-unreachable-toleration-seconds=360 \\
+  --feature-gates=DynamicAuditing=true \\
+  --max-mutating-requests-inflight=2000 \\
+  --max-requests-inflight=4000 \\
+  --default-watch-cache-size=200 \\
+  --delete-collection-workers=2 \\
+  --encryption-provider-config=/opt/kubernetes/cfg/encryption-config.yaml \\
+  --etcd-cafile=/opt/kubernetes/ssl/ca.pem \\
+  --etcd-certfile=/opt/kubernetes/ssl/kubernetes.pem \\
+  --etcd-keyfile=/opt/kubernetes/ssl/kubernetes-key.pem \\
+  --etcd-servers=${ETCD_ENDPOINTS} \\
+  --bind-address=${K8S_MASTER[i]} \\
+  --secure-port=6443 \\
+  --tls-cert-file=/opt/kubernetes/ssl/kubernetes.pem \\
+  --tls-private-key-file=/opt/kubernetes/ssl/kubernetes-key.pem \\
+  --insecure-port=0 \\
+  --audit-dynamic-configuration \\
+  --audit-log-maxage=15 \\
+  --audit-log-maxbackup=3 \\
+  --audit-log-maxsize=100 \\
+  --audit-log-truncate-enabled \\
+  --audit-log-path=${K8S_DIR}/kube-apiserver/audit.log \\
+  --audit-policy-file=/opt/kubernetes/cfg/audit-policy.yaml \\
+  --profiling \\
+  --anonymous-auth=false \\
+  --client-ca-file=/opt/kubernetes/ssl/ca.pem \\
+  --enable-bootstrap-token-auth \\
+  --requestheader-allowed-names="aggregator" \\
+  --requestheader-client-ca-file=/opt/kubernetes/ssl/ca.pem \\
+  --requestheader-extra-headers-prefix="X-Remote-Extra-" \\
+  --requestheader-group-headers=X-Remote-Group \\
+  --requestheader-username-headers=X-Remote-User \\
+  --service-account-key-file=/opt/kubernetes/ssl/ca.pem \\
+  --authorization-mode=Node,RBAC \\
+  --runtime-config=api/all=true \\
+  --enable-admission-plugins=NodeRestriction \\
+  --allow-privileged=true \\
+  --apiserver-count=3 \\
+  --event-ttl=168h \\
+  --kubelet-certificate-authority=/opt/kubernetes/ssl/ca.pem \\
+  --kubelet-client-certificate=/opt/kubernetes/ssl/kubernetes.pem \\
+  --kubelet-client-key=/opt/kubernetes/ssl/kubernetes-key.pem \\
+  --kubelet-https=true \\
+  --kubelet-timeout=10s \\
+  --proxy-client-cert-file=/opt/kubernetes/ssl/proxy-client.pem \\
+  --proxy-client-key-file=/opt/kubernetes/ssl/proxy-client-key.pem \\
+  --service-cluster-ip-range=${SERVICE_CIDR} \\
+  --service-node-port-range=${NODE_PORT_RANGE} \\
+  --logtostderr=true \\
+  --v=2
+Restart=on-failure
+RestartSec=10
+Type=notify
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  done  
 }

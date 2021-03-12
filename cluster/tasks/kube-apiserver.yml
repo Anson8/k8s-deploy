@@ -8,7 +8,7 @@
     system_path: /etc/systemd/system
 
   tasks:
-  - name: copy etcd bin
+  - name: copy master bin
     copy:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
@@ -33,15 +33,15 @@
       - { src: "{{file_path}}/ssl/proxy-client.pem",dest: "{{file_path}}/ssl/proxy-client.pem" }
       - { src: "{{file_path}}/ssl/proxy-client-key.pem",dest: "{{file_path}}/ssl/proxy-client-key.pem" }
       - { src: "{{file_path}}/cfg/kubecfg-master",dest: "{{file_path}}/cfg/kubecfg-master" }
-      - { src: "{{file_path}}/cfg/encryption-config.yaml",dest: "{{file_path}}/cfg/encryption-config.yaml" }
-      - { src: "{{file_path}}/cfg/audit-policy.yaml",dest: "{{file_path}}/cfg/audit-policy.yaml" } 
-      - { src: "/home/admin/k8s-deploy/cluster/server/etcd.service",dest: "{{system_path}}/etcd.service" }
+      - { src: "/home/admin/k8s-deploy/cluster/server/encryption-config.yaml",dest: "{{file_path}}/cfg/encryption-config.yaml" }
+      - { src: "/home/admin/k8s-deploy/cluster/server/audit-policy.yaml",dest: "{{file_path}}/cfg/audit-policy.yaml" } 
+      - { src: "{{file_path}}/cfg//kube-apiserver/kube-apiserver0{{n}}.service",dest: "{{system_path}}/kube-apiserver.service" }
   #TODO: 创建目录
   - name: Create kube-apiserver dir
     file: path={{K8S_DIR}}/kube-apiserver state=directory recurse=yes       
-  - name: startup etcd
+  - name: startup kube-apiserver
     service:
-      name: etcd
+      name: kube-apiserver
       state: started
       daemon_reload: yes
       enabled: yes               
