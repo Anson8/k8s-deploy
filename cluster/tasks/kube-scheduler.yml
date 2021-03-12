@@ -16,8 +16,8 @@
       - { src: "{{file_path}}/ssl/kube-scheduler.pem",dest: "{{file_path}}/ssl/kube-scheduler.pem" }
       - { src: "{{file_path}}/ssl/kube-scheduler-key.pem",dest: "{{file_path}}/ssl/kube-scheduler-key.pem" }
       - { src: "{{file_path}}/cfg/kube-scheduler.kubeconfig",dest: "{{file_path}}/cfg/kube-scheduler.kubeconfig" }
-      - { src: "{{file_path}}/cfg/kube-scheduler.yaml",dest: "{{file_path}}/cfg/kube-scheduler.yaml" }
-      - { src: "/home/admin/k8s-deploy/cluster/server/kube-scheduler.service",dest: "{{system_path}}/kube-scheduler.service" }
+      - { src: "{{file_path}}/cfg/kube-scheduler/kube-scheduler0{{n}}.yaml",dest: "{{file_path}}/cfg/kube-scheduler.yaml" }
+      - { src: "{{file_path}}/cfg/kube-scheduler/kube-scheduler0{{n}}.service",dest: "{{system_path}}/kube-scheduler.service" }
   #TODO: 创建目录
   - name: Create kube-scheduler dir
     file: path={{K8S_DIR}}/kube-scheduler state=directory recurse=yes   

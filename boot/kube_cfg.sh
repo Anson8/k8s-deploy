@@ -136,7 +136,7 @@ function KUBELET-CONF(){
 cat > kubelet-config-$n.yaml <<EOF
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
-address: "##NODE_IP##"
+address: ${K8S_SLAVES[i]}
 staticPodPath: ""
 syncFrequency: 1m
 fileCheckFrequency: 20s
@@ -162,7 +162,7 @@ eventBurst: 20
 enableDebuggingHandlers: true
 enableContentionProfiling: true
 healthzPort: 10248
-healthzBindAddress: "${K8S_SLAVES[i]}"
+healthzBindAddress: ${K8S_SLAVES[i]}
 clusterDomain: "${CLUSTER_DNS_DOMAIN}"
 clusterDNS:
   - "${CLUSTER_DNS_SVC_IP}"
@@ -349,7 +349,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=${K8S_DIR}/kube-apiserver
-ExecStart=/usr/local/bin/kube-apiserver \\
+ExecStart=/opt/kubernetes/bin/kube-apiserver \\
   --advertise-address=${K8S_MASTER[i]} \\
   --default-not-ready-toleration-seconds=360 \\
   --default-unreachable-toleration-seconds=360 \\
@@ -367,7 +367,6 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --secure-port=6443 \\
   --tls-cert-file=/opt/kubernetes/ssl/kubernetes.pem \\
   --tls-private-key-file=/opt/kubernetes/ssl/kubernetes-key.pem \\
-  --insecure-port=0 \\
   --audit-dynamic-configuration \\
   --audit-log-maxage=15 \\
   --audit-log-maxbackup=3 \\
@@ -410,5 +409,140 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
 EOF
+
+cat > encryption-config.yaml <<EOF
+kind: EncryptionConfig
+apiVersion: v1
+resources:
+  - resources:
+      - secrets
+    providers:
+      - aescbc:
+          keys:
+            - name: key1
+              secret: ${ENCRYPTION_KEY}
+      - identity: {}
+EOF
+
   done  
 }
+
+#生成kube-controller-manager的配置文件
+function KUBE-SCHEDULER() {
+  mkdir -p /opt/kubernetes/cfg/kube-controller-manager
+  cd /opt/kubernetes/cfg/kube-controller-manager
+  let len=${#K8S_MASTER[*]}
+  for ((i=0; i<$len; i++))
+  do
+    let n=$i+1
+cat > kube-controller-manager0$n.service <<EOF
+[Unit]
+Description=Kubernetes Controller Manager
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+WorkingDirectory=${K8S_DIR}/kube-controller-manager
+ExecStart=/opt/kubernetes/bin/kube-controller-manager \\
+  --profiling \\
+  --cluster-name=kubernetes \\
+  --controllers=*,bootstrapsigner,tokencleaner \\
+  --kube-api-qps=1000 \\
+  --kube-api-burst=2000 \\
+  --leader-elect \\
+  --use-service-account-credentials\\
+  --concurrent-service-syncs=2 \\
+  --bind-address=${K8S_MASTER[i]}\\
+  --secure-port=10252 \\
+  --tls-cert-file=/opt/kubernetes/ssl/kube-controller-manager.pem \\
+  --tls-private-key-file=/opt/kubernetes/ssl/kube-controller-manager-key.pem \\
+  --port=0 \\
+  --authentication-kubeconfig=/opt/kubernetes/cfg/kube-controller-manager.kubeconfig \\
+  --client-ca-file=/opt/kubernetes/ssl/ca.pem \\
+  --requestheader-client-ca-file=/opt/kubernetes/ssl/ca.pem \\
+  --requestheader-extra-headers-prefix="X-Remote-Extra-" \\
+  --requestheader-group-headers=X-Remote-Group \\
+  --requestheader-username-headers=X-Remote-User \\
+  --authorization-kubeconfig=/opt/kubernetes/cfg/kube-controller-manager.kubeconfig \\
+  --cluster-signing-cert-file=/opt/kubernetes/ssl/ca.pem \\
+  --cluster-signing-key-file=/opt/kubernetes/ssl/ca-key.pem \\
+  --experimental-cluster-signing-duration=876000h \\
+  --horizontal-pod-autoscaler-sync-period=10s \\
+  --concurrent-deployment-syncs=10 \\
+  --concurrent-gc-syncs=30 \\
+  --node-cidr-mask-size=24 \\
+  --service-cluster-ip-range=${SERVICE_CIDR} \\
+  --pod-eviction-timeout=6m \\
+  --terminated-pod-gc-threshold=10000 \\
+  --root-ca-file=/opt/kubernetes/ssl/ca.pem \\
+  --service-account-private-key-file=/opt/kubernetes/ssl/ca-key.pem \\
+  --kubeconfig=/opt/kubernetes/cfg/kube-controller-manager.kubeconfig \\
+  --logtostderr=true \\
+  --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  done  
+}
+
+#生成kube-scheduler的配置文件
+function KUBE-SCHEDULER() {
+  mkdir -p /opt/kubernetes/cfg/kube-scheduler
+  cd /opt/kubernetes/cfg/kube-scheduler
+  let len=${#K8S_MASTER[*]}
+  for ((i=0; i<$len; i++))
+  do
+    let n=$i+1
+cat > kube-scheduler0$n.service <<EOF
+[Unit]
+Description=Kubernetes Scheduler
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+WorkingDirectory=${K8S_DIR}/kube-scheduler
+ExecStart=/opt/kubernetes/bin/kube-scheduler \\
+  --config=/opt/kubernetes/cfg/kube-scheduler.yaml \\
+  --bind-address=${K8S_MASTER[i]} \\
+  --secure-port=10259 \\
+  --port=0 \\
+  --tls-cert-file=/opt/kubernetes/ssl/kube-scheduler.pem \\
+  --tls-private-key-file=/opt/kubernetes/ssl/kube-scheduler-key.pem \\
+  --authentication-kubeconfig=/opt/kubernetes/cfg/kube-scheduler.kubeconfig \\
+  --client-ca-file=/opt/kubernetes/ssl/ca.pem \\
+  --requestheader-client-ca-file=/opt/kubernetes/ssl/ca.pem \\
+  --requestheader-extra-headers-prefix="X-Remote-Extra-" \\
+  --requestheader-group-headers=X-Remote-Group \\
+  --requestheader-username-headers=X-Remote-User \\
+  --authorization-kubeconfig=/opt/kubernetes/cfg/kube-scheduler.kubeconfig \\
+  --logtostderr=true \\
+  --v=2
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target
+EOF
+cat >kube-scheduler0$n.yaml.template <<EOF
+apiVersion: kubescheduler.config.k8s.io/v1alpha1
+kind: KubeSchedulerConfiguration
+bindTimeoutSeconds: 600
+clientConnection:
+  burst: 200
+  kubeconfig: "/opt/kubernetes/cfg/kube-scheduler.kubeconfig"
+  qps: 100
+enableContentionProfiling: false
+enableProfiling: true
+hardPodAffinitySymmetricWeight: 1
+healthzBindAddress: ${K8S_MASTER[i]}:10251
+leaderElection:
+  leaderElect: true
+metricsBindAddress: ${K8S_MASTER[i]}:10251
+EOF
+
+  done  
+}
+

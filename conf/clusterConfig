@@ -32,6 +32,10 @@ ETCD_WAL_DIR="/data/kubernetes/etcd/wal"
 # k8s 各组件数据目录
 export K8S_DIR="/data/kubernetes"
 
+
+# 生成 EncryptionConfig 所需的加密 key
+export ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
+
 ## TODO: 集群资源Node资源部署
 K8S_SLAVES=(192.168.20.64)
 
