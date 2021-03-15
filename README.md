@@ -19,11 +19,11 @@
   - kube-admin
 
 # 部署Master
-  - 部署kube-nginx
   - 部署etcd
+  - 部署kube-apiserver
   - 部署kube-scheduler
   - 部署kube-controller-manager
-  - 部署kube-apiserver
+  - 部署kube-nginx
 # 部署Node节点
   - 部署kube-nginx
   - 部署kube-proxy

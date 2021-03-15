@@ -7,7 +7,7 @@ TASKS_PATH=$DEPLOY_PATH/tasks
 
 ## TODO 部署Kubernetes 集群
 function DEPLOY_CLUSTER(){
-    #DEPLOY_ETCD
+    DEPLOY_ETCD
     DEPLOY_MASTER
     #DEPLOY_SLAVES
     # 部署dns服务
@@ -32,7 +32,7 @@ function DEPLOY_ETCD(){
           let n=$i+1
             ##  部署etcd
             echo "ansible-playbook deploy etcd on this ${K8S_ETCD[i]}"
-            ansible-playbook $TASKS_PATH/etcd.yml -i ${K8S_ETCD[i]}, -e "etcd_n=$n etcd_data=$ETCD_DATA_DIR etcd_awl=$ETCD_WAL_DIR" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $TASKS_PATH/etcd.yml -i ${K8S_ETCD[i]}, -e "n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Deploy etcd on $ip..................Failed! Ret=$ret"
                 return 1
@@ -68,7 +68,7 @@ function DEPLOY_MASTER(){
             ansible-playbook $TASKS_PATH/kube-nginx.yml -i ${K8S_MASTER[i]},  --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kube-controller-manager
             echo "ansible-playbook deploy kube-controller-manager on this ${K8S_MASTER[i]}"
-            ansible-playbook $TASKS_PATH/kube-controller-manager.yml -i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $TASKS_PATH/kube-controller-manager.yml -i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kube-scheduler
             echo "ansible-playbook deploy kube-scheduler on this ${K8S_MASTER[i]}"
             ansible-playbook $TASKS_PATH/kube-scheduler.yml -i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY

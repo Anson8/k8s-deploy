@@ -24,7 +24,7 @@
       dest: "{{item.dest}}"
     with_items:
       - { src: "{{file_path}}/cfg/kube-nginx.conf",dest: "{{file_path}}/cfg/kube-nginx.conf" }  
-      - { src: "/home/admin/k8s-deploy/cluster/server/kube-nginx.service",dest: "{{system_path}}/kube-nginx.service" }  
+      - { src: "{{file_path}}/cfg/kube-nginx.service",dest: "{{system_path}}/kube-nginx.service" }  
   - name: startup kube-nginx
     service:
     service:

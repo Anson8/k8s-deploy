@@ -16,7 +16,7 @@
       - { src: "{{file_path}}/ssl/kube-controller-manager.pem",dest: "{{file_path}}/ssl/kube-controller-manager.pem" }
       - { src: "{{file_path}}/ssl/kube-controller-manager-key.pem",dest: "{{file_path}}/ssl/kube-controller-manager-key.pem" }
       - { src: "{{file_path}}/ssl/kube-controller-manager.kubeconfig",dest: "{{file_path}}/cfg/kube-controller-manager.kubeconfig" }
-      - { src: "/home/admin/k8s-deploy/cluster/server/kube-controller-manager.service",dest: "{{system_path}}/kube-controller-manager.service" }
+      - { src: "{{file_path}}/cfg/kube-controller-manager/kube-controller-manager0{{n}}.service",dest: "{{system_path}}/kube-controller-manager.service" }
   #TODO: 创建目录
   - name: Create kube-controller-manager dir
     file: path={{K8S_DIR}}/kube-controller-manager state=directory recurse=yes   

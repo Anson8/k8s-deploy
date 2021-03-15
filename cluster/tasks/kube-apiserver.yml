@@ -32,10 +32,9 @@
       - { src: "{{file_path}}/ssl/ca-key.pem",dest: "{{file_path}}/ssl/ca-key.pem" }
       - { src: "{{file_path}}/ssl/proxy-client.pem",dest: "{{file_path}}/ssl/proxy-client.pem" }
       - { src: "{{file_path}}/ssl/proxy-client-key.pem",dest: "{{file_path}}/ssl/proxy-client-key.pem" }
-      - { src: "{{file_path}}/cfg/kubecfg-master",dest: "{{file_path}}/cfg/kubecfg-master" }
       - { src: "{{file_path}}/cfg/kube-apiserver/encryption-config.yaml",dest: "{{file_path}}/cfg/encryption-config.yaml" }
       - { src: "{{file_path}}/cfg/kube-apiserver/kube-apiserver0{{n}}.service",dest: "{{system_path}}/kube-apiserver.service" }
-      - { src: "/home/admin/k8s-deploy/cluster/server/audit-policy.yaml",dest: "{{file_path}}/cfg/audit-policy.yaml" } 
+      - { src: "/home/admin/k8s-deploy/boot/genconf/audit-policy.yaml",dest: "{{file_path}}/cfg/audit-policy.yaml" } 
   #TODO: 创建目录
   - name: Create kube-apiserver dir
     file: path={{K8S_DIR}}/kube-apiserver state=directory recurse=yes       

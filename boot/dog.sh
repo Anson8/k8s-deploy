@@ -4,7 +4,8 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 BOOT_TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 引入deployConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
-. $DEPLOY_PATH/kube_cfg.sh
+. $DEPLOY_PATH/master_cfg.sh
+. $DEPLOY_PATH/node_cfg.sh
 . $DEPLOY_PATH/cert/ssl_ca.sh
 
 function CreateUser() {
@@ -117,22 +118,21 @@ function PathInit(){
     esac
 }
 
-## TODO: 证书生成
-function SSLGEN(){
+## TODO: 证书&&配置文件生成
+function SSL-CFG(){
     read -p "Do you want to create ssl ?[Y/N]:" answer
     answer=$(echo $answer)
     case $answer in
     Y | y)
-        echo "Start to create ssl."
-        # 下载生成证书工具
-        #echo "Start to download cfssl_linux-amd64."
-        #DownLoadCFSSL
         #生成证书
-        echo "Start to create ca-cert."
-        CreateCert-CA
+        echo "Start to create ssl."
+        CREATE-SSL
         #生成cfg配置文件
-        echo "Start to create etct KUBECFG."
-        KUBECFG
+        echo "Start to create masetr cfg."
+        MASTER-CFG
+        #生成cfg配置文件
+        echo "Start to create  node cfg."
+        NODE-CFG
         #保留.pem文件删除其他文件
         echo "Start to rm .pem."
         #RemovePem

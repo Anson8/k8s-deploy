@@ -12,8 +12,8 @@ answer=$(echo $answer)
 case $answer in
 Y | y)
     echo "Start to Init $1 Kuberbetes cluster..."
-    ## 生成证书
-    SSLGEN
+    ## 生成证书&配置文件
+    SSL-CFG
     ## 集群环境初始化
     #PathInit
     ## 集群部署

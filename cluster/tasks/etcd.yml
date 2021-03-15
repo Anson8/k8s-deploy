@@ -8,6 +8,11 @@
     system_path: /etc/systemd/system
 
   tasks:
+  #TODO: 创建文件目录
+  - name: Create bin dir
+    file: path=/data/kubernetes/etcd/data state=directory recurse=yes  
+  - name: Create ssl dir
+    file: path=/data/kubernetes/etcd/wal state=directory recurse=yes
   - name: copy etcd bin
     copy:
       src: "{{item.src}}"
@@ -24,12 +29,11 @@
       - { src: "{{file_path}}/ssl/etcd.pem",dest: "{{file_path}}/ssl/etcd.pem" } 
       - { src: "{{file_path}}/ssl/etcd-key.pem",dest: "{{file_path}}/ssl/etcd-key.pem" } 
       - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" } 
-      - { src: "{{file_path}}/cfg/etcd0{{etcd_n}}",dest: "{{file_path}}/cfg/etcd" } 
-      - { src: "/home/admin/k8s-deploy/cluster/server/etcd.service",dest: "{{system_path}}/etcd.service" } 
+      - { src: "{{file_path}}/cfg/etcd0{{n}}.service",dest: "{{system_path}}/etcd.service" }
   - name: startup etcd
     service:
       name: etcd
       state: started
       daemon_reload: yes
       enabled: yes    
-    ignore_errors: yes             
+    ignore_errors: yes         
