@@ -8,11 +8,11 @@ TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 部署Kubernetes 集群
 function DEPLOY_CLUSTER(){
     echo "Deploy kubernetes etcd."
-    DEPLOY_ETCD
+    #DEPLOY_ETCD
     echo "Deploy kubernetes MASTER."
-    DEPLOY_MASTER
+    #DEPLOY_MASTER
     echo "Deploy kubernetes SLAVES."
-    #DEPLOY_SLAVES
+    DEPLOY_SLAVES
     # 部署dns服务
     #kubectl create -f yaml/coredns.yaml
     # 工作节点纳入集群
@@ -106,15 +106,16 @@ function DEPLOY_SLAVES(){
             ##  部署kube-nginx
             echo "ansible-playbook deploy kube-nginx on this ${K8S_SLAVES[i]}"
             ansible-playbook $TASKS_PATH/kube-nginx.yml -i ${K8S_SLAVES[i]},  --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ##  部署flanneld
+            echo "ansible-playbook deploy flanneld on this ${K8S_SLAVES[i]}"
+            ansible-playbook $TASKS_PATH/flanneld.yml -i ${K8S_SLAVES[i]}, --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kubelet
             echo "ansible-playbook deploy kubelet on this ${K8S_SLAVES[i]}"
             ansible-playbook $TASKS_PATH/kubelet.yml -i ${K8S_SLAVES[i]}, -e "n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kube-proxy
             echo "ansible-playbook deploy kube-proxy on this ${K8S_SLAVES[i]}"
             ansible-playbook $TASKS_PATH/kube-proxy.yml -i ${K8S_SLAVES[i]}, -e "n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
-            ##  部署flanneld
-            echo "ansible-playbook deploy flanneld on this ${K8S_SLAVES[i]}"
-            ansible-playbook $TASKS_PATH/flanneld.yml -i ${K8S_SLAVES[i]}, --private-key=/home/admin/.ssh/$PRIVATEKEY
+
             if [ $? -ne 0 ];then
                  echo "Deploy kubernetes node on $ip..................Failed! Ret=$ret"
                 return 1

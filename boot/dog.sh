@@ -126,10 +126,10 @@ function SSL-CFG(){
     Y | y)
         #生成证书
         echo "Start to create ssl."
-        CREATE-SSL
+        #CREATE-SSL
         #生成cfg配置文件
         echo "Start to create masetr cfg."
-        MASTER-CFG
+        #MASTER-CFG
         #生成cfg配置文件
         echo "Start to create  node cfg."
         NODE-CFG

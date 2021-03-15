@@ -8,9 +8,9 @@ function NODE-CFG() {
   #生成flanneld配置文件  
   FLANNELD-CFG
   #生成kube-proxy的配置文件
-  #KUBE-PROXY-CFG
+  KUBE-PROXY-CFG
   #生成kubelet的配置文件
-  #KUBELET-CFG
+  KUBELET-CFG
 }
 
 #生成flanneld配置文件
@@ -40,15 +40,15 @@ Before=docker.service
 
 [Service]
 Type=notify
-ExecStart==/opt/kubernetes/bin/flanneld \\
-  -etcd-cafile=/etc/kubernetes/cert/ca.pem \\
-  -etcd-certfile=/etc/flanneld/cert/flanneld.pem \\
-  -etcd-keyfile=/etc/flanneld/cert/flanneld-key.pem \\
+ExecStart=/opt/kubernetes/bin/flanneld \\
+  -etcd-cafile=/opt/kubernetes/ssl/ca.pem \\
+  -etcd-certfile=/opt/kubernetes/ssl/flanneld.pem \\
+  -etcd-keyfile=/opt/kubernetes/ssl/flanneld-key.pem \\
   -etcd-endpoints=${ETCD_SERVERS} \\
   -etcd-prefix=${FLANNEL_ETCD_PREFIX} \\
   -iface=${IFACE} \\
   -ip-masq
-ExecStartPost=/usr/local/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
+ExecStartPost=/opt/kubernetes/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
 Restart=always
 RestartSec=5
 StartLimitInterval=0
@@ -88,7 +88,7 @@ kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
   do
       let n=$i+1
       node_name=slave"0"$n
-  cat > kube-proxy-config-0$n.yaml <<EOF
+  cat > kube-proxy-config0$n.yaml <<EOF
 kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 clientConnection:
@@ -170,7 +170,7 @@ function KUBELET-CFG(){
         kubectl config use-context default --kubeconfig=kubelet-bootstrap-${node_name}.kubeconfig
 
 
-cat > kubelet-config-$n.yaml <<EOF
+cat > kubelet-config0$n.yaml <<EOF
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 address: ${K8S_SLAVES[i]}
@@ -253,7 +253,7 @@ WorkingDirectory=${K8S_DIR}/kubelet
 ExecStart=/opt/kubernetes/bin/kubelet \\
   --hostname-override=${K8S_SLAVES[i]} \\
   --pod-infra-container-image=registry.cn-beijing.aliyuncs.com/images_k8s/pause-amd64:3.1 \\
-  --bootstrap-kubeconfig=/opt/kubernetes/kubelet-bootstrap.kubeconfig \\
+  --bootstrap-kubeconfig=/opt/kubernetes/cfg/kubelet-bootstrap.kubeconfig \\
   --kubeconfig=/opt/kubernetes/cfg/kubelet.kubeconfig \\
   --config=/opt/kubernetes/cfg/kubelet-config.yaml \\
   --cert-dir=/opt/kubernetes/ssl \\
@@ -265,6 +265,5 @@ WantedBy=multi-user.target
 EOF
 
 #kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --group=system:bootstrappers
-
   done
 }

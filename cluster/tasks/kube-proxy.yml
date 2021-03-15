@@ -8,6 +8,8 @@
     system_path: /etc/systemd/system
 
   tasks:
+  - name: Create kube-proxy log dir
+    file: path=/data/kubernetes/kube-proxy state=directory recurse=yes     
   - name: copy kube-proxy bin
     copy:
       src: "{{item.src}}"
@@ -20,8 +22,9 @@
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
-      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.service",dest: "{{file_path}}/cfg/kube-proxy.service" } 
-      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy-config-{{n}}.yaml",dest: "{{system_path}}/kube-proxy-config.yaml" } 
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.kubeconfig",dest: "{{file_path}}/cfg/kube-proxy.kubeconfig" } 
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy-config0{{n}}.yaml",dest: "{{file_path}}/cfg/kube-proxy-config.yaml" } 
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.service",dest: "{{system_path}}/kube-proxy.service" } 
   - name: startup kubelet
     service:
       name: kube-proxy
