@@ -16,8 +16,6 @@ Y | y)
     SSL-CFG
     ## 集群环境初始化
     #PathInit
-    ## 集群部署
-    #DEPLOY_CLUSTER
     ;;
 N | n)
     echo "Exit."
@@ -35,6 +33,7 @@ answer=$(echo $answer)
 case $answer in
 Y | y)
     echo "Start to depoloy Kuberbetes Master in $1 cluster..."
+    ## 集群部署
     DEPLOY_CLUSTER
     ;;
 N | n)
