@@ -34,7 +34,7 @@ read -p "Are you sure to depoloy $1 Kuberbetes?[Y/N/J]:" answer
 answer=$(echo $answer)
 case $answer in
 Y | y)
-    echo "Start to depoloy Kuberbetes etcd in $1 cluster..."
+    echo "Start to depoloy Kuberbetes Master in $1 cluster..."
     DEPLOY_CLUSTER
     ;;
 N | n)

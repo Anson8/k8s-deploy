@@ -7,7 +7,7 @@ TASKS_PATH=$DEPLOY_PATH/tasks
 
 ## TODO 部署Kubernetes 集群
 function DEPLOY_CLUSTER(){
-    DEPLOY_ETCD
+    #DEPLOY_ETCD
     DEPLOY_MASTER
     #DEPLOY_SLAVES
     # 部署dns服务

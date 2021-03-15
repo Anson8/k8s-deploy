@@ -21,9 +21,9 @@
   - name: Create kube-controller-manager dir
     file: path={{K8S_DIR}}/kube-controller-manager state=directory recurse=yes   
   
-  - name: startup etcd
+  - name: startup kube-controller-manager
     service:
-      name: etcd
+      name: kube-controller-manager
       state: started
       daemon_reload: yes
       enabled: yes               

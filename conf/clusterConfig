@@ -24,7 +24,7 @@ KUBE_APISERVER="https://127.0.0.1:8443"
 ## ETCD配置
 K8S_ETCD=(192.168.20.61 192.168.20.62 192.168.20.63)
 # etcd 集群服务地址列表
-export ETCD_ENDPOINTS="etcd01=https://192.168.20.61:2380,etcd02=https://192.168.20.62:2380,etcd03=https://192.168.20.63:2380"
+#export ETCD_ENDPOINTS="etcd01=https://192.168.20.61:2380,etcd02=https://192.168.20.62:2380,etcd03=https://192.168.20.63:2380"
 ### TODO: etcd 数据目录
 ETCD_DATA_DIR="/data/kubernetes/etcd/data"
 ETCD_WAL_DIR="/data/kubernetes/etcd/wal"

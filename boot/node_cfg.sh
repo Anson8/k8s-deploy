@@ -8,14 +8,27 @@ function NODE-CFG() {
   #生成flanneld配置文件  
   FLANNELD-CFG
   #生成kube-proxy的配置文件
-  KUBE-PROXY-CFG
+  #KUBE-PROXY-CFG
   #生成kubelet的配置文件
-  KUBELET-CFG
+  #KUBELET-CFG
 }
 
 #生成flanneld配置文件
 function FLANNELD-CFG(){
-cd /opt/kubernetes/cfg    
+cd /opt/kubernetes/cfg 
+  ETCD_SERVERS=
+  let len=${#K8S_ETCD[*]}
+  for ((i=0; i<$len; i++))
+  do
+      let n=$i+1
+      if [ "$len" -ne "$n" ]; then
+       ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379",
+       continue
+      fi
+      ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379"
+      echo "K8S_ETCD"==[${ETCD_SERVERS}]
+  done 
+
 cat > flanneld.service << EOF
 [Unit]
 Description=Flanneld overlay address etcd agent
@@ -31,7 +44,7 @@ ExecStart==/opt/kubernetes/bin/flanneld \\
   -etcd-cafile=/etc/kubernetes/cert/ca.pem \\
   -etcd-certfile=/etc/flanneld/cert/flanneld.pem \\
   -etcd-keyfile=/etc/flanneld/cert/flanneld-key.pem \\
-  -etcd-endpoints=${ETCD_ENDPOINTS} \\
+  -etcd-endpoints=${ETCD_SERVERS} \\
   -etcd-prefix=${FLANNEL_ETCD_PREFIX} \\
   -iface=${IFACE} \\
   -ip-masq

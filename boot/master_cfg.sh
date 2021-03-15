@@ -63,7 +63,7 @@ ExecStart=/opt/kubernetes/bin/etcd \\
   --listen-client-urls=https://${K8S_ETCD[i]}:2379,http://127.0.0.1:2379 \\
   --advertise-client-urls=https://${K8S_ETCD[i]}:2379 \\
   --initial-cluster-token=etcd-cluster-0 \\
-  --initial-cluster=${ETCD_ENDPOINTS} \\
+  --initial-cluster=${ETCD_INITIAL_CLUSTER} \\
   --initial-cluster-state=new \\
   --auto-compaction-mode=periodic \\
   --auto-compaction-retention=1 \\
@@ -87,6 +87,20 @@ EOF
 function KUBE-APISERVER-CFG() {
   mkdir -p /opt/kubernetes/cfg/kube-apiserver
   cd /opt/kubernetes/cfg/kube-apiserver
+
+  ETCD_SERVERS=
+  let len=${#K8S_ETCD[*]}
+  for ((i=0; i<$len; i++))
+  do
+      let n=$i+1
+      if [ "$len" -ne "$n" ]; then
+       ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379",
+       continue
+      fi
+      ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379"
+      echo "K8S_ETCD"==[${ETCD_SERVERS}]
+  done 
+
   let len=${#K8S_MASTER[*]}
   for ((i=0; i<$len; i++))
   do
@@ -112,7 +126,7 @@ ExecStart=/opt/kubernetes/bin/kube-apiserver \\
   --etcd-cafile=/opt/kubernetes/ssl/ca.pem \\
   --etcd-certfile=/opt/kubernetes/ssl/kubernetes.pem \\
   --etcd-keyfile=/opt/kubernetes/ssl/kubernetes-key.pem \\
-  --etcd-servers=${ETCD_ENDPOINTS} \\
+  --etcd-servers=${ETCD_SERVERS} \\
   --bind-address=${K8S_MASTER[i]} \\
   --secure-port=6443 \\
   --tls-cert-file=/opt/kubernetes/ssl/kubernetes.pem \\
