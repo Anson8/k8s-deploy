@@ -10,15 +10,11 @@ function DEPLOY_CLUSTER(){
     echo "Deploy kubernetes etcd."
     #DEPLOY_ETCD
     echo "Deploy kubernetes MASTER."
+    #创建rbac和dns
+    DEPLOY_RBAC_CLUSTER
     #DEPLOY_MASTER
     echo "Deploy kubernetes SLAVES."
     DEPLOY_SLAVES
-    # 部署dns服务
-    #kubectl create -f yaml/coredns.yaml
-    # 工作节点纳入集群
-    # kubectl apply -f yaml/csr-crb.yaml
-    # sleep 5m
-    # kubectl get csr | grep Pending | awk '{print $1}' | xargs kubectl certificate approve
 }
 
 ## TODO 部署ETCD集群
@@ -75,7 +71,8 @@ function DEPLOY_MASTER(){
             ##  部署kube-scheduler
             echo "ansible-playbook deploy kube-scheduler on this ${K8S_MASTER[i]}"
             ansible-playbook $TASKS_PATH/kube-scheduler.yml -i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
-
+            ## 
+            
             if [ $? -ne 0 ];then
                  echo "Deploy K8s-Master on $ip..................Failed! Ret=$ret"
                 return 1
@@ -129,4 +126,11 @@ function DEPLOY_SLAVES(){
         echo "Input error, please try again."
         exit 2;;
     esac
+}
+
+function DEPLOY_RBAC_CLUSTER(){
+    kubectl apply -f $DEPLOY_PATH/cluster/yaml/csr-crb.yaml
+    kubectl apply -f $DEPLOY_PATH/cluster/yaml/coredns.yaml
+    #sleep 5m
+    #kubectl get csr | grep Pending | awk '{print $1}' | xargs kubectl certificate approve
 }

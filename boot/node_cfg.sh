@@ -241,7 +241,7 @@ kubeReservedCgroup: ""
 enforceNodeAllocatable: ["pods"]
 EOF
 
-cat > kubelet-$n.service <<EOF
+cat > kubelet0$n.service <<EOF
 [Unit]
 Description=Kubernetes Kubelet
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
@@ -251,7 +251,7 @@ Requires=docker.service
 [Service]
 WorkingDirectory=${K8S_DIR}/kubelet
 ExecStart=/opt/kubernetes/bin/kubelet \\
-  --hostname-override=${K8S_SLAVES[i]} \\
+  --hostname-override=${node_name} \\
   --pod-infra-container-image=registry.cn-beijing.aliyuncs.com/images_k8s/pause-amd64:3.1 \\
   --bootstrap-kubeconfig=/opt/kubernetes/cfg/kubelet-bootstrap.kubeconfig \\
   --kubeconfig=/opt/kubernetes/cfg/kubelet.kubeconfig \\

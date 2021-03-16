@@ -32,7 +32,11 @@
       name: flanneld
       state: started
       daemon_reload: yes
-      enabled: yes         
+      enabled: yes 
+  - name: delete docker.service in lib/systemd/system
+    file:
+      path: /lib/systemd/system/docker.service
+      state: absent           
   - name: restart docker
     service:
     service:
