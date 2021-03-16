@@ -4,8 +4,7 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 BOOT_TASKS_PATH=$DEPLOY_PATH/tasks
 ## TODO 引入deployConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
-. $DEPLOY_PATH/master_cfg.sh
-. $DEPLOY_PATH/node_cfg.sh
+. $DEPLOY_PATH/cfg_master.sh
 . $DEPLOY_PATH/cert/ssl_ca.sh
 
 function CreateUser() {
@@ -126,13 +125,13 @@ function SSL-CFG(){
     Y | y)
         #生成证书
         echo "Start to create ssl."
-        #CREATE-SSL
+        CREATE-SSL
         #生成cfg配置文件
         echo "Start to create masetr cfg."
-        #MASTER-CFG
+        MASTER-CFG
         #生成cfg配置文件
-        echo "Start to create  node cfg."
-        NODE-CFG
+        #echo "Start to create  node cfg."
+        #NODE-CFG
         #保留.pem文件删除其他文件
         echo "Start to rm .pem."
         #RemovePem

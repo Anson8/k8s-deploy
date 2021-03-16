@@ -4,7 +4,7 @@ echo $OPS_ROOT
 ## TODO 引入deployConfig配置文件
 . $OPS_ROOT/conf/clusterConfig
 . $OPS_ROOT/boot/dog.sh
-. $OPS_ROOT/cluster/cluster.sh
+. $OPS_ROOT/cluster/cluster_add.sh
 
 ## TODO k8s服务器初始化
 read -p "Are you sure to Init $1 Kuberbetes?[Y/N/J]:" answer

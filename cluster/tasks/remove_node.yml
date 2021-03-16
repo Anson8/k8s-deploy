@@ -1,0 +1,51 @@
+---
+- name: etcd deploy
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    file_path: /opt/kubernetes
+    system_path: /etc/systemd/system
+
+  tasks:     
+  - name: Stop service kubelet
+    service:
+      name: kubelet
+      state: stopped
+  - name: Stop service kube-proxy
+    service:
+      name: kube-proxy
+      state: stopped
+  - name: Stop service flanneld
+    service:
+      name: flanneld
+      state: stopped
+  - name: Stop service kube-nginx
+    service:
+      name: kube-nginx
+      state: stopped                
+  - name: delete service
+    file:
+      path: "{{ item }}"
+      state: absent  
+    with_items:
+      - /etc/systemd/system/kubelet.service 
+      - /etc/systemd/system/kube-proxy.service 
+      - /etc/systemd/system/flanneld.service 
+      - /etc/systemd/system/kube-nginx.service    
+  - name: delete ssl path
+    file:
+      path: /opt/kubernetes/ssl
+      state: absent
+  - name: create ssl path    
+    file:    
+      path: /opt/kubernetes/ssl
+      state: directory 
+  - name: delete cfg path
+    file:
+      path: /opt/kubernetes/cfg
+      state: absent
+  - name: create cfg path    
+    file:    
+      path: /opt/kubernetes/cfg
+      state: directory                               

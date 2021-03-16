@@ -28,7 +28,6 @@
       - { src: "/home/admin/k8s-deploy/boot/genconf/docker.service",dest: "{{system_path}}/docker.service" }
   - name: startup flanneld
     service:
-    service:
       name: flanneld
       state: started
       daemon_reload: yes
@@ -38,7 +37,6 @@
       path: /lib/systemd/system/docker.service
       state: absent           
   - name: restart docker
-    service:
     service:
       name: docker
       state: restarted

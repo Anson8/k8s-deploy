@@ -27,7 +27,6 @@
       - { src: "{{file_path}}/cfg/kube-nginx.service",dest: "{{system_path}}/kube-nginx.service" }  
   - name: startup kube-nginx
     service:
-    service:
       name: kube-nginx
       state: started
       daemon_reload: yes

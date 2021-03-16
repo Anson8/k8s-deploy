@@ -5,132 +5,13 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 . $DEPLOY_PATH/../conf/clusterConfig
 
 function NODE-CFG() {
-  #生成flanneld配置文件  
-  FLANNELD-CFG
-  #生成kube-proxy的配置文件
-  KUBE-PROXY-CFG
   #生成kubelet的配置文件
   KUBELET-CFG
-}
+  #生成kube-proxy的配置文件
+  KUBE-PROXY-CFG
+  #生成flanneld配置文件  
+  FLANNELD-CFG
 
-#生成flanneld配置文件
-function FLANNELD-CFG(){
-cd /opt/kubernetes/cfg 
-  ETCD_SERVERS=
-  let len=${#K8S_ETCD[*]}
-  for ((i=0; i<$len; i++))
-  do
-      let n=$i+1
-      if [ "$len" -ne "$n" ]; then
-       ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379",
-       continue
-      fi
-      ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379"
-      echo "K8S_ETCD"==[${ETCD_SERVERS}]
-  done 
-
-cat > flanneld.service << EOF
-[Unit]
-Description=Flanneld overlay address etcd agent
-After=network.target
-After=network-online.target
-Wants=network-online.target
-After=etcd.service
-Before=docker.service
-
-[Service]
-Type=notify
-ExecStart=/opt/kubernetes/bin/flanneld \\
-  -etcd-cafile=/opt/kubernetes/ssl/ca.pem \\
-  -etcd-certfile=/opt/kubernetes/ssl/flanneld.pem \\
-  -etcd-keyfile=/opt/kubernetes/ssl/flanneld-key.pem \\
-  -etcd-endpoints=${ETCD_SERVERS} \\
-  -etcd-prefix=${FLANNEL_ETCD_PREFIX} \\
-  -iface=${IFACE} \\
-  -ip-masq
-ExecStartPost=/opt/kubernetes/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
-Restart=always
-RestartSec=5
-StartLimitInterval=0
-
-[Install]
-WantedBy=multi-user.target
-RequiredBy=docker.service
-EOF
-}
-
-#生成kube-proxy的配置文件
-function KUBE-PROXY-CFG(){
-mkdir -p /opt/kubernetes/cfg/kube-proxy
-cd /opt/kubernetes/cfg/kube-proxy
-
-kubectl config set-cluster kubernetes \
-  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
-  --embed-certs=true \
-  --server=${KUBE_APISERVER} \
-  --kubeconfig=kube-proxy.kubeconfig
-
-kubectl config set-credentials kube-proxy \
-  --client-certificate=/opt/kubernetes/ssl/kube-proxy.pem \
-  --client-key=/opt/kubernetes/ssl/kube-proxy-key.pem \
-  --embed-certs=true \
-  --kubeconfig=kube-proxy.kubeconfig
-
-kubectl config set-context default \
-  --cluster=kubernetes \
-  --user=kube-proxy \
-  --kubeconfig=kube-proxy.kubeconfig
-
-kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
-
-  let len=${#K8S_SLAVES[*]}
-  for ((i=0; i<$len; i++))
-  do
-      let n=$i+1
-      node_name=slave"0"$n
-  cat > kube-proxy-config0$n.yaml <<EOF
-kind: KubeProxyConfiguration
-apiVersion: kubeproxy.config.k8s.io/v1alpha1
-clientConnection:
-  burst: 200
-  kubeconfig: "/opt/kubernetes/cfg/kube-proxy.kubeconfig"
-  qps: 100
-bindAddress: ${K8S_SLAVES[i]}
-healthzBindAddress: ${K8S_SLAVES[i]}:10256
-metricsBindAddress: ${K8S_SLAVES[i]}:10249
-enableProfiling: true
-clusterCIDR: ${CLUSTER_CIDR}
-hostnameOverride: ${node_name}
-mode: "ipvs"
-portRange: ""
-kubeProxyIPTablesConfiguration:
-  masqueradeAll: false
-kubeProxyIPVSConfiguration:
-  scheduler: rr
-  excludeCIDRs: []
-EOF
-  done
-
-  #生成kube-proxy.service
-  cat > kube-proxy.service <<EOF
-[Unit]
-Description=Kubernetes Kube-Proxy Server
-Documentation=https://github.com/GoogleCloudPlatform/kubernetes
-After=network.target
-
-[Service]
-WorkingDirectory=${K8S_DIR}/kube-proxy
-ExecStart=/opt/kubernetes/bin/kube-proxy \\
-  --config=/opt/kubernetes/cfg/kube-proxy-config.yaml \\
-  --logtostderr=true \\
-  --v=2
-Restart=on-failure
-RestartSec=5
-LimitNOFILE=65536
-
-[Install]
-WantedBy=multi-user.target
-EOF
 }
 
 #生成kubelet的配置文件
@@ -141,7 +22,7 @@ function KUBELET-CFG(){
   for ((i=0; i<$len; i++))
   do
       let n=$i+1
-      node_name=slave"0"$n
+      node_name=slave0$n
       # 创建 token
         export BOOTSTRAP_TOKEN=$(kubeadm token create \
               --description kubelet-bootstrap-token \
@@ -252,7 +133,7 @@ Requires=docker.service
 WorkingDirectory=${K8S_DIR}/kubelet
 ExecStart=/opt/kubernetes/bin/kubelet \\
   --hostname-override=${node_name} \\
-  --pod-infra-container-image=registry.cn-beijing.aliyuncs.com/images_k8s/pause-amd64:3.1 \\
+  --pod-infra-container-image=registry.cn-shenzhen.aliyuncs.com/4d_prom/pause-amd64:3.1 \\
   --bootstrap-kubeconfig=/opt/kubernetes/cfg/kubelet-bootstrap.kubeconfig \\
   --kubeconfig=/opt/kubernetes/cfg/kubelet.kubeconfig \\
   --config=/opt/kubernetes/cfg/kubelet-config.yaml \\
@@ -263,7 +144,125 @@ ExecStart=/opt/kubernetes/bin/kubelet \\
 [Install]
 WantedBy=multi-user.target
 EOF
-
-#kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --group=system:bootstrappers
   done
+}
+
+#生成kube-proxy的配置文件
+function KUBE-PROXY-CFG(){
+mkdir -p /opt/kubernetes/cfg/kube-proxy
+cd /opt/kubernetes/cfg/kube-proxy
+
+kubectl config set-cluster kubernetes \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
+  --embed-certs=true \
+  --server=${KUBE_APISERVER} \
+  --kubeconfig=kube-proxy.kubeconfig
+
+kubectl config set-credentials kube-proxy \
+  --client-certificate=/opt/kubernetes/ssl/kube-proxy.pem \
+  --client-key=/opt/kubernetes/ssl/kube-proxy-key.pem \
+  --embed-certs=true \
+  --kubeconfig=kube-proxy.kubeconfig
+
+kubectl config set-context default \
+  --cluster=kubernetes \
+  --user=kube-proxy \
+  --kubeconfig=kube-proxy.kubeconfig
+
+kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
+
+  let len=${#K8S_SLAVES[*]}
+  for ((i=0; i<$len; i++))
+  do
+      let n=$i+1
+      node_name=slave0$n
+  cat > kube-proxy-config0$n.yaml <<EOF
+kind: KubeProxyConfiguration
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+clientConnection:
+  burst: 200
+  kubeconfig: "/opt/kubernetes/cfg/kube-proxy.kubeconfig"
+  qps: 100
+bindAddress: ${K8S_SLAVES[i]}
+healthzBindAddress: ${K8S_SLAVES[i]}:10256
+metricsBindAddress: ${K8S_SLAVES[i]}:10249
+enableProfiling: true
+clusterCIDR: ${CLUSTER_CIDR}
+hostnameOverride: ${node_name}
+mode: "ipvs"
+portRange: ""
+kubeProxyIPTablesConfiguration:
+  masqueradeAll: false
+kubeProxyIPVSConfiguration:
+  scheduler: rr
+  excludeCIDRs: []
+EOF
+  done
+
+  #生成kube-proxy.service
+  cat > kube-proxy.service <<EOF
+[Unit]
+Description=Kubernetes Kube-Proxy Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=network.target
+
+[Service]
+WorkingDirectory=${K8S_DIR}/kube-proxy
+ExecStart=/opt/kubernetes/bin/kube-proxy \\
+  --config=/opt/kubernetes/cfg/kube-proxy-config.yaml \\
+  --logtostderr=true \\
+  --v=2
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+#生成flanneld配置文件
+function FLANNELD-CFG(){
+cd /opt/kubernetes/cfg 
+  ETCD_SERVERS=
+  let len=${#K8S_ETCD[*]}
+  for ((i=0; i<$len; i++))
+  do
+      let n=$i+1
+      if [ "$len" -ne "$n" ]; then
+       ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379",
+       continue
+      fi
+      ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379"
+      echo "K8S_ETCD"==[${ETCD_SERVERS}]
+  done 
+
+cat > flanneld.service << EOF
+[Unit]
+Description=Flanneld overlay address etcd agent
+After=network.target
+After=network-online.target
+Wants=network-online.target
+After=etcd.service
+Before=docker.service
+
+[Service]
+Type=notify
+ExecStart=/opt/kubernetes/bin/flanneld \\
+  -etcd-cafile=/opt/kubernetes/ssl/ca.pem \\
+  -etcd-certfile=/opt/kubernetes/ssl/flanneld.pem \\
+  -etcd-keyfile=/opt/kubernetes/ssl/flanneld-key.pem \\
+  -etcd-endpoints=${ETCD_SERVERS} \\
+  -etcd-prefix=${FLANNEL_ETCD_PREFIX} \\
+  -iface=${IFACE} \\
+  -ip-masq
+ExecStartPost=/opt/kubernetes/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target
+RequiredBy=docker.service
+EOF
 }

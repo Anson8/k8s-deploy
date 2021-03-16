@@ -43,14 +43,10 @@ function CREATE-SSL() {
   CONTROLLER-MANAGER-SSL
   #生成scheduler证书
   SCHEDULER-SSL
-  #生成flannel证书
-  FLANNEL-SSL
   #生成kube-admin证书
   ADMIN-SSL
   #生成kube-client证书
   PROXY-CLIENT-SSL
-  #生成kube-proxy证书
-  KUBE-PROXY-SSL
 }
 
 function CA-SSL(){
@@ -360,29 +356,6 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
     -ca-key=/opt/kubernetes/ssl/ca-key.pem \
     -config=/opt/kubernetes/ssl/ca-config.json \
     -profile=kubernetes flanneld-csr.json | cfssljson -bare flanneld
-
-
-  ETCD_SERVERS=
-  let len=${#K8S_ETCD[*]}
-  for ((i=0; i<$len; i++))
-  do
-      let n=$i+1
-      if [ "$len" -ne "$n" ]; then
-       ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379",
-       continue
-      fi
-      ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379"
-      echo "K8S_ETCD"==[${ETCD_SERVERS}]
-  done 
-
-    
-## 用etcd给Flannel分配网段
-/opt/kubernetes/bin/etcdctl \
-  --endpoints=${ETCD_SERVERS} \
-  --ca-file=/opt/kubernetes/ssl/ca.pem \
-  --cert-file=/opt/kubernetes/ssl/flanneld.pem \
-  --key-file=/opt/kubernetes/ssl/flanneld-key.pem \
-  mk ${FLANNEL_ETCD_PREFIX}/config '{"Network":"'${CLUSTER_CIDR}'", "SubnetLen": 21, "Backend": {"Type": "vxlan"}}'
 }
 
 #生成kube-admin证书
