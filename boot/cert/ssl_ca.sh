@@ -14,9 +14,9 @@ function DownLoadCFSSL(){
   wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
 
   chmod +x cfssl*
-  sudo mv cfssl_linux-amd64 /usr/local/bin/cfssl
-  sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
-  sudo mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
+  sudo cp cfssl_linux-amd64 /usr/local/bin/cfssl
+  sudo cp cfssljson_linux-amd64 /usr/local/bin/cfssljson
+  sudo cp cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
   
   export PATH=/usr/local/bin:$PATH
 }
@@ -25,12 +25,15 @@ function CREATE-SSL() {
   # 下载生成证书工具
   ##DownLoadCFSSL
 
-  #cd /opt/kubernetes/bin
-  #chmod +x cfssl*
-  #sudo mv cfssl_linux-amd64 /usr/local/bin/cfssl
-  #sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
-  #sudo mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
-  #export PATH=/usr/local/bin:$PATH
+  sudo mkdir -p /opt/kubernetes/{bin,cfg,ssl}
+  sudo chown -R admin:admin /opt/kubernetes
+  cd /opt/kubernetes/bin
+  chmod +x cfssl*
+  sudo cp cfssl_linux-amd64 /usr/local/bin/cfssl
+  sudo cp cfssljson_linux-amd64 /usr/local/bin/cfssljson
+  sudo cp cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
+  sudo chown -R admin:admin /usr/local/bin/cfssl*
+  export PATH=/usr/local/bin:$PATH
   
   cd /opt/kubernetes/ssl
   #生成跟证书
@@ -265,7 +268,7 @@ function SCHEDULER-SSL(){
       K8S_SERVERS+="\"${K8S_MASTER[i]}"\"
       echo "K8S_MASTER"==[${K8S_SERVERS}]
   done
-  cat > kube-scheduler-csr.json <<EOF
+cat > kube-scheduler-csr.json <<EOF
   {
     "CN": "system:kube-scheduler",
     "hosts": [
@@ -313,49 +316,6 @@ kubectl config set-context system:kube-scheduler \
 
 kubectl config use-context system:kube-scheduler --kubeconfig=kube-scheduler.kubeconfig
 
-}
-
-#生成Flannel证书，修改host node节点集群IP
-function FLANNEL-SSL(){
-  K8S_SERVERS=
-  let len=${#K8S_SLAVES[*]}
-  for ((i=0; i<$len; i++))
-  do
-      let j=$i+1
-      if [ "$len" -ne "$j" ]; then
-       K8S_SERVERS+="\"${K8S_SLAVES[i]}"\",
-       continue
-      fi
-      K8S_SERVERS+="\"${K8S_SLAVES[i]}"\"
-      echo "K8S_SLAVES"==[${K8S_SERVERS}]
-  done
-
-  cat > flanneld-csr.json <<EOF
-  {
-    "CN": "flanneld",
-    "hosts": [
-      ${K8S_SERVERS}
-    ],
-    "key": {
-      "algo": "rsa",
-      "size": 2048
-    },
-    "names": [
-      {
-        "C": "CN",
-        "ST": "BeiJing",
-        "L": "BeiJing",
-        "O": "k8s",
-        "OU": "4Paradigm"
-      }
-    ]
-  }
-EOF
-
-cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
-    -ca-key=/opt/kubernetes/ssl/ca-key.pem \
-    -config=/opt/kubernetes/ssl/ca-config.json \
-    -profile=kubernetes flanneld-csr.json | cfssljson -bare flanneld
 }
 
 #生成kube-admin证书
@@ -406,6 +366,7 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
   -profile=kubernetes admin-csr.json | cfssljson -bare admin
 
 sudo cp /opt/kubernetes/bin/kubectl /usr/local/bin/
+sudo chown admin:admin /usr/local/bin/kubectl
 
 kubectl config set-cluster kubernetes \
   --certificate-authority=/opt/kubernetes/ssl/ca.pem \
@@ -458,34 +419,6 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
     -ca-key=/opt/kubernetes/ssl/ca-key.pem \
     -config=/opt/kubernetes/ssl/ca-config.json \
     -profile=kubernetes proxy-client-csr.json | cfssljson -bare proxy-client
-}
-
-#生成kube-proxy证书
-function KUBE-PROXY-SSL(){
-cat > kube-proxy-csr.json <<EOF
-{
-  "CN": "system:kube-proxy",
-  "key": {
-    "algo": "rsa",
-    "size": 2048
-  },
-  "names": [
-    {
-      "C": "CN",
-      "ST": "BeiJing",
-      "L": "BeiJing",
-      "O": "k8s",
-      "OU": "4Paradigm"
-    }
-  ]
-}
-EOF
-
-
-cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
-  -ca-key=/opt/kubernetes/ssl/ca-key.pem \
-  -config=/opt/kubernetes/ssl/ca-config.json \
-  -profile=kubernetes  kube-proxy-csr.json | cfssljson -bare kube-proxy
 }
 
 

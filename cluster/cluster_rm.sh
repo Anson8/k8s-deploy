@@ -11,7 +11,7 @@ TASKS_PATH=$DEPLOY_PATH/tasks
 function REMOVE_NODE(){
     # 获取node节点ip
     nodes=${K8S_SLAVES[@]}
-    read -p "Do you want to remove node [$nodes] on k8s cluster?[Y/N]:" answer
+    read -p "Do you want to remove node [$nodes] on k8s cluster?[Y/N/J]:" answer
     answer=$(echo $answer)
     case $answer in
     Y | y)
@@ -29,6 +29,8 @@ function REMOVE_NODE(){
     N | n)
         echo "Exit."
         exit 0;;
+    J | j)
+    echo "Skip remove kubernetes node.";;    
     *)
         echo "Input error, please try again."
         exit 2;;

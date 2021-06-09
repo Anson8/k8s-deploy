@@ -53,7 +53,7 @@ function PathInit(){
         echo "Start to init kubernetes master path."
         for ip in $nodes;
         do
-            hname=master+"0"$m
+            hname=k8s-master+"0"$m
             echo "Start to add [$ip] to known_hosts."
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
@@ -62,8 +62,8 @@ function PathInit(){
             #ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes master path on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/.ssh/$PRIVATEKEY
-            echo "ansible-playbook install docker"
-            ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            #echo "ansible-playbook install docker"
+            #ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Init kubernetes master $ip path...................Failed! Ret=$ret"
                 return 1
@@ -90,7 +90,7 @@ function PathInit(){
         echo "Start to init kubernetes slave path."
         for ip in $nodes;
         do
-            hname=slave"0"$m
+            hname=${HOST_NAMES[$i]}
             echo "Start to add [$ip] to known_hosts."
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"

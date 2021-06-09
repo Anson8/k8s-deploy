@@ -15,7 +15,7 @@ Y | y)
     ## 生成证书&配置文件
     SSL-CFG
     ## 集群环境初始化
-    #PathInit
+    PathInit
     ;;
 N | n)
     echo "Exit."

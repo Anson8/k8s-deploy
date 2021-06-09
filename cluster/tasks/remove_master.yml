@@ -36,7 +36,7 @@
       - /etc/systemd/system/kube-scheduler.service 
       - /etc/systemd/system/kube-controller-manager.service 
       - /etc/systemd/system/kube-nginx.service 
-      - /etc/systemd/system/ube-apiserver.service 
+      - /etc/systemd/system/kube-apiserver.service 
       - /etc/systemd/system/etcd.service    
   - name: delete ssl path
     file:

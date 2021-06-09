@@ -19,13 +19,13 @@ PRIVATEKEY="id_ed25519"
 ## Master 
 ### TODO: 集群资源管理，根据自身集群情况配置IPs
 ### TODO: 集群资源管理，根据自身集群情况配置IPs
-K8S_MASTER=(192.168.20.61 192.168.20.62 192.168.20.63)
+K8S_MASTER=(192.168.20.62 192.168.20.63 192.168.20.64)
 ## kube-apiserver 的反向代理(kube-nginx)地址端口
 KUBE_APISERVER="https://127.0.0.1:8443"
 ## ETCD配置
-K8S_ETCD=(192.168.20.61 192.168.20.62 192.168.20.63)
+K8S_ETCD=(192.168.20.62 192.168.20.63 192.168.20.64)
 # etcd 集群服务地址列表
-#export ETCD_ENDPOINTS="etcd01=https://192.168.20.61:2380,etcd02=https://192.168.20.62:2380,etcd03=https://192.168.20.63:2380"
+#export ETCD_ENDPOINTS="etcd01=https://192.168.20.62:2380,etcd02=https://192.168.20.63:2380,etcd03=https://192.168.20.64:2380"
 ### TODO: etcd 数据目录
 ETCD_DATA_DIR="/data/kubernetes/etcd/data"
 ETCD_WAL_DIR="/data/kubernetes/etcd/wal"
@@ -38,7 +38,9 @@ export K8S_DIR="/data/kubernetes"
 export ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(192.168.20.64)
+K8S_SLAVES=(192.168.20.65 192.168.20.66)
+## TODO: Node节点服务器名字
+HOST_NAMES=(k8s-slave05 k8s-slave06)
 
 # 服务网段，部署前路由不可达，部署后集群内路由可达(kube-proxy 保证)
 SERVICE_CIDR="10.254.0.0/16"

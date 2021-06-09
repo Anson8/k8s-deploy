@@ -3,12 +3,12 @@
 DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 TASKS_PATH=$DEPLOY_PATH/tasks
 YAML_PATH=$DEPLOY_PATH/yaml
-BOOT_PATH=$DEPLOY_PATH/../boot
 
 ## TODO 引入clusterConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
-. $BOOT_PATH/cert/ssl_node.sh
-. $BOOT_PATH/cfg_node.sh
+. $DEPLOY_PATH/../boot/cfg_node.sh
+. $DEPLOY_PATH/../boot/cert/ssl_node.sh
+
 
 ## TODO 部署Kubernetes 集群
 function DEPLOY_CLUSTER(){
@@ -18,15 +18,15 @@ function DEPLOY_CLUSTER(){
     DEPLOY_MASTER
     echo "Deploy kubernetes rbac和dns."
     DEPLOY_RBAC_CLUSTER
-    echo "Deploy kubernetes SLAVES."
-    DEPLOY_SLAVES
+    #echo "Deploy kubernetes SLAVES."
+    #DEPLOY_SLAVES
 }
 
 ## TODO 部署ETCD集群
 function DEPLOY_ETCD(){
     nodes=${K8S_ETCD[@]}
     let len=${#K8S_ETCD[*]}
-    read -p "Do you want to deploy etcd on [$nodes]?[Y/N]:" answer
+    read -p "Do you want to deploy etcd on [$nodes]?[Y/N/j]:" answer
     answer=$(echo $answer)
     case $answer in
     Y | y)
@@ -46,6 +46,8 @@ function DEPLOY_ETCD(){
     N | n)
         echo "Exit."
         exit 0;;
+    J | j)
+    echo "Skip depoloy Kuberbetes etcd.";;        
     *)
         echo "Input error, please try again."
         exit 2;;
@@ -56,7 +58,7 @@ function DEPLOY_ETCD(){
 function DEPLOY_MASTER(){
     nodes=${K8S_MASTER[@]}
     let len=${#K8S_MASTER[*]}
-    read -p "Do you want to deploy K8s-Master on [$nodes]?[Y/N]:" answer
+    read -p "Do you want to deploy K8s-Master on [$nodes]?[Y/N/j]:" answer
     answer=$(echo $answer)
     case $answer in
     Y | y)
@@ -87,6 +89,8 @@ function DEPLOY_MASTER(){
     N | n)
         echo "Exit."
         exit 0;;
+    J | j)
+    echo "Skip depoloy Kuberbetes master.";;      
     *)
         echo "Input error, please try again."
         exit 2;;

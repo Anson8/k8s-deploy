@@ -16,13 +16,15 @@ function NODE-CFG() {
 
 #生成kubelet的配置文件
 function KUBELET-CFG(){
+  sudo cp /opt/kubernetes/bin/kubeadm /usr/local/bin/
+  sudo chown admin:admin /usr/local/bin/kubeadm
   mkdir -p /opt/kubernetes/cfg/kubelet  
   cd /opt/kubernetes/cfg/kubelet
   let len=${#K8S_SLAVES[*]}
   for ((i=0; i<$len; i++))
   do
       let n=$i+1
-      node_name=slave0$n
+      node_name=${HOST_NAMES[$i]}
       # 创建 token
         export BOOTSTRAP_TOKEN=$(kubeadm token create \
               --description kubelet-bootstrap-token \
@@ -175,7 +177,7 @@ kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
   for ((i=0; i<$len; i++))
   do
       let n=$i+1
-      node_name=slave0$n
+      node_name=${HOST_NAMES[$i]}
   cat > kube-proxy-config0$n.yaml <<EOF
 kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1

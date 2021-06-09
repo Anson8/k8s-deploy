@@ -3,9 +3,7 @@
   become: yes
   become_user: root
   vars:                          # 执行时可以通过-e指定变量，默认为sdb
-    wpath: /home/admin/k8s-deploy/boot 
-    disk: /dev/sdb
-    diskfullpath: /dev/sdb1
+    wpath: /home/admin/ansible-deploy/boot 
     mountDir: /data
   tasks:                         # 创建分区，把变量传给disk.sh
     - name: New Disk Partition
@@ -29,7 +27,7 @@
 
   handlers:                      # 通过脚本添加到fstab
     - name: ADD TO fstab
-      script: "{{   }}/gen/addfstab.sh {{ diskfullpath }}"
+      script: "{{ wpath }}/gen/addfstab.sh {{ diskfullpath }}"
       become: yes
       become_user: root
       become_method: sudo
