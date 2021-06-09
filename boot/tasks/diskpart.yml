@@ -3,7 +3,7 @@
   become: yes
   become_user: root
   vars:                          # 执行时可以通过-e指定变量，默认为sdb
-    wpath: /home/admin/ansible-deploy/boot 
+    wpath: /home/admin/k8s-deploy/boot 
     mountDir: /data
   tasks:                         # 创建分区，把变量传给disk.sh
     - name: New Disk Partition
