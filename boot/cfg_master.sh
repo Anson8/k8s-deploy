@@ -5,17 +5,20 @@ DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 
 function MASTER-CFG() {
   #生成etcd的配置文件
+  echo "create etcd-cfg........................."
   ETCD-CFG
   #生成kube-apiserver的配置文件
+  echo "create kube-apiserver-cfg........................."
   KUBE-APISERVER-CFG
   #生成kube-controller-manager的配置文件
+  echo "create kube-controller-manager-cfg........................."
   KUBE-CONTROLLER-MANAGER-CFG
   #生成kube-scheduler的配置文件
+  echo "create kube-scheduler-cfg........................."
   KUBE-SCHEDULER-CFG
-  #生成kube-nginx配置文
+  #生成kube-nginx配置文件
+  echo "create kube-nginx-cfg........................."
   KUBE-NGINX-CFG
-  #本地启动kube-nginx
-  KUBE-NGINX-LOCAL
 }
 
 #生成etcd的配置文件
@@ -364,18 +367,4 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 EOF
 
-}
-
-
-
-#跳版机启动kube-nginx
-function KUBE-NGINX-LOCAL() {
-  #创建日志目录
-  sudo mkdir -p /opt/kubernetes/kube-nginx/logs
-  #创建nginx服务启动
-  sudo cp /opt/kubernetes/cfg/kube-nginx.service /etc/systemd/system/kube-nginx.service
-  #重新加载守护进程
-  sudo systemctl daemon-reload
-  #启动kube-nginx
-  sudo systemctl start kube-nginx
 }

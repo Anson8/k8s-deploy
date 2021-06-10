@@ -58,12 +58,12 @@ function PathInit(){
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
-            #echo "ansible-playbook mount disk on this $ip"
-            #ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER  disk=$DISK diskfullpath=$DISKFULLPATH" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            echo "ansible-playbook mount disk on this $ip"
+            ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER  disk=$DISK diskfullpath=$DISKFULLPATH" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes master path on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/.ssh/$PRIVATEKEY
-            #echo "ansible-playbook install docker"
-            #ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            echo "ansible-playbook install docker"
+            ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "Init kubernetes master $ip path...................Failed! Ret=$ret"
                 return 1

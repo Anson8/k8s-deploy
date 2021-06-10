@@ -12,14 +12,18 @@ YAML_PATH=$DEPLOY_PATH/yaml
 
 ## TODO 部署Kubernetes 集群
 function DEPLOY_CLUSTER(){
-    echo "Deploy kubernetes etcd."
+    echo "Deploy kubernetes etcd........................."
     DEPLOY_ETCD
-    echo "Deploy kubernetes MASTER."
+    echo "Deploy kubernetes MASTER........................."
     DEPLOY_MASTER
-    echo "Deploy kubernetes rbac和dns."
+    echo "Deploy kubernetes rbac和dns........................."
+    #本地启动kube-nginx
+    echo "START KUBE-NGINX ON LOCAL........................."
+    KUBE-NGINX-LOCAL
+    echo "Deploy kubernetes RBAC........................."
     DEPLOY_RBAC_CLUSTER
-    #echo "Deploy kubernetes SLAVES."
-    #DEPLOY_SLAVES
+    echo "Deploy kubernetes SLAVES........................."
+    DEPLOY_SLAVES
 }
 
 ## TODO 部署ETCD集群
@@ -78,7 +82,6 @@ function DEPLOY_MASTER(){
             ##  部署kube-scheduler
             echo "ansible-playbook deploy kube-scheduler on this ${K8S_MASTER[i]}"
             ansible-playbook $TASKS_PATH/kube-scheduler.yml -i ${K8S_MASTER[i]}, -e "K8S_DIR=$K8S_DIR n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
-            ## 
             
             if [ $? -ne 0 ];then
                  echo "Deploy K8s-Master on $ip..................Failed! Ret=$ret"
@@ -136,6 +139,18 @@ function DEPLOY_SLAVES(){
         exit 2;;
     esac
     ADD_NODE_CLUSTER
+}
+
+#跳版机启动kube-nginx
+function KUBE-NGINX-LOCAL() {
+  #创建日志目录
+  sudo mkdir -p /opt/kubernetes/kube-nginx/logs
+  #创建nginx服务启动
+  sudo cp /opt/kubernetes/cfg/kube-nginx.service /etc/systemd/system/kube-nginx.service
+  #重新加载守护进程
+  sudo systemctl daemon-reload
+  #启动kube-nginx
+  sudo systemctl start kube-nginx
 }
 
 function DEPLOY_RBAC_CLUSTER(){

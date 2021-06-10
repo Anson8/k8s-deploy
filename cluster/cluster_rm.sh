@@ -64,3 +64,10 @@ function REMOVE_MASTER(){
         exit 2;;
     esac
 }
+
+#
+# TODO 移除本地NGINX服务
+function REMOVE_NGINX_LOCAL(){
+  sudo systemctl stop kube-nginx
+  sudo rm /etc/systemd/system/kube-nginx.service
+}

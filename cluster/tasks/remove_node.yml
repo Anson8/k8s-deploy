@@ -1,5 +1,5 @@
 ---
-- name: etcd deploy
+- name: remove kubernetes node
   hosts: all
   become: yes
   become_user: root
@@ -33,6 +33,7 @@
       - /etc/systemd/system/kube-proxy.service 
       - /etc/systemd/system/flanneld.service 
       - /etc/systemd/system/kube-nginx.service    
+      - /etc/systemd/system/docker.service.requires/flanneld.service 
   - name: delete ssl path
     file:
       path: /opt/kubernetes/ssl
