@@ -2,16 +2,18 @@
 
 DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && echo "$PWD")"
 TASKS_PATH=$DEPLOY_PATH/tasks
-YAML_PATH=$DEPLOY_PATH/yaml
-BOOT_PATH=$DEPLOY_PATH/../boot
+
 
 ## TODO 引入clusterConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
-. $BOOT_PATH/cert/ssl_node.sh
-. $BOOT_PATH/cfg_node.sh
+. $DEPLOY_PATH/../boot/cfg_node.sh
+. $DEPLOY_PATH/../boot/cert/ssl_node.sh
+
 
 ## TODO 部署新增Node节点
 function DEPLOY_CLUSTER(){
+    echo "Create Node ssl and cfg........................."
+    DEPLOY_NODE_SSL_CFG
     echo "Deploy kubernetes SLAVES."
     DEPLOY_SLAVES
 }
@@ -57,39 +59,13 @@ function DEPLOY_SLAVES(){
     ADD_NODE_CLUSTER
 }
 
-function DEPLOY_RBAC_CLUSTER(){
+function DEPLOY_NODE_SSL_CFG(){
    #生成node节点ssl证书
    echo "Start to create node ssl."
-   SSL-NODE 
+   SSL-NODE
    #生成node节点cfg配置文件
    echo "Start to create node cfg."
    NODE-CFG
-
-   ETCD_SERVERS=
-   let len=${#K8S_ETCD[*]}
-   for ((i=0; i<$len; i++))
-   do
-       let n=$i+1
-       if [ "$len" -ne "$n" ]; then
-        ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379",
-        continue
-       fi
-       ETCD_SERVERS+="https://${K8S_ETCD[i]}:2379"
-       echo "K8S_ETCD"==[${ETCD_SERVERS}]
-   done 
-    
-   ## 用etcd给Flannel分配网段
-   /opt/kubernetes/bin/etcdctl \
-     --endpoints=${ETCD_SERVERS} \
-     --ca-file=/opt/kubernetes/ssl/ca.pem \
-     --cert-file=/opt/kubernetes/ssl/flanneld.pem \
-     --key-file=/opt/kubernetes/ssl/flanneld-key.pem \
-     mk ${FLANNEL_ETCD_PREFIX}/config '{"Network":"'${CLUSTER_CIDR}'", "SubnetLen": 21, "Backend": {"Type": "vxlan"}}'
-
-    kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --group=system:bootstrappers 
-    kubectl apply -f $YAML_PATH/csr-crb.yaml
-    kubectl apply -f $YAML_PATH/coredns.yaml
-
 }
 
 function ADD_NODE_CLUSTER(){

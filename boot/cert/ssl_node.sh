@@ -12,25 +12,10 @@ function SSL-NODE() {
 }  
 #生成Flannel证书，修改host node节点集群IP
 function FLANNEL-SSL(){
-  K8S_SERVERS=
-  let len=${#K8S_SLAVES[*]}
-  for ((i=0; i<$len; i++))
-  do
-      let j=$i+1
-      if [ "$len" -ne "$j" ]; then
-       K8S_SERVERS+="\"${K8S_SLAVES[i]}"\",
-       continue
-      fi
-      K8S_SERVERS+="\"${K8S_SLAVES[i]}"\"
-      echo "K8S_SLAVES"==[${K8S_SERVERS}]
-  done
-
   cat > flanneld-csr.json <<EOF
   {
     "CN": "flanneld",
-    "hosts": [
-      ${K8S_SERVERS}
-    ],
+    "hosts": [],
     "key": {
       "algo": "rsa",
       "size": 2048

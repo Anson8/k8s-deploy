@@ -41,9 +41,9 @@ export K8S_DIR="/data/kubernetes"
 export ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(192.168.20.43)
+K8S_SLAVES=(192.168.20.44)
 ## TODO: Node节点服务器名字
-HOST_NAMES=(k8s-slave01)
+HOST_NAMES=(k8s-slave02)
 
 # 服务网段，部署前路由不可达，部署后集群内路由可达(kube-proxy 保证)
 SERVICE_CIDR="10.254.0.0/16"
