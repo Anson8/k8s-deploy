@@ -23,9 +23,9 @@
       dest: "{{item.dest}}"
     with_items:
       - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" } 
-      - { src: "{{file_path}}/cfg/kubelet/kubelet-bootstrap-k8s-slave0{{n}}.kubeconfig",dest: "{{file_path}}/cfg/kubelet-bootstrap.kubeconfig" } 
-      - { src: "{{file_path}}/cfg/kubelet/kubelet-config0{{n}}.yaml",dest: "{{file_path}}/cfg/kubelet-config.yaml" } 
-      - { src: "{{file_path}}/cfg/kubelet/kubelet0{{n}}.service",dest: "{{system_path}}/kubelet.service" } 
+      - { src: "{{file_path}}/cfg/kubelet/kubelet-bootstrap-{{n}}.kubeconfig",dest: "{{file_path}}/cfg/kubelet-bootstrap.kubeconfig" } 
+      - { src: "{{file_path}}/cfg/kubelet/kubelet-config-{{n}}.yaml",dest: "{{file_path}}/cfg/kubelet-config.yaml" } 
+      - { src: "{{file_path}}/cfg/kubelet/kubelet-{{n}}.service",dest: "{{system_path}}/kubelet.service" } 
   - name: startup kubelet
     service:
       name: kubelet

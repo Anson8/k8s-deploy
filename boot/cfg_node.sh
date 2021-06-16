@@ -53,7 +53,7 @@ function KUBELET-CFG(){
         kubectl config use-context default --kubeconfig=kubelet-bootstrap-${node_name}.kubeconfig
 
 
-cat > kubelet-config0$n.yaml <<EOF
+cat > kubelet-config-$node_name.yaml <<EOF
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 address: ${K8S_SLAVES[i]}
@@ -124,7 +124,7 @@ kubeReservedCgroup: ""
 enforceNodeAllocatable: ["pods"]
 EOF
 
-cat > kubelet0$n.service <<EOF
+cat > kubelet-$node_name.service <<EOF
 [Unit]
 Description=Kubernetes Kubelet
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
@@ -178,7 +178,7 @@ kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
   do
       let n=$i+1
       node_name=${HOST_NAMES[$i]}
-  cat > kube-proxy-config0$n.yaml <<EOF
+  cat > kube-proxy-config-$node_name.yaml <<EOF
 kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 clientConnection:

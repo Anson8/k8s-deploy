@@ -23,7 +23,7 @@
       dest: "{{item.dest}}"
     with_items:
       - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.kubeconfig",dest: "{{file_path}}/cfg/kube-proxy.kubeconfig" } 
-      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy-config0{{n}}.yaml",dest: "{{file_path}}/cfg/kube-proxy-config.yaml" } 
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy-config-{{n}}.yaml",dest: "{{file_path}}/cfg/kube-proxy-config.yaml" } 
       - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.service",dest: "{{system_path}}/kube-proxy.service" } 
   - name: startup kubelet
     service:

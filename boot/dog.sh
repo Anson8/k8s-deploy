@@ -87,7 +87,7 @@ function PathInitMaster(){
 function PathInitSlaves(){
     # 初始化slaves节点环境
     nodes=${K8S_SLAVES[@]}
-    read -p "Do you want to init slave path on all [$nodes] nodes?[Y/N]:" answer
+    read -p "Do you want to init slave path on all [$nodes] nodes?[Y/N/J]:" answer
     answer=$(echo $answer)
     let m=1
     case $answer in
@@ -116,6 +116,8 @@ function PathInitSlaves(){
     N | n)
         echo "Exit."
         exit 0;;
+    J | j)
+        echo "Skip the init path $1 of the Kuberbetes.";;           
     *)
         echo "Input error, please try again."
         exit 2;;

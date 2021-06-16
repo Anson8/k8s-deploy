@@ -104,7 +104,7 @@ function DEPLOY_MASTER(){
 function DEPLOY_SLAVES(){
     nodes=${K8S_SLAVES[@]}
     let len=${#K8S_SLAVES[*]}
-    read -p "Do you want to deploy kubernetes node on [$nodes]?[Y/N]:" answer
+    read -p "Do you want to deploy kubernetes node on [$nodes]?[Y/N/J]:" answer
     answer=$(echo $answer)
     case $answer in
     Y | y)
@@ -117,10 +117,10 @@ function DEPLOY_SLAVES(){
             ansible-playbook $TASKS_PATH/kube-nginx.yml -i ${K8S_SLAVES[i]},  --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kubelet
             echo "ansible-playbook deploy kubelet on this ${K8S_SLAVES[i]}"
-            ansible-playbook $TASKS_PATH/kubelet.yml -i ${K8S_SLAVES[i]}, -e "n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $TASKS_PATH/kubelet.yml -i ${K8S_SLAVES[i]}, -e "n=${HOST_NAMES[$i]}" --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署kube-proxy
             echo "ansible-playbook deploy kube-proxy on this ${K8S_SLAVES[i]}"
-            ansible-playbook $TASKS_PATH/kube-proxy.yml -i ${K8S_SLAVES[i]}, -e "n=$n" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            ansible-playbook $TASKS_PATH/kube-proxy.yml -i ${K8S_SLAVES[i]}, -e "n=${HOST_NAMES[$i]}" --private-key=/home/admin/.ssh/$PRIVATEKEY
             ##  部署flanneld
             echo "ansible-playbook deploy flanneld on this ${K8S_SLAVES[i]}"
             ansible-playbook $TASKS_PATH/flanneld.yml -i ${K8S_SLAVES[i]}, --private-key=/home/admin/.ssh/$PRIVATEKEY
@@ -134,6 +134,8 @@ function DEPLOY_SLAVES(){
     N | n)
         echo "Exit."
         exit 0;;
+    J | j)
+    echo "Skip deploy Kuberbetes node.";;          
     *)
         echo "Input error, please try again."
         exit 2;;
