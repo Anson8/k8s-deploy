@@ -367,6 +367,8 @@ cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
 
 sudo cp /opt/kubernetes/bin/kubectl /usr/local/bin/
 sudo chown admin:admin /usr/local/bin/kubectl
+sudo cp /opt/kubernetes/bin/kubeadm /usr/local/bin/
+sudo chown admin:admin /usr/local/bin/kubeadm
 
 kubectl config set-cluster kubernetes \
   --certificate-authority=/opt/kubernetes/ssl/ca.pem \

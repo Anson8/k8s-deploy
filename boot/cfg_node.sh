@@ -16,8 +16,6 @@ function NODE-CFG() {
 
 #生成kubelet的配置文件
 function KUBELET-CFG(){
-  sudo cp /opt/kubernetes/bin/kubeadm /usr/local/bin/
-  sudo chown admin:admin /usr/local/bin/kubeadm
   mkdir -p /opt/kubernetes/cfg/kubelet  
   cd /opt/kubernetes/cfg/kubelet
   let len=${#K8S_SLAVES[*]}
