@@ -31,29 +31,21 @@
   - 部署flanneld
 
 
-# 修改配置
-  1. docker的daemon文件（路径：k8s-deploy/boot/genconf/daemon.json）
-
-
-
-
-etcd
-etcdctl
-helm
-kubeadm
-kube-apiserver
-kube-controller-manager
-kubectl
-kubelet
-kube-scheduler
-
-sudo mv docker-compose /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-sudo usermod -a -G docker admin
-sudo systemctl restart docker
-
-ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-echo 'Asia/Shanghai' > /etc/timezone
+# DEV环境部署
+ 1. 修改clusterConfig中的变量（ENV、K8S_ETCD：[192.168.21.2 192.168.21.3 192.168.21.4]、K8S_SLAVES、HOST_NAMES）
+ 2. 配置/etc/hosts
+   ```
+    192.168.19.31   dev-glusterfs1
+    192.168.19.32   dev-glusterfs2
+    192.168.19.33   dev-glusterfs3
+    192.168.19.34   dev-glusterfs4
+   ```
+ 3. 安装glusterfs客户端，用于挂载logs目录
+   ```
+    sudo mkdir /logs
+    sudo yum -y install wget fuse fuse-libs
+    sudo yum install glusterfs-* -y
+   ```
 
 # 二进制包
 https://sdtc-public.oss-cn-shenzhen.aliyuncs.com/deployment/k8s-data.zip
