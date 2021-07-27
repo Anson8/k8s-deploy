@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - service
+      containers:
+      - image: registry.cn-shenzhen.aliyuncs.com/4d_prom/grafana:6.7.2
+        imagePullPolicy: IfNotPresent
+        name: grafana
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-conf
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service    
+      volumes:
+      - name: grafana-conf
+        hostPath:
+          path: /logs/common/monitor/grafana
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+  namespace: common-server
+spec:
+  ports:
+  - name: tcp-3000-3000
+    nodePort: 31009
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: grafana
+  type: NodePort
+
+
+## grafana-cli plugins install grafana-piechart-panel（安装饼图插件）
+## 数据挂载权限
+#groupadd -g 472 grafana
+#useradd -u 472 -g grafana grafana
+#chown  -R grafana.grafana /logs/common/monitor/grafana 

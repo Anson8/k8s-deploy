@@ -56,9 +56,9 @@
       state: directory 
   - name: delete etcd path
     file:
-      path: /data/kubernetes/etcd
+      path: /data/k8s/etcd
       state: absent
   - name: create etcd path    
     file:    
-      path: /data/kubernetes/etcd
+      path: /data/k8s/etcd
       state: directory                                        

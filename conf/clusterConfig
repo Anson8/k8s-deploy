@@ -8,8 +8,8 @@ K8S_VERSION=""
 
 ## SSH for ansible
 ### TODO: 安全账号, 防止滥用root权限
-USER_INIT="root"
-PASSWD_INIT="4ddev.com"
+USER_INIT="admin"
+PASSWD_INIT="Shid.2021"
 ### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
 USER="admin"
 PASSWD="4dops.com"
@@ -33,19 +33,19 @@ KUBE_APISERVER="https://127.0.0.1:8443"
 #K8S_ETCD=(192.168.20.62 192.168.20.63 192.168.20.64)
 K8S_ETCD=(192.168.21.2 192.168.21.3 192.168.21.4)
 ### TODO: etcd 数据目录
-ETCD_DATA_DIR="/data/kubernetes/etcd/data"
-ETCD_WAL_DIR="/data/kubernetes/etcd/wal"
+ETCD_DATA_DIR="/data/k8s/etcd/data"
+ETCD_WAL_DIR="/data/k8s/etcd/wal"
 
 # k8s 各组件数据目录
-export K8S_DIR="/data/kubernetes"
+export K8S_DIR="/data/k8s"
 
 # 生成 EncryptionConfig 所需的加密 key
 export ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(192.168.21.43)
+K8S_SLAVES=(192.168.21.45)
 ## TODO: Node节点服务器名字
-HOST_NAMES=(k8s-slave13)
+HOST_NAMES=(k8s-server02)
 
 # 服务网段，部署前路由不可达，部署后集群内路由可达(kube-proxy 保证)
 SERVICE_CIDR="10.254.0.0/16"

@@ -59,10 +59,10 @@ data:
         source_labels:
         - __meta_kubernetes_pod_container_name
         target_label: container
-      - replacement: /var/log/pods/**/*.log
-        separator: /   
+      - replacement: /var/log/pods/*/*/*.log
+        separator: /
         source_labels:
-        - __meta_kubernetes_pod_u id
+        - __meta_kubernetes_pod_uid
         - __meta_kubernetes_pod_container_name
         target_label: __path__
     - job_name: kubernetes-pods-app
@@ -106,7 +106,7 @@ data:
         source_labels:
         - __meta_kubernetes_pod_container_name
         target_label: container
-      - replacement: /var/log/pods/**/*.log
+      - replacement: /var/log/pods/*/*/*.log
         separator: /
         source_labels:
         - __meta_kubernetes_pod_uid
@@ -159,7 +159,7 @@ data:
         source_labels:
         - __meta_kubernetes_pod_container_name
         target_label: container
-      - replacement: /var/log/pods/**/*.log
+      - replacement: /var/log/pods/*/*/*.log
         separator: /
         source_labels:
         - __meta_kubernetes_pod_uid
@@ -214,7 +214,7 @@ data:
         source_labels:
         - __meta_kubernetes_pod_container_name
         target_label: container
-      - replacement: /var/log/pods/**/*.log
+      - replacement: /var/log/pods/*/*/*.log
         separator: /
         source_labels:
         - __meta_kubernetes_pod_uid
@@ -262,7 +262,7 @@ data:
         source_labels:
         - __meta_kubernetes_pod_container_name
         target_label: container
-      - replacement: /var/log/pods/**/*.log
+      - replacement: /var/log/pods/*/*/*.log
         separator: /
         source_labels:
         - __meta_kubernetes_pod_annotation_kubernetes_io_config_mirror
@@ -271,7 +271,7 @@ data:
 
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: promtail
   namespace: loki
@@ -295,7 +295,7 @@ spec:
           ports:
             - containerPort: 9080
           volumeMounts:
-            - mountPath: /data/k8s/docker/data/containers
+            - mountPath: /data/k8s/containers
               name: containers-volume
             - mountPath: /var/log/pods
               name: pods-volume

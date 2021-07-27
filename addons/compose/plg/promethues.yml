@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: prometheus
+  name: prometheus
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: prometheus
+      name: prometheus-main
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - service
+      containers:
+      - args:
+        - --storage.tsdb.retention=90d
+        - --storage.tsdb.path=/prometheus
+        - --config.file=/etc/prometheus/prometheus.yml
+        command:
+        - /bin/prometheus
+        image: registry.cn-shenzhen.aliyuncs.com/4d_prom/prometheus:v2.18
+        imagePullPolicy: IfNotPresent
+        name: prometheus
+        resources:
+          limits:
+            cpu: "1"
+            memory: 3G
+          requests:
+            cpu: 200m
+            memory: 1Gi        
+        volumeMounts:
+        - mountPath: /etc/prometheus
+          name: prom-conf
+        - mountPath: /prometheus 
+          name: prom-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service  
+      volumes:
+      - name: prom-conf
+        hostPath:
+          path: /logs/common/monitor/prometheus/conf
+      - name: prom-data
+        hostPath:
+          path: /logs/common/monitor/prometheus/data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: prometheus
+  name: prometheus
+  namespace: common-server
+spec:
+  ports:
+  - name: prometheus-tcp
+    port: 9090
+    nodePort: 30010
+  selector:
+    app: prometheus
+  type: NodePort
+
+## 数据挂载权限
+#groupadd -g 65534 nogroup
+#useradd -u 65534 -g nogroup nogroup
+#chown -R nogroup:nogroup /logs/common/monitor/prometheus/data  

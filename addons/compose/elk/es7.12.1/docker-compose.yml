@@ -1,24 +1,43 @@
 version: '3'
 services:
   elasticsearch:                    # 服务名称
-    image: elasticsearch:7.1.1      # 使用的镜像
+    image: registry.cn-shenzhen.aliyuncs.com/4d_prom/elasticsearch:7.12.1      # 使用的镜像
     container_name: elasticsearch   # 容器名称
     restart: always                 # 失败自动重启策略
     environment:
-      - node.name=node-44                   # 节点名称，集群模式下每个节点名称唯一
-      - network.publish_host=192.168.1.44  # 用于集群内各机器间通信,对外使用，其他机器访问本机器的es服务，一般为本机宿主机IP
+      - node.name=node01                   # 节点名称，集群模式下每个节点名称唯一
+      - network.publish_host=172.20.0.134  # 用于集群内各机器间通信,对外使用，其他机器访问本机器的es服务，一般为本机宿主机IP
       - network.host=0.0.0.0                # 设置绑定的ip地址，可以是ipv4或ipv6的，默认为0.0.0.0，即本机
-      - discovery.seed_hosts=192.168.1.44,192.168.1.45,192.168.1.46          # es7.0之后新增的写法，写入候选主节点的设备地址，在开启服务后，如果master挂了，哪些可以被投票选为主节点
-      - cluster.initial_master_nodes=192.168.1.44,192.168.1.45,192.168.1.46  # es7.0之后新增的配置，初始化一个新的集群时需要此配置来选举master
+      - discovery.seed_hosts=172.20.0.134,172.20.0.135,172.20.0.136         # es7.0之后新增的写法，写入候选主节点的设备地址，在开启服务后，如果master挂了，哪些可以被投票选为主节点
+      - cluster.initial_master_nodes=172.20.0.134,172.20.0.135,172.20.0.136  # es7.0之后新增的配置，初始化一个新的集群时需要此配置来选举master
       - cluster.name=pro-es-cluster     # 集群名称，相同名称为一个集群， 三个es节点须一致
-      - bootstrap.memory_lock=true  # 内存交换的选项，官网建议为true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # 设置内存，如内存不足，可以尝试调低点
+      - bootstrap.memory_lock=true      # 内存交换的选项，官网建议为true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    # 设置内存，如内存不足，可以尝试调低点
     ulimits:        # 栈内存的上限
       memlock:
         soft: -1    # 不限制
         hard: -1    # 不限制
     volumes:
-      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml  # 将容器中es的配置文件映射到本地，设置跨域， 否则head插件无法连接该节点
-      - ./data:/usr/share/elasticsearch/data  # 存放数据的文件， 注意：这里的esdata为 顶级volumes下的一项。
+      - /data/es/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml  # 将容器中es的配置文件映射到本地，设置跨域， 否则head插件无法连接该节点
+      - /data/es/data:/usr/share/elasticsearch/data:rw     # 存放数据的目录
+      - /data/es/logs/:/usr/share/elasticsearch/logs:rw    # 存放日志的目录
     ports:
-      - 9200:9200    # http端口，可以直接浏览器访问
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - es-catalog
+  kibana:
+    image: registry.cn-shenzhen.aliyuncs.com/4d_prom/kibana:7.12.1
+    container_name: kibana
+    hostname: kibana
+    restart: always
+    ports:
+      - "5601:5601"    
+    networks:
+      - es-catalog
+    depends_on:
+      - elasticsearch
+
+networks:
+  es-catalog:
+    driver: bridge 

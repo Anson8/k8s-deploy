@@ -81,6 +81,9 @@
         vm.max_map_count=655360
         EOF
 
+  #TODO: 安装glusterf客户端
+  - name: yum install glusterfs-client
+    yum: name=glusterfs-client state=present
   #调整系统时区
   - name: update time
     shell: timedatectl set-timezone Asia/Shanghai && timedatectl set-local-rtc 0
@@ -99,9 +102,9 @@
       state: stopped
       enabled: no
   #升级系统内核为4.44
-  #- name: update system kernel
-  #  shell: rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm && yum --enablerepo=elrepo-kernel install -y kernel-lt && grub2-set-default 'CentoS Linux(4.4.202-1.el7.elrepo.×86_64) 7 (Core)'
-  #  ignore_errors: yes
+  - name: update system kernel
+    shell: rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm && yum --enablerepo=elrepo-kernel install -y kernel-lt && grub2-set-default 'CentoS Linux(4.4.202-1.el7.elrepo.×86_64) 7 (Core)'
+    ignore_errors: yes
     # 重启服务器
   - name: reboot system
     reboot:

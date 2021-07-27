@@ -9,7 +9,7 @@
 
   tasks:
   - name: Create kube-proxy log dir
-    file: path=/data/kubernetes/kube-proxy state=directory recurse=yes     
+    file: path=/data/k8s/kube-proxy state=directory recurse=yes     
   - name: copy kube-proxy bin
     copy:
       src: "{{item.src}}"

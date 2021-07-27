@@ -48,18 +48,3 @@ services:
 networks:
   elk:
     driver: bridge
-
-
-
-docker run -d --name=uat-es --net=host 
--v /data/es/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml 
--v /data/es/data/:/usr/share/elasticsearch/data 
--e "ES_JAVA_OPTS=-Xms2g -Xmx2g" 
--e "discovery.type=single-node" 
-registry.cn-shenzhen.aliyuncs.com/sdtc/elasticsearch:6.8.0
-
-docker run --net=host --name=uat-logstash -d 
--v /data/logstash/conf/:/opt/kibana/config/ 
-registry.cn-shenzhen.aliyuncs.com/sdtc/logstash:6.8.0
-
-docker run --name=uat-kibana -p 5601:5601 -d kibana:6.8.0

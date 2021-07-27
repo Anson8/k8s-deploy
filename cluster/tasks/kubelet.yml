@@ -9,7 +9,7 @@
 
   tasks:
   - name: Create kubelet logs dir
-    file: path=/data/kubernetes/kubelet state=directory recurse=yes   
+    file: path=/data/k8s/kubelet state=directory recurse=yes   
   - name: copy kubelet bin
     copy:
       src: "{{item.src}}"

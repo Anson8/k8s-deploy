@@ -1,0 +1,22 @@
+#kubectl delete DaemonSet promtail -n loki
+#kubectl scale --replicas=0 deployment/promtail -n loki
+kubectl delete cm promtail-config -n loki
+kubectl delete deployment promtail -n loki
+kubectl delete deployment loki -n loki
+kubectl delete cm loki-config -n loki
+#
+#kubectl apply -f promtail1.yaml
+#
+#kubectl apply -f loki.yaml
+#kubectl apply -f promtail-role.yaml
+#
+#
+#kubectl delete DaemonSet promtail
+
+#kubectl scale --replicas=0 deployment/loki -n loki
+
+kubectl scale --replicas=0 deployment/grafana -n common-server
+
+kubectl scale --replicas=0 deployment/promtail -n common-server
+
+kubectl scale --replicas=0 deployment/loki -n common-server
