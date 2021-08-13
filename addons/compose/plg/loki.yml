@@ -98,7 +98,7 @@ spec:
                 - service
       containers:
         - name: loki
-          image: grafana/loki:2.1.0
+          image: registry.cn-shenzhen.aliyuncs.com/4d_prom/loki:2.1.0
           imagePullPolicy: IfNotPresent
           args:
             - -config.file=/mnt/config/loki-config.yml
@@ -110,8 +110,15 @@ spec:
             - mountPath: /mnt/config
               name: config-volume
           securityContext:
-            runAsUser: 0
-            runAsGroup: 0:"q!"
+            runAsGroup: 0
+            runAsUser: 0 
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 500M              
       tolerations:
       - effect: NoSchedule
         key: role
@@ -121,12 +128,15 @@ spec:
         - name: storage-volume
           hostPath:
             path: /logs/common/plg/loki/data
-        - name: config-volume
-          configMap:
-            name: loki-config
+        - configMap:
+            defaultMode: 420
             items:
-              - key: loki-config.yml
-                path: loki-config.yml
+            - key: loki-config.yml
+              path: loki-config.yml
+            name: loki-config
+          name: config-volume
+      imagePullSecrets:
+      - name: 4dtc             
 
 ---
 apiVersion: v1

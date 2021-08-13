@@ -1,0 +1,234 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0  
+positions:
+  filename: /run/promtail/positions.yaml
+client:
+  backoff_config:
+    max_period: 5m
+    max_retries: 10
+    min_period: 500ms
+  batchsize: 1048576
+  batchwait: 1s
+  external_labels: {}
+  timeout: 10s      
+target_config:
+  sync_period: 10s
+scrape_configs:
+- job_name: pro-us-anta-material
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: anta-material
+      __path__: /logs/pro-us/anta-material/*/*log
+- job_name: pro-us-authcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: authcenter
+      __path__: /logs/pro-us/authcenter/*/*log
+- job_name: pro-us-bff-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: bff-center
+      __path__: /logs/pro-us/bff-center/*/*log
+- job_name: pro-us-catalog-adapter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: catalog-adapter
+      __path__: /logs/pro-us/catalog-adapter/*/*log
+- job_name: pro-us-catalogue
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: catalogue
+      __path__: /logs/pro-us/catalogue/*/*log 
+- job_name: pro-us-catalogue-search
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: catalogue-search
+      __path__: /logs/pro-us/catalogue-search/*/*log
+- job_name: pro-us-catcatalogue-search-sync-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: catcatalogue-search-sync-stream
+      __path__: /logs/pro-us/catcatalogue-search-sync-stream/*/*log  
+- job_name: pro-us-datapipe
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: datapipe
+      __path__: /logs/pro-us/datapipe/*/*log
+- job_name: pro-us-db-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: db-sync
+      __path__: /logs/pro-us/db-sync/*/*log
+- job_name: pro-us-dyf
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: dyf
+      __path__: /logs/pro-us/dyf/*/*log
+- job_name: pro-us-enterprise-lib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: enterprise-lib
+      __path__: /logs/pro-us/enterprise-lib/*/*log
+- job_name: pro-us-entlib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: entlib
+      __path__: /logs/pro-us/entlib/*/*log
+- job_name: pro-us-es-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: es-center
+      __path__: /logs/pro-us/es-center/*/*log
+- job_name: pro-us-gateway
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: gateway
+      __path__: /logs/pro-us/gateway/*/*log 
+- job_name: pro-us-im
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: im
+      __path__: /logs/pro-us/im/*/*log
+- job_name: pro-us-internal-manager
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: internal-manager
+      __path__: /logs/pro-us/internal-manager/*/*log
+- job_name: pro-us-jobcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: jobcenter
+      __path__: /logs/pro-us/jobcenter/*/*log
+- job_name: pro-us-meeting-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: meeting-center
+      __path__: /logs/pro-us/meeting-center/*/*log
+- job_name: pro-us-message-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: message-center
+      __path__: /logs/pro-us/message-center/*/*log
+- job_name: pro-us-metadata
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: metadata
+      __path__: /logs/pro-us/metadata/*/*log
+- job_name: pro-us-operating
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: operating
+      __path__: /logs/pro-us/operating/*/*log
+- job_name: pro-us-pdm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: pdm
+      __path__: /logs/pro-us/pdm/*/*log
+- job_name: pro-us-pg-subscription
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: pg-subscription
+      __path__: /logs/pro-us/pg-subscription/*/*log
+- job_name: pro-us-render-dispatch
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: render-dispatch
+      __path__: /logs/pro-us/render-dispatch/*/*log
+- job_name: pro-us-render-rest
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: render-rest
+      __path__: /logs/pro-us/render-rest/*/*log
+- job_name: pro-us-search-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: search-center
+      __path__: /logs/pro-us/search-center/*/*log
+- job_name: pro-us-search-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: search-sync
+      __path__: /logs/pro-us/search-sync/*/*log
+- job_name: pro-us-show
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: show
+      __path__: /logs/pro-us/show/*/*log
+- job_name: pro-us-show-catalog-model
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: show-catalog-model
+      __path__: /logs/pro-us/show-catalog-model/*/*log
+- job_name: pro-us-system-tunnel
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: system-tunnel
+      __path__: /logs/pro-us/system-tunnel/*/*log
+- job_name: pro-us-third-platform-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      prous: third-platform-center
+      __path__: /logs/pro-us/third-platform-center/*/*log

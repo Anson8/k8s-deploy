@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neo4j-dev
+  namespace: common-server
+  labels:
+    app: neo4j-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neo4j-dev
+  template:
+    metadata:
+      labels:
+        app: neo4j-dev
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - service
+      containers:
+      - name: neo4j-dev
+        image: registry.cn-shenzhen.aliyuncs.com/sdtc/neo4j:v1
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: data
+            mountPath: /data
+          - name: logs
+            mountPath: /logs
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service                
+      volumes:
+        - name: data
+          hostPath:
+            path: /logs/common/dev/node4j/data
+        - name: logs
+          hostPath:
+            path: /logs/common/dev/node4j/logs     
+      imagePullSecrets:
+      - name: 4dtc                 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: neo4j-dev
+  namespace: common-server
+  labels:
+    app: redis-dev
+spec:
+  ports:
+  - name: port-tcp-7474
+    port: 7474
+    nodePort: 7474
+  - name: port-tcp-7687
+    port: 7687
+    nodePort: 7687    
+  selector:
+    app: neo4j-dev
+  type: NodePort        

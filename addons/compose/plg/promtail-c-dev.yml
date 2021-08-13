@@ -1,0 +1,451 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0  
+positions:
+  filename: /run/promtail/positions.yaml
+client:
+  backoff_config:
+    max_period: 5m
+    max_retries: 10
+    min_period: 500ms
+  batchsize: 1048576
+  batchwait: 1s
+  external_labels: {}
+  timeout: 10s      
+target_config:
+  sync_period: 10s
+scrape_configs:
+- job_name: dev-anta-material
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: anta-material
+      __path__: /logs/dev/anta-material/*/*log
+- job_name: sit-anta-material
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: anta-material
+      __path__: /logs/sit/anta-material/*/*log
+- job_name: dev-authcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: authcenter
+      __path__: /logs/dev/authcenter/*/*log
+- job_name: sit-authcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: authcenter
+      __path__: /logs/sit/authcenter/*/*log
+- job_name: dev-bff-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: bff-center
+      __path__: /logs/dev/bff-center/*/*log
+- job_name: sit-bff-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: bff-center
+      __path__: /logs/sit/bff-center/*/*log
+- job_name: dev-catalog-adapter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: catalog-adapter
+      __path__: /logs/dev/catalog-adapter/*/*log
+- job_name: sit-catalog-adapter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: catalog-adapter
+      __path__: /logs/sit/catalog-adapter/*/*log
+- job_name: dev-catalogue
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: catalogue
+      __path__: /logs/dev/catalogue/*/*log
+- job_name: sit-catalogue
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: catalogue
+      __path__: /logs/sit/catalogue/*/*log 
+- job_name: dev-catalogue-search
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: catalogue-search
+      __path__: /logs/dev/catalogue-search/*/*log
+- job_name: sit-catalogue-search
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: catalogue-search
+      __path__: /logs/sit/catalogue-search/*/*log
+- job_name: dev-catcatalogue-search-sync-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: catcatalogue-search-sync-stream
+      __path__: /logs/dev/catcatalogue-search-sync-stream/*/*log
+- job_name: sit-catcatalogue-search-sync-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: catcatalogue-search-sync-stream
+      __path__: /logs/sit/catcatalogue-search-sync-stream/*/*log  
+- job_name: dev-datapipe
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: datapipe
+      __path__: /logs/dev/datapipe/*/*log
+- job_name: sit-datapipe
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: datapipe
+      __path__: /logs/sit/datapipe/*/*log
+- job_name: dev-db-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: db-sync
+      __path__: /logs/dev/db-sync/*/*log
+- job_name: sit-db-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: db-sync
+      __path__: /logs/sit/db-sync/*/*log
+- job_name: dev-dyf
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: dyf
+      __path__: /logs/dev/dyf/*/*log
+- job_name: sit-dyf
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: dyf
+      __path__: /logs/sit/dyf/*/*log
+- job_name: dev-enterprise-lib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: enterprise-lib
+      __path__: /logs/dev/enterprise-lib/*/*log
+- job_name: sit-enterprise-lib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: enterprise-lib
+      __path__: /logs/sit/enterprise-lib/*/*log
+- job_name: dev-entlib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: entlib
+      __path__: /logs/dev/entlib/*/*log
+- job_name: sit-entlib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: entlib
+      __path__: /logs/sit/entlib/*/*log
+- job_name: dev-es-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: es-center
+      __path__: /logs/dev/es-center/*/*log
+- job_name: sit-es-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: es-center
+      __path__: /logs/sit/es-center/*/*log
+- job_name: dev-gateway
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: gateway
+      __path__: /logs/dev/gateway/*/*log
+- job_name: sit-gateway
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: gateway
+      __path__: /logs/sit/gateway/*/*log 
+- job_name: dev-im
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: im
+      __path__: /logs/dev/im/*/*log
+- job_name: sit-im
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: im
+      __path__: /logs/sit/im/*/*log 
+- job_name: dev-internal-manager
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: internal-manager
+      __path__: /logs/dev/internal-manager/*/*log
+- job_name: sit-internal-manager
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: internal-manager
+      __path__: /logs/sit/internal-manager/*/*log
+- job_name: dev-jobcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: jobcenter
+      __path__: /logs/dev/jobcenter/*/*log
+- job_name: sit-jobcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: jobcenter
+      __path__: /logs/sit/jobcenter/*/*log
+- job_name: dev-meeting-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: meeting-center
+      __path__: /logs/dev/meeting-center/*/*log
+- job_name: sit-meeting-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: meeting-center
+      __path__: /logs/sit/meeting-center/*/*log
+- job_name: dev-message-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: message-center
+      __path__: /logs/dev/message-center/*/*log
+- job_name: sit-message-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: message-center
+      __path__: /logs/sit/message-center/*/*log
+- job_name: dev-metadata
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: metadata
+      __path__: /logs/dev/metadata/*/*log
+- job_name: sit-metadata
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: metadata
+      __path__: /logs/sit/metadata/*/*log
+- job_name: dev-operating
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: operating
+      __path__: /logs/dev/operating/*/*log
+- job_name: sit-operating
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: operating
+      __path__: /logs/sit/operating/*/*log
+- job_name: dev-pdm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: pdm
+      __path__: /logs/dev/pdm/*/*log
+- job_name: sit-pdm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: pdm
+      __path__: /logs/sit/pdm/*/*log
+- job_name: dev-pg-subscription
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: pg-subscription
+      __path__: /logs/dev/pg-subscription/*/*log
+- job_name: sit-pg-subscription
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: pg-subscription
+      __path__: /logs/sit/pg-subscription/*/*log
+- job_name: dev-render-dispatch
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: render-dispatch
+      __path__: /logs/dev/render-dispatch/*/*log
+- job_name: sit-render-dispatch
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: render-dispatch
+      __path__: /logs/sit/render-dispatch/*/*log
+- job_name: dev-render-rest
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: render-rest
+      __path__: /logs/dev/render-rest/*/*log
+- job_name: sit-render-rest
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: render-rest
+      __path__: /logs/sit/render-rest/*/*log
+- job_name: dev-search-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: search-center
+      __path__: /logs/dev/search-center/*/*log
+- job_name: sit-search-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: search-center
+      __path__: /logs/sit/search-center/*/*log
+- job_name: dev-search-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: search-sync
+      __path__: /logs/dev/search-sync/*/*log
+- job_name: sit-search-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: search-sync
+      __path__: /logs/sit/search-sync/*/*log
+- job_name: dev-show
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: show
+      __path__: /logs/dev/show/*/*log
+- job_name: sit-show
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: show
+      __path__: /logs/sit/show/*/*log
+- job_name: dev-show-catalog-model
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: show-catalog-model
+      __path__: /logs/dev/show-catalog-model/*/*log
+- job_name: sit-show-catalog-model
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: show-catalog-model
+      __path__: /logs/sit/show-catalog-model/*/*log
+- job_name: dev-system-tunnel
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: system-tunnel
+      __path__: /logs/dev/system-tunnel/*/*log
+- job_name: sit-system-tunnel
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: system-tunnel
+      __path__: /logs/sit/system-tunnel/*/*log
+- job_name: dev-third-platform-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: third-platform-center
+      __path__: /logs/dev/third-platform-center/*/*log
+- job_name: sit-third-platform-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: third-platform-center
+      __path__: /logs/sit/third-platform-center/*/*log

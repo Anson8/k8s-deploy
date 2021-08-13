@@ -1,0 +1,451 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0  
+positions:
+  filename: /run/promtail/positions.yaml
+client:
+  backoff_config:
+    max_period: 5m
+    max_retries: 10
+    min_period: 500ms
+  batchsize: 1048576
+  batchwait: 1s
+  external_labels: {}
+  timeout: 10s      
+target_config:
+  sync_period: 10s
+scrape_configs:
+- job_name: poc-anta-material
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: anta-material
+      __path__: /logs/poc/anta-material/*/*log
+- job_name: uat-cn-anta-material
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: anta-material
+      __path__: /logs/uat-cn/anta-material/*/*log
+- job_name: poc-authcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: authcenter
+      __path__: /logs/poc/authcenter/*/*log
+- job_name: uat-cn-authcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: authcenter
+      __path__: /logs/uat-cn/authcenter/*/*log
+- job_name: poc-bff-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: bff-center
+      __path__: /logs/poc/bff-center/*/*log
+- job_name: uat-cn-bff-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: bff-center
+      __path__: /logs/uat-cn/bff-center/*/*log
+- job_name: poc-catalog-adapter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: catalog-adapter
+      __path__: /logs/poc/catalog-adapter/*/*log
+- job_name: uat-cn-catalog-adapter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: catalog-adapter
+      __path__: /logs/uat-cn/catalog-adapter/*/*log
+- job_name: poc-catalogue
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: catalogue
+      __path__: /logs/poc/catalogue/*/*log
+- job_name: uat-cn-catalogue
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: catalogue
+      __path__: /logs/uat-cn/catalogue/*/*log 
+- job_name: poc-catalogue-search
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: catalogue-search
+      __path__: /logs/poc/catalogue-search/*/*log
+- job_name: uat-cn-catalogue-search
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: catalogue-search
+      __path__: /logs/uat-cn/catalogue-search/*/*log
+- job_name: poc-catcatalogue-search-sync-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: catcatalogue-search-sync-stream
+      __path__: /logs/poc/catcatalogue-search-sync-stream/*/*log
+- job_name: uat-cn-catcatalogue-search-sync-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: catcatalogue-search-sync-stream
+      __path__: /logs/uat-cn/catcatalogue-search-sync-stream/*/*log  
+- job_name: poc-datapipe
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: datapipe
+      __path__: /logs/poc/datapipe/*/*log
+- job_name: uat-cn-datapipe
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: datapipe
+      __path__: /logs/uat-cn/datapipe/*/*log
+- job_name: poc-db-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: db-sync
+      __path__: /logs/poc/db-sync/*/*log
+- job_name: uat-cn-db-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: db-sync
+      __path__: /logs/uat-cn/db-sync/*/*log
+- job_name: poc-dyf
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: dyf
+      __path__: /logs/poc/dyf/*/*log
+- job_name: uat-cn-dyf
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: dyf
+      __path__: /logs/uat-cn/dyf/*/*log
+- job_name: poc-enterprise-lib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: enterprise-lib
+      __path__: /logs/poc/enterprise-lib/*/*log
+- job_name: uat-cn-enterprise-lib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: enterprise-lib
+      __path__: /logs/uat-cn/enterprise-lib/*/*log
+- job_name: poc-entlib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: entlib
+      __path__: /logs/poc/entlib/*/*log
+- job_name: uat-cn-entlib
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: entlib
+      __path__: /logs/uat-cn/entlib/*/*log
+- job_name: poc-es-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: es-center
+      __path__: /logs/poc/es-center/*/*log
+- job_name: uat-cn-es-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: es-center
+      __path__: /logs/uat-cn/es-center/*/*log
+- job_name: poc-gateway
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: gateway
+      __path__: /logs/poc/gateway/*/*log
+- job_name: uat-cn-gateway
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: gateway
+      __path__: /logs/uat-cn/gateway/*/*log 
+- job_name: poc-im
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: im
+      __path__: /logs/poc/im/*/*log
+- job_name: uat-cn-im
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: im
+      __path__: /logs/uat-cn/im/*/*log 
+- job_name: poc-internal-manager
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: internal-manager
+      __path__: /logs/poc/internal-manager/*/*log
+- job_name: uat-cn-internal-manager
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: internal-manager
+      __path__: /logs/uat-cn/internal-manager/*/*log
+- job_name: poc-jobcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: jobcenter
+      __path__: /logs/poc/jobcenter/*/*log
+- job_name: uat-cn-jobcenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: jobcenter
+      __path__: /logs/uat-cn/jobcenter/*/*log
+- job_name: poc-meeting-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: meeting-center
+      __path__: /logs/poc/meeting-center/*/*log
+- job_name: uat-cn-meeting-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: meeting-center
+      __path__: /logs/uat-cn/meeting-center/*/*log
+- job_name: poc-message-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: message-center
+      __path__: /logs/poc/message-center/*/*log
+- job_name: uat-cn-message-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: message-center
+      __path__: /logs/uat-cn/message-center/*/*log
+- job_name: poc-metadata
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: metadata
+      __path__: /logs/poc/metadata/*/*log
+- job_name: uat-cn-metadata
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: metadata
+      __path__: /logs/uat-cn/metadata/*/*log
+- job_name: poc-operating
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: operating
+      __path__: /logs/poc/operating/*/*log
+- job_name: uat-cn-operating
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: operating
+      __path__: /logs/uat-cn/operating/*/*log
+- job_name: poc-pdm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: pdm
+      __path__: /logs/poc/pdm/*/*log
+- job_name: uat-cn-pdm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: pdm
+      __path__: /logs/uat-cn/pdm/*/*log
+- job_name: poc-pg-subscription
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: pg-subscription
+      __path__: /logs/poc/pg-subscription/*/*log
+- job_name: uat-cn-pg-subscription
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: pg-subscription
+      __path__: /logs/uat-cn/pg-subscription/*/*log
+- job_name: poc-render-dispatch
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: render-dispatch
+      __path__: /logs/poc/render-dispatch/*/*log
+- job_name: uat-cn-render-dispatch
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: render-dispatch
+      __path__: /logs/uat-cn/render-dispatch/*/*log
+- job_name: poc-render-rest
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: render-rest
+      __path__: /logs/poc/render-rest/*/*log
+- job_name: uat-cn-render-rest
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: render-rest
+      __path__: /logs/uat-cn/render-rest/*/*log
+- job_name: poc-search-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: search-center
+      __path__: /logs/poc/search-center/*/*log
+- job_name: uat-cn-search-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: search-center
+      __path__: /logs/uat-cn/search-center/*/*log
+- job_name: poc-search-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: search-sync
+      __path__: /logs/poc/search-sync/*/*log
+- job_name: uat-cn-search-sync
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: search-sync
+      __path__: /logs/uat-cn/search-sync/*/*log
+- job_name: poc-show
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: show
+      __path__: /logs/poc/show/*/*log
+- job_name: uat-cn-show
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: show
+      __path__: /logs/uat-cn/show/*/*log
+- job_name: poc-show-catalog-model
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: show-catalog-model
+      __path__: /logs/poc/show-catalog-model/*/*log
+- job_name: uat-cn-show-catalog-model
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: show-catalog-model
+      __path__: /logs/uat-cn/show-catalog-model/*/*log
+- job_name: poc-system-tunnel
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: system-tunnel
+      __path__: /logs/poc/system-tunnel/*/*log
+- job_name: uat-cn-system-tunnel
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: system-tunnel
+      __path__: /logs/uat-cn/system-tunnel/*/*log
+- job_name: poc-third-platform-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: third-platform-center
+      __path__: /logs/poc/third-platform-center/*/*log
+- job_name: uat-cn-third-platform-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: third-platform-center
+      __path__: /logs/uat-cn/third-platform-center/*/*log
