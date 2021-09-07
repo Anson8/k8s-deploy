@@ -7,16 +7,21 @@
   tasks:
   - name: remove old docker
     yum:
-      name: docker,docker-common,docker-selinux,docker-engine
+      name: docker-ce.x86_64,docker-ce-cli.x86_64
       state: removed
     tags: docker-ce
   - name: download docker repo
     shell: yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
     tags: docker-ce  
-  - name: Install docker by yum 
+  - name: Install docker-ce-{{ docker_version }},docker-ce-cli-{{ docker_version }} by yum 
     yum:
-      name: docker-ce-{{ docker_version }}
+      name: "{{ packages }}" 
       state: present
+    vars:
+      packages:
+      - docker-ce-{{ docker_version }}
+      - docker-ce-cli-{{ docker_version }}
+      - containerd.io
     tags: docker-ce
   - name: Create Docker config directory. 
     file: path=/etc/docker state=directory 

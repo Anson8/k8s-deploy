@@ -17,10 +17,10 @@ PASSWD="4dops.com"
 PRIVATEKEY="id_ed25519"
 
 ## TOTO: 部署环境（新增节点需要，demo、dev、cn-uat、cn-pro、us-uat、us-pro）
-ENV="dev"
+ENV="uat"
 
 ## 数据卷
-DISK="/dev/sdb"
+DISK="/dev/vdb"
 DISKFULLPATH="/dev/mapper/vgdata-lvdata1"
 
 ## Master 
@@ -43,7 +43,7 @@ export K8S_DIR="/data/k8s"
 export ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(192.168.21.43)
+K8S_SLAVES=(192.168.3.48)
 ## TODO: Node节点服务器名字
 HOST_NAMES=(k8s-slave13)
 

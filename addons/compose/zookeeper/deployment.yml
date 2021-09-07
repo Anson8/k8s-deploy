@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper-dev
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper-dev
+  template:
+    metadata:
+      labels:
+        app: zookeeper-dev
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - service
+      containers:
+      - name: zookeeper-dev
+        image: registry.cn-shenzhen.aliyuncs.com/sdtc/zookeeper:3.5.7
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          tcpSocket:
+            port: 2181
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 2
+        ports:
+        - containerPort: 2181
+          protocol: TCP
+        - containerPort: 2888
+          protocol: TCP
+        - containerPort: 3888
+          protocol: TCP
+        volumeMounts:
+        - name: volume-conf
+          mountPath: /conf       
+        - name: volume-logs
+          mountPath: /datalog
+        - name: volume-data
+          mountPath: /data
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service                      
+      volumes:
+      - name: volume-conf
+        hostPath: 
+          path: /logs/common/dev/zookeeper/conf       
+      - name: volume-logs
+        hostPath: 
+          path: /logs/common/dev/zookeeper/log  
+      - name: volume-data
+        hostPath: 
+          path: /logs/common/dev/zookeeper/data                    
+      imagePullSecrets:
+      - name: 4dtc          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-dev
+  namespace: common-server
+  labels:
+    app: zookeeper-dev
+spec:
+  ports:
+  - name: port-tcp-2181
+    port: 2181
+    nodePort: 2181   
+  selector:
+    app: zookeeper-dev
+  type: NodePort

@@ -7,7 +7,7 @@ positions:
  
 
 clients:
-  - url: http://192.168.19.10:38301/loki/api/v1/push
+  - url: http://192.168.1.31:31000/loki/api/v1/push
 
 client:
   backoff_config:
