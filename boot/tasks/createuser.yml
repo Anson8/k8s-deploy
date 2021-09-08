@@ -7,13 +7,13 @@
   vars:
     sshd_config_path: /etc/ssh/sshd_config
   tasks:
-  #- name: Add user {{ user_add }}
-  #  user: name={{user_add}} comment="ceph user" password='$6$a30rK6VABh.OySpE$d4.jGbwaSAnM2rdLflkdBIdJRsFIS6gAcAVm2z18qvBnEbVRMxvYwZlIYohLHcbGEqFo2QvUGG1uG46oa9NcT0'
+  - name: Add user {{ user_add }}
+    user: name={{user_add}} comment="ceph user" password='$6$a30rK6VABh.OySpE$d4.jGbwaSAnM2rdLflkdBIdJRsFIS6gAcAVm2z18qvBnEbVRMxvYwZlIYohLHcbGEqFo2QvUGG1uG46oa9NcT0'
 
-  #- name: Config /etc/sudoers
-  #  lineinfile: dest=/etc/sudoers state=present  line='{{item}}' validate='visudo -cf %s'
-  #  with_items:
-  #    - "{{ user_add}} ALL=(ALL) NOPASSWD: ALL"
+  - name: Config /etc/sudoers
+    lineinfile: dest=/etc/sudoers state=present  line='{{item}}' validate='visudo -cf %s'
+    with_items:
+      - "{{ user_add}} ALL=(ALL) NOPASSWD: ALL"
   - name: deploy ssh key
     authorized_key: user=admin
                     key="{{ lookup('file', '/home/admin/.ssh/id_ed25519.pub') }}"
