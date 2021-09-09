@@ -19,7 +19,7 @@ function PathInit(){
 
 ## TODO: 证书&&配置文件生成
 function SSL-CFG(){
-    read -p "Do you want to create ssl ?[Y/N]:" answer
+    read -p "Do you want to create ssl ?[Y/N/J]:" answer
     answer=$(echo $answer)
     case $answer in
     Y | y)
@@ -36,6 +36,8 @@ function SSL-CFG(){
     N | n)
         echo "Exit."
         exit 0;;
+    J | j)
+        echo "Skip the ssl $1 of the Kuberbetes.";;          
     *)
         echo "Input error, please try again."
         exit 2;;
@@ -58,7 +60,7 @@ function PathInitMaster(){
             echo "Start to add [$ip] to known_hosts."
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
-            ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
+            ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "pubkey=$PRIVATEKEY user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
             echo "ansible-playbook mount disk on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER  disk=$DISK diskfullpath=$DISKFULLPATH" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes master path on this $ip"

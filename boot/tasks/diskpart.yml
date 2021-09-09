@@ -6,6 +6,8 @@
     wpath: /home/admin/k8s-deploy/boot 
     mountDir: /data
   tasks:                         # 创建分区，把变量传给disk.sh
+    - name: yum install lvm2
+      yum: name=lvm2  
     - name: New Disk Partition
       script: "{{ wpath }}/gen/disk.sh {{ disk }}"
       become: yes

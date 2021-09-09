@@ -26,5 +26,26 @@ pvcreate $DISK"1"
 vgcreate vgdata $DISK"1"
 # 新建逻辑卷
 lvcreate -l 100%FREE -n lvdata1 vgdata
+# 格式化逻辑卷
+#mkfs.xfs /dev/mapper/vgdata-lvdata1 
+# 挂在卷组到 /data下
+#mount /dev/mapper/vgdata-lvdata1 /data/
+# 开启开机自启动
+#echo `sudo blkid /dev/mapper/vgdata-lvdata1 | awk '{print $2}' | sed 's/\"//g'` /data xfs defaults 0 0 >> /etc/fstab
 
 echo "Disk Partition Create OK!"
+
+# 删除卷
+#lvremove /dev/mapper/vgdata-lvdata1
+#vgremove vgdata
+#pvremove /dev/sdb1
+#fdisk /dev/sdb（d）
+
+
+#手动创建
+#fdisk /dev/sdb
+#pvcreate /dev/sdb1
+#vgcreate vgdata /dev/sdb1
+#lvcreate -l 100%FREE -n lvdata1 vgdata
+#mkfs.xfs /dev/mapper/vgdata-lvdata1
+#mount /dev/mapper/vgdata-lvdata1 /data/

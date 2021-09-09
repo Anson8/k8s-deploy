@@ -101,10 +101,20 @@
       name: postfix
       state: stopped
       enabled: no
-  #升级系统内核为4.44
-  - name: update system kernel
-    shell: rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org&& rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm && yum --enablerepo=elrepo-kernel install kernel-ml && sudo grub2-set-default 0 && sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-    ignore_errors: yes
-    # 重启服务器
-  - name: reboot system
-    reboot:
+  #copy系统内核为5.4.144
+  #- name: copy kernel-lt-5.4.144
+  #  copy:
+  #    src: "{{item.src}}"
+  #    dest: "{{item.dest}}"
+  #  with_items:
+  #    - { src: "{{file_path}}/boot/kernel-lt-5.4.144-1.el7.elrepo.x86_64.rpm",dest: "{{file_path}}/" }
+  - name: copy kernel.sh 
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      mode: 0755
+    with_items:
+      - { src: "/home/admin/k8s-deploy/boot/gen/kernel.sh",dest: "{{file_path}}/" }      
+  ##升级系统内核为5.4.144
+  - name: update system kernel-lt-5.4.144
+    shell: sh {{file_path}}/kernel.sh

@@ -16,7 +16,7 @@
       - "{{ user_add}} ALL=(ALL) NOPASSWD: ALL"
   - name: deploy ssh key
     authorized_key: user=admin
-                    key="{{ lookup('file', '/home/admin/.ssh/id_ed25519.pub') }}"
+                    key="{{ lookup('file', '/home/admin/.ssh/{{ pubkey }}.pub') }}"
                     state=present    
   ## 关闭密码登陆通道                  
   #- name: Close PasswordAuthentication...
