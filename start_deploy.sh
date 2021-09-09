@@ -5,7 +5,6 @@ echo $OPS_ROOT
 . $OPS_ROOT/conf/clusterConfig
 . $OPS_ROOT/boot/dog.sh
 . $OPS_ROOT/cluster/cluster_add.sh
-. $OPS_ROOT/cluster/cluster_add_node.sh
 
 ## TODO k8s服务器初始化
 read -p "Are you sure to Init $1 Kuberbetes?[Y/N/J]:" answer
