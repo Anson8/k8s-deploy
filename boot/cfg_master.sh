@@ -294,20 +294,16 @@ StartLimitInterval=0
 WantedBy=multi-user.target
 EOF
 cat >kube-scheduler0$n.yaml <<EOF
-apiVersion: kubescheduler.config.k8s.io/v1alpha1
+apiVersion: kubescheduler.config.k8s.io/v1beta1
 kind: KubeSchedulerConfiguration
-bindTimeoutSeconds: 600
 clientConnection:
   burst: 200
   kubeconfig: "/opt/kubernetes/cfg/kube-scheduler.kubeconfig"
   qps: 100
 enableContentionProfiling: false
 enableProfiling: true
-hardPodAffinitySymmetricWeight: 1
-healthzBindAddress: ${K8S_MASTER[i]}:10251
 leaderElection:
   leaderElect: true
-metricsBindAddress: ${K8S_MASTER[i]}:10251
 EOF
 
   done  
