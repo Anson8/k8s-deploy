@@ -92,8 +92,8 @@ function PathInitSlaves(){
     #mkdir -p /opt/kubernetes/{cfg,ssl}
     #rm -rf /opt/kubernetes/{ssl,cfg} 
     #cp -R /opt/k8s-cfg/$ENV/{ssl,cfg} /opt/kubernetes
-    #cp /opt/k8s-cfg/$ENV/kubectl.kubeconfig  ~/.kube/config
-    #sudo systemctl restart kube-nginx
+    cp /opt/kubernetes/ssl/kubectl.kubeconfig  ~/.kube/config
+    sudo systemctl restart kube-nginx
     # 初始化slaves节点环境
     nodes=${K8S_SLAVES[@]}
     read -p "Do you want to init slave path on all [$nodes] nodes?[Y/N/J]:" answer
