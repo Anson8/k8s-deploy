@@ -114,7 +114,4 @@
       dest: "{{item.dest}}"
       mode: 0755
     with_items:
-      - { src: "/home/admin/k8s-deploy/boot/gen/kernel.sh",dest: "{{file_path}}/" }      
-  ##升级系统内核为5.4.144
-  - name: update system kernel-lt-5.4.144
-    shell: sh {{file_path}}/kernel.sh
+      - { src: "/home/admin/k8s-deploy/boot/gen/kernel.sh",dest: "{{file_path}}/" }

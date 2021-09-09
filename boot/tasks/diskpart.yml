@@ -5,7 +5,10 @@
   vars:                          # 执行时可以通过-e指定变量，默认为sdb
     wpath: /home/admin/k8s-deploy/boot 
     mountDir: /data
-  tasks:                         # 创建分区，把变量传给disk.sh
+  tasks:  
+  #TODO: 创建文件目录
+    - name: Create mountDir
+      file: path={{ mountDir }} state=directory recurse=yes
     - name: yum install lvm2
       yum: name=lvm2  
     - name: New Disk Partition

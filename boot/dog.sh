@@ -65,6 +65,7 @@ function PathInitMaster(){
             ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER  disk=$DISK diskfullpath=$DISKFULLPATH" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes master path on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            sleep 30s;
             echo "ansible-playbook install docker"
             ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
@@ -89,10 +90,10 @@ function PathInitMaster(){
 function PathInitSlaves(){
     # 拷贝相关环境证书
     #mkdir -p /opt/kubernetes/{cfg,ssl}
-    rm -rf /opt/kubernetes/{ssl,cfg} 
-    cp -R /opt/k8s-cfg/$ENV/{ssl,cfg} /opt/kubernetes
-    cp /opt/k8s-cfg/$ENV/kubectl.kubeconfig  ~/.kube/config
-    sudo systemctl restart kube-nginx
+    #rm -rf /opt/kubernetes/{ssl,cfg} 
+    #cp -R /opt/k8s-cfg/$ENV/{ssl,cfg} /opt/kubernetes
+    #cp /opt/k8s-cfg/$ENV/kubectl.kubeconfig  ~/.kube/config
+    #sudo systemctl restart kube-nginx
     # 初始化slaves节点环境
     nodes=${K8S_SLAVES[@]}
     read -p "Do you want to init slave path on all [$nodes] nodes?[Y/N/J]:" answer
@@ -107,7 +108,7 @@ function PathInitSlaves(){
             echo "Start to add [$ip] to known_hosts."
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
-            ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
+            ansible-playbook $BOOT_TASKS_PATH/createuser.yml -i $ip, -e "pubkey=$PRIVATEKEY user_add=$USER ansible_user=$USER_INIT ansible_ssh_pass=$PASSWD_INIT ansible_become_pass=$PASSWD_INIT condition=false"
             echo "ansible-playbook mount disk on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER  disk=$DISK diskfullpath=$DISKFULLPATH" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes slave path on this $ip"
