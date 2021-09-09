@@ -122,7 +122,6 @@ ExecStart=/opt/kubernetes/bin/kube-apiserver \\
   --advertise-address=${K8S_MASTER[i]} \\
   --default-not-ready-toleration-seconds=360 \\
   --default-unreachable-toleration-seconds=360 \\
-  --feature-gates=DynamicAuditing=true \\
   --max-mutating-requests-inflight=2000 \\
   --max-requests-inflight=4000 \\
   --default-watch-cache-size=200 \\
@@ -136,7 +135,6 @@ ExecStart=/opt/kubernetes/bin/kube-apiserver \\
   --secure-port=6443 \\
   --tls-cert-file=/opt/kubernetes/ssl/kubernetes.pem \\
   --tls-private-key-file=/opt/kubernetes/ssl/kubernetes-key.pem \\
-  --audit-dynamic-configuration \\
   --audit-log-maxage=15 \\
   --audit-log-maxbackup=3 \\
   --audit-log-maxsize=100 \\

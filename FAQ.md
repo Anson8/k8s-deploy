@@ -23,3 +23,14 @@ make install
 systemctl restart  kube-proxy
 systemctl restart kubelet
 ```
+
+# kube-apiserver 无法启动
+```
+kube-apiserver: Error: invalid argument "DynamicAuditing=true" for "--feature-gates" flag: unrecognized feature gate: DynamicAuditing
+```
+- 原因：
+  新版本不支持这两个参数
+  ```
+  --feature-gates=DynamicAuditing=true
+  ```
+ 
