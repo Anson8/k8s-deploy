@@ -13,9 +13,9 @@ Y | y)
     ## 移除node节点
     REMOVE_NODE
     ## 移除master节点
-    ##REMOVE_MASTER
+    REMOVE_MASTER
     ## 移除本地NGINX
-    ##REMOVE_NGINX_LOCAL
+    REMOVE_NGINX_LOCAL
     ;;
 N | n)
     echo "Exit."
