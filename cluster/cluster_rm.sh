@@ -63,11 +63,16 @@ function REMOVE_MASTER(){
         echo "Input error, please try again."
         exit 2;;
     esac
+    REMOVE_NGINX_LOCAL
+    
 }
 
-#
 # TODO 移除本地NGINX服务
 function REMOVE_NGINX_LOCAL(){
   sudo systemctl stop kube-nginx
   sudo rm /lib/systemd/system/kube-nginx.service
+  rm -rf /opt/kubernetes/cfg/*
+  rm -rf /opt/kubernetes/ssl/*
+  rm -rf ~/.kube
+  echo "remove local[kube-nginx、cfg、ssl、.kube] ...................Successfully!";;
 }

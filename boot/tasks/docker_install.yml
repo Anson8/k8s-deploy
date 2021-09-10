@@ -41,11 +41,3 @@
       state: started
       enabled: yes
     tags: docker-ce
-  # 安装docker-compose 不需要可去掉  
-  #- name: Ensure docker-compose is installed and available
-  #  copy:
-  #    src: "{{item.src}}"
-  #    dest: "{{item.dest}}"
-  #    mode: 0755
-  #  with_items:
-  #    - { src: "/opt/bin/docker-compose",dest: "/usr/local/bin/" }
