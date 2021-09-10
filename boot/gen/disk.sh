@@ -38,8 +38,8 @@ echo "Disk Partition Create OK!"
 # 删除卷
 #lvremove /dev/mapper/vgdata-lvdata1
 #vgremove vgdata
-#pvremove /dev/sdb1
-#fdisk /dev/sdb（d）
+#pvremove /dev/vdb1
+#fdisk /dev/vdb（d）
 
 
 #手动创建
