@@ -33,7 +33,7 @@
       - /lib/systemd/system/kube-proxy.service 
       - /lib/systemd/system/flanneld.service 
       - /lib/systemd/system/kube-nginx.service    
-      - /lib/systemd/system/docker.service.requires/flanneld.service 
+      - /etc/systemd/system/docker.service.requires/flanneld.service 
   - name: delete ssl path
     file:
       path: /opt/kubernetes/ssl
