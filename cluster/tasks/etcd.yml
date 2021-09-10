@@ -5,7 +5,7 @@
   become_user: root
   vars:
     file_path: /opt/kubernetes
-    system_path: /etc/systemd/system
+    system_path: /lib/systemd/system
 
   tasks:
   #TODO: 创建文件目录
@@ -36,4 +36,4 @@
       state: started
       daemon_reload: yes
       enabled: yes    
-    ignore_errors: yes         
+    ignore_errors: yes

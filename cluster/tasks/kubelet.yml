@@ -5,7 +5,7 @@
   become_user: root
   vars:
     file_path: /opt/kubernetes
-    system_path: /etc/systemd/system
+    system_path: /lib/systemd/system
 
   tasks:
   - name: Create kubelet logs dir
