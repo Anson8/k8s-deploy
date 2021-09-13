@@ -2,14 +2,17 @@
   "insecure-registries": ["docker02:35000"],
   "registry-mirrors": ["https://8ko4gu39.mirror.aliyuncs.com"],
   "max-concurrent-downloads": 20,
-  "live-restore": true,
-  "max-concurrent-uploads": 10,
-  "debug": false,
-  "data-root": "/data/k8s/docker/data",
-  "exec-root": "/data/k8s/docker/exec",
+  "max-concurrent-uploads": 10,  
+  "data-root": "/data/docker/data",
+  "oom-score-adjust": -1000,
   "log-driver": "json-file",
   "log-opts": {
     "max-size": "50m",
     "max-file": "3"
-  }
+  }, 
+  "storage-driver": "overlay2",
+  "storage-opts": [
+    "overlay2.override_kernel_check=true"
+  ],
+  "live-restore": true
 }

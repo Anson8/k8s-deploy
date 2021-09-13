@@ -26,9 +26,7 @@
   - name: Create Docker config directory. 
     file: path=/etc/docker state=directory 
   - name: Create Docker running data directory. 
-    file: path=/data/k8s/data state=directory
-  - name: Create Docker running exec directory. 
-    file: path=/data/k8s/exec state=directory                 
+    file: path=/data/docker/data state=directory               
   - name: Configure docker startup parameters.
     template:
       src: ../genconf/daemon.json
