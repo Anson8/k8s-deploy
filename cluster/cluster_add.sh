@@ -140,6 +140,7 @@ function DEPLOY_SLAVES(){
         echo "Input error, please try again."
         exit 2;;
     esac
+    sleep 10s;
     ADD_NODE_CLUSTER
 }
 
