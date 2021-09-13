@@ -27,3 +27,9 @@ leaderElection:
   leaderElect: true
 EOF
   ```
+
+# 证书服务加入
+```
+no kind "CertificateSigningRequest" is registered for version "certificates.k8s.io/v1" in scheme "k8s.io/kubernetes/pkg/kubectl/scheme/scheme.go:28"
+```  
+- 原因：kubectl版本于服务版本不一致，需替换
