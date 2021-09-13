@@ -25,12 +25,14 @@ function REMOVE_NODE(){
                 return 1
             fi
         done
-        echo "remove node $ip path...................Successfully!";;
+        echo "remove node $ip path...................Successfully!"
+        ;;
     N | n)
         echo "Exit."
         exit 0;;
     J | j)
-    echo "Skip remove kubernetes node.";;    
+    echo "Skip remove kubernetes node."
+    ;;    
     *)
         echo "Input error, please try again."
         exit 2;;
@@ -55,7 +57,8 @@ function REMOVE_MASTER(){
                 return 1
             fi
         done
-        echo "remove master $ip path...................Successfully!";;
+        echo "remove master $ip path...................Successfully!"
+        ;;
     N | n)
         echo "Exit."
         exit 0;;
