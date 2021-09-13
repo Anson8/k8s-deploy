@@ -74,5 +74,5 @@ function REMOVE_NGINX_LOCAL(){
   rm -rf /opt/kubernetes/cfg/*
   rm -rf /opt/kubernetes/ssl/*
   rm -rf ~/.kube
-  echo "remove local[kube-nginx、cfg、ssl、.kube] ...................Successfully!";;
+  echo "remove local[kube-nginx、cfg、ssl、.kube] ...................Successfully!"
 }

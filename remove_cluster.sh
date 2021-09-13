@@ -21,7 +21,7 @@ N | n)
     echo "Exit."
     exit 0;;
 J | j)
-    echo "Skip the remove of the Kuberbetes.";;
+    echo "Skip the remove of the Kuberbetes."
 *)
     echo "Input error, please try again."
     exit 1;;
