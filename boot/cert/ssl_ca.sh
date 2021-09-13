@@ -17,6 +17,7 @@ function DownLoadCFSSL(){
   sudo cp cfssl_linux-amd64 /usr/local/bin/cfssl
   sudo cp cfssljson_linux-amd64 /usr/local/bin/cfssljson
   sudo cp cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
+  sudo cp kubectl /usr/local/bin/
   
   export PATH=/usr/local/bin:$PATH
 }
