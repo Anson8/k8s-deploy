@@ -48,7 +48,10 @@ function DEPLOY_SLAVES(){
                 return 1
             fi
         done
-        echo "Deploy kubernetes node ...................Successfully!";;
+        echo "Deploy kubernetes node ...................Successfully!"
+        sleep 10s;
+        ADD_NODE_CLUSTER
+        ;;
     N | n)
         echo "Exit."
         exit 0;;
@@ -56,7 +59,7 @@ function DEPLOY_SLAVES(){
         echo "Input error, please try again."
         exit 2;;
     esac
-    ADD_NODE_CLUSTER
+    
 }
 
 function DEPLOY_NODE_SSL_CFG(){
