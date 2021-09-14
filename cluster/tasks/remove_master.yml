@@ -15,7 +15,11 @@
   - name: Stop service flanneld
     service:
       name: flanneld
-      state: stopped       
+      state: stopped  
+  - name: Stop service kubelet
+    service:
+      name: kubelet
+      state: stopped           
   - name: Stop service kube-scheduler
     service:
       name: kube-scheduler
@@ -43,7 +47,8 @@
     with_items:
       - /lib/systemd/system/kube-proxy.service 
       - /lib/systemd/system/flanneld.service 
-      - /etc/systemd/system/docker.service.requires/flanneld.service     
+      - /etc/systemd/system/docker.service.requires/flanneld.service  
+      - /lib/systemd/system/kubelet.service    
       - /lib/systemd/system/kube-scheduler.service 
       - /lib/systemd/system/kube-controller-manager.service 
       - /lib/systemd/system/kube-nginx.service 
