@@ -7,9 +7,8 @@ YAML_PATH=$DEPLOY_PATH/yaml
 ## TODO 引入clusterConfig配置文件
 . $DEPLOY_PATH/../conf/clusterConfig
 . $DEPLOY_PATH/../boot/cfg_node.sh
-. $DEPLOY_PATH/../boot/cert/ssl_node.sh
 . $DEPLOY_PATH/../boot/cfg_kubectl.sh
-
+. $DEPLOY_PATH/../boot/cert/ssl_node.sh
 
 ## TODO 部署Kubernetes 集群
 function DEPLOY_CLUSTER(){
