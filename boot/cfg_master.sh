@@ -19,6 +19,9 @@ function MASTER-CFG() {
   #生成kube-nginx配置文件
   echo "create kube-nginx-cfg........................."
   KUBE-NGINX-CFG
+  #生成master-kube-proxy配置文件
+  echo "create master-kube-proxy-cfg........................."
+  KUBE-PROXY-CFG
 }
 
 #生成etcd的配置文件
@@ -361,4 +364,37 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 EOF
 
+}
+
+生成kube-proxy的配置文件
+function KUBE-PROXY-CFG() {
+  mkdir -p /opt/kubernetes/cfg/kube-proxy
+  cd /opt/kubernetes/cfg/kube-proxy
+  let len=${#K8S_MASTER[*]}
+  for ((i=0; i<$len; i++))
+  do
+    let n=$i+1
+    node_name=master0$n
+cat > kube-proxy-config-$node_name.yaml <<EOF
+kind: KubeProxyConfiguration
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+clientConnection:
+  burst: 200
+  kubeconfig: "/opt/kubernetes/cfg/kube-proxy.kubeconfig"
+  qps: 100
+bindAddress: ${K8S_MASTER[i]}
+healthzBindAddress: ${K8S_MASTER[i]}:10256
+metricsBindAddress: ${K8S_MASTER[i]}:10249
+enableProfiling: true
+clusterCIDR: ${CLUSTER_CIDR}
+hostnameOverride: ${node_name}
+mode: "ipvs"
+portRange: ""
+kubeProxyIPTablesConfiguration:
+  masqueradeAll: false
+kubeProxyIPVSConfiguration:
+  scheduler: rr
+  excludeCIDRs: []
+EOF
+  done  
 }

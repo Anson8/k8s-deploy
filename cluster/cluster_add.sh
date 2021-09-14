@@ -24,6 +24,8 @@ function DEPLOY_CLUSTER(){
     DEPLOY_RBAC_CLUSTER
     echo "Deploy kubernetes SLAVES........................."
     DEPLOY_SLAVES
+    echo "Deploy kubernetes KUBECTL........................."
+    DEPLOY_MASTER_KUBECTL
 }
 
 ## TODO 部署ETCD集群
@@ -142,6 +144,40 @@ function DEPLOY_SLAVES(){
     esac
     sleep 10s;
     ADD_NODE_CLUSTER
+}
+
+## TODO master节点部署kubectl和网络
+function DEPLOY_MASTER_KUBECTL(){
+    nodes=${K8S_MASTER[@]}
+    let len=${#K8S_MASTER[*]}
+    read -p "Do you want to deploy Kubectl on [$nodes]?[Y/N/j]:" answer
+    answer=$(echo $answer)
+    case $answer in
+    Y | y)
+        echo "Start to deploy kubernetes Kubectl."
+        for ((i=0; i<$len; i++))
+        do
+          let n=$i+1
+          hostname=master0$n
+            ##  部署kube-proxy
+            echo "ansible-playbook deploy kubectl on this ${K8S_MASTER[i]}"
+            ansible-playbook $TASKS_PATH/kubectl.yml -i ${K8S_MASTER[i]}, -e "n=${hostname}" --private-key=/home/admin/.ssh/$PRIVATEKEY
+            
+            if [ $? -ne 0 ];then
+                 echo "Deploy K8s-Kubectl on $ip..................Failed! Ret=$ret"
+                return 1
+            fi
+        done
+        echo "Deploy K8s-Kubectl ...................Successfully!";;
+    N | n)
+        echo "Exit."
+        exit 0;;
+    J | j)
+    echo "Skip depoloy Kuberbetes Kubectl.";;      
+    *)
+        echo "Input error, please try again."
+        exit 2;;
+    esac
 }
 
 #跳版机启动kube-nginx

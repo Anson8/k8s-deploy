@@ -1,0 +1,53 @@
+---
+- name: kubectl deploy
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    file_path: /opt/kubernetes
+    system_path: /lib/systemd/system
+
+  tasks:
+  - name: Create kube-proxy log dir
+    file: path=/data/k8s/kube-proxy state=directory recurse=yes     
+  - name: copy kube-proxy && flanneld && kubectl bin
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      mode: 0755
+    with_items:
+      - { src: "{{file_path}}/bin/flanneld",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/mk-docker-opts.sh",dest: "{{file_path}}/bin/" }  
+      - { src: "{{file_path}}/bin/kube-proxy",dest: "{{file_path}}/bin/" }
+      - { src: "{{file_path}}/bin/kubectl",dest: "/usr/local/bin/" }      
+  - name: copy ssl && cfg && services
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: "{{file_path}}/ssl/flanneld.pem",dest: "{{file_path}}/ssl/flanneld.pem" } 
+      - { src: "{{file_path}}/ssl/flanneld-key.pem",dest: "{{file_path}}/ssl/flanneld-key.pem" } 
+      - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" }
+      - { src: "{{file_path}}/cfg/flanneld.service",dest: "{{system_path}}/flanneld.service" }
+      - { src: "/home/admin/k8s-deploy/boot/genconf/docker.service",dest: "/usr/{{system_path}}/docker.service" }          
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.kubeconfig",dest: "{{file_path}}/cfg/kube-proxy.kubeconfig" } 
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy-config-{{n}}.yaml",dest: "{{file_path}}/cfg/kube-proxy-config.yaml" } 
+      - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.service",dest: "{{system_path}}/kube-proxy.service" }
+  - name: startup flanneld
+    service:
+      name: flanneld
+      state: started
+      daemon_reload: yes
+      enabled: yes       
+  - name: restart docker
+    service:
+      name: docker
+      state: restarted
+      daemon_reload: yes
+      enabled: yes
+  - name: startup kube-proxy
+    service:
+      name: kube-proxy
+      state: started
+      daemon_reload: yes
+      enabled: yes                    

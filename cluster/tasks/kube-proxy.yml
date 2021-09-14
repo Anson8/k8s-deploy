@@ -25,9 +25,9 @@
       - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.kubeconfig",dest: "{{file_path}}/cfg/kube-proxy.kubeconfig" } 
       - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy-config-{{n}}.yaml",dest: "{{file_path}}/cfg/kube-proxy-config.yaml" } 
       - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.service",dest: "{{system_path}}/kube-proxy.service" } 
-  - name: startup kubelet
+  - name: startup kube-proxy
     service:
       name: kube-proxy
       state: started
       daemon_reload: yes
-      enabled: yes               
+      enabled: yes
