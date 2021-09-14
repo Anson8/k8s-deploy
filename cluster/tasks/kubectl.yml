@@ -49,6 +49,12 @@
       state: restarted
       daemon_reload: yes
       enabled: yes
+  - name: startup kubelet
+    service:
+      name: kubelet
+      state: started
+      daemon_reload: yes
+      enabled: yes        
   - name: startup kube-proxy
     service:
       name: kube-proxy
