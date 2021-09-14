@@ -21,7 +21,7 @@ function MASTER-CFG() {
   KUBE-NGINX-CFG
   #生成master-kube-proxy配置文件
   echo "create master-kube-proxy-cfg........................."
-  KUBE-PROXY-MSTER-CFG
+  #KUBE-PROXY-MSTER-CFG
 }
 
 #生成etcd的配置文件
