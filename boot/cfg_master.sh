@@ -21,7 +21,7 @@ function MASTER-CFG() {
   KUBE-NGINX-CFG
   #生成master-kube-proxy配置文件
   echo "create master-kube-proxy-cfg........................."
-  KUBE-PROXY-CFG
+  KUBE-PROXY-MSTER-CFG
 }
 
 #生成etcd的配置文件
@@ -367,7 +367,7 @@ EOF
 }
 
 #生成kube-proxy的配置文件
-function KUBE-PROXY-CFG() {
+function KUBE-PROXY-MSTER-CFG() {
   mkdir -p /opt/kubernetes/cfg/kube-proxy
   cd /opt/kubernetes/cfg/kube-proxy
   let len=${#K8S_MASTER[*]}
