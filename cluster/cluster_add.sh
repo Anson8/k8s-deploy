@@ -8,6 +8,7 @@ YAML_PATH=$DEPLOY_PATH/yaml
 . $DEPLOY_PATH/../conf/clusterConfig
 . $DEPLOY_PATH/../boot/cfg_node.sh
 . $DEPLOY_PATH/../boot/cert/ssl_node.sh
+. $DEPLOY_PATH/../boot/cfg_kubectl.sh
 
 
 ## TODO 部署Kubernetes 集群
@@ -155,6 +156,7 @@ function DEPLOY_MASTER_KUBECTL(){
     case $answer in
     Y | y)
         echo "Start to deploy kubernetes Kubectl."
+        KUBECTL-MASTER-CFG
         for ((i=0; i<$len; i++))
         do
           let n=$i+1
