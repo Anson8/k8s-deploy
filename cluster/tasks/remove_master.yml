@@ -7,7 +7,15 @@
     file_path: /opt/kubernetes
     system_path: /lib/systemd/system
 
-  tasks:     
+  tasks:
+  - name: Stop service kube-proxy
+    service:
+      name: kube-proxy
+      state: stopped
+  - name: Stop service flanneld
+    service:
+      name: flanneld
+      state: stopped       
   - name: Stop service kube-scheduler
     service:
       name: kube-scheduler
@@ -33,6 +41,9 @@
       path: "{{ item }}"
       state: absent  
     with_items:
+      - /lib/systemd/system/kube-proxy.service 
+      - /lib/systemd/system/flanneld.service 
+      - /etc/systemd/system/docker.service.requires/flanneld.service     
       - /lib/systemd/system/kube-scheduler.service 
       - /lib/systemd/system/kube-controller-manager.service 
       - /lib/systemd/system/kube-nginx.service 
