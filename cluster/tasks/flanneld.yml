@@ -25,7 +25,7 @@
       - { src: "{{file_path}}/ssl/flanneld-key.pem",dest: "{{file_path}}/ssl/flanneld-key.pem" } 
       - { src: "{{file_path}}/ssl/ca.pem",dest: "{{file_path}}/ssl/ca.pem" }
       - { src: "{{file_path}}/cfg/flanneld.service",dest: "{{system_path}}/flanneld.service" }
-      - { src: "/home/admin/k8s-deploy/boot/genconf/docker.service",dest: "/usr/{{system_path}}/docker.service" }
+      - { src: "/home/admin/k8s-deploy/boot/genconf/docker.service",dest: "/usr{{system_path}}/docker.service" }
   - name: startup flanneld
     service:
       name: flanneld
