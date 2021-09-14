@@ -179,6 +179,7 @@ function DEPLOY_MASTER_KUBECTL(){
         echo "Input error, please try again."
         exit 2;;
     esac
+    TAINT_CLUSTER
 }
 
 #跳版机启动kube-nginx
@@ -232,4 +233,10 @@ function DEPLOY_RBAC_CLUSTER(){
 
 function ADD_NODE_CLUSTER(){
     kubectl get csr | grep Pending | awk '{print $1}' | xargs kubectl certificate approve
+}
+
+function TAINT_CLUSTER(){
+    kubectl taint nodes k8s-master01 key=value:NoSchedule
+    kubectl taint nodes k8s-master02 key=value:NoSchedule
+    kubectl taint nodes k8s-master03 key=value:NoSchedule
 }
