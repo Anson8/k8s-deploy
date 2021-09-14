@@ -19,7 +19,8 @@
       - { src: "{{file_path}}/bin/flanneld",dest: "{{file_path}}/bin/" }
       - { src: "{{file_path}}/bin/mk-docker-opts.sh",dest: "{{file_path}}/bin/" }  
       - { src: "{{file_path}}/bin/kube-proxy",dest: "{{file_path}}/bin/" }
-      - { src: "{{file_path}}/bin/kubectl",dest: "/usr/local/bin/" }      
+      - { src: "{{file_path}}/bin/kubectl",dest: "/usr/local/bin/" }
+      - { src: "{{file_path}}/bin/kubelet",dest: "{{file_path}}/bin/" }      
   - name: copy ssl && cfg && services
     copy:
       src: "{{item.src}}"
@@ -33,6 +34,9 @@
       - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.kubeconfig",dest: "{{file_path}}/cfg/kube-proxy.kubeconfig" } 
       - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy-config-{{n}}.yaml",dest: "{{file_path}}/cfg/kube-proxy-config.yaml" } 
       - { src: "{{file_path}}/cfg/kube-proxy/kube-proxy.service",dest: "{{system_path}}/kube-proxy.service" }
+      - { src: "{{file_path}}/cfg/kubelet/kubelet-bootstrap-{{n}}.kubeconfig",dest: "{{file_path}}/cfg/kubelet-bootstrap.kubeconfig" } 
+      - { src: "{{file_path}}/cfg/kubelet/kubelet-config-{{n}}.yaml",dest: "{{file_path}}/cfg/kubelet-config.yaml" } 
+      - { src: "{{file_path}}/cfg/kubelet/kubelet-{{n}}.service",dest: "{{system_path}}/kubelet.service" }       
   - name: startup flanneld
     service:
       name: flanneld
