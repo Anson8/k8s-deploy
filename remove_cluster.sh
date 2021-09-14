@@ -13,7 +13,7 @@ Y | y)
     ## 移除node节点
     REMOVE_NODE
     ## 移除master节点
-    REMOVE_MASTER
+    REMOVE_MASTER
     ;;
 N | n)
     echo "Exit."
