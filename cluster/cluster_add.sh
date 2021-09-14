@@ -88,7 +88,10 @@ function DEPLOY_MASTER(){
                 return 1
             fi
         done
-        echo "Deploy K8s-Master ...................Successfully!";;
+        echo "Deploy K8s-Master ...................Successfully!"
+        #本地启动kube-nginx
+        KUBE-NGINX-LOCAL
+        ;;
     N | n)
         echo "Exit."
         exit 0;;
@@ -97,10 +100,7 @@ function DEPLOY_MASTER(){
     *)
         echo "Input error, please try again."
         exit 2;;
-    esac
-    #本地启动kube-nginx
-    echo "START KUBE-NGINX ON LOCAL........................."
-    KUBE-NGINX-LOCAL    
+    esac 
 }
 
 ## TODO 部署SLAVE工作节点
@@ -134,7 +134,10 @@ function DEPLOY_SLAVES(){
                 return 1
             fi
         done
-        echo "Deploy kubernetes node ...................Successfully!";;
+        echo "Deploy kubernetes node ...................Successfully!"
+        sleep 10s;
+        ADD_NODE_CLUSTER
+        ;;
     N | n)
         echo "Exit."
         exit 0;;
@@ -144,8 +147,7 @@ function DEPLOY_SLAVES(){
         echo "Input error, please try again."
         exit 2;;
     esac
-    sleep 10s;
-    ADD_NODE_CLUSTER
+    
 }
 
 ## TODO master节点部署kubectl和网络
@@ -171,7 +173,9 @@ function DEPLOY_MASTER_KUBECTL(){
                 return 1
             fi
         done
-        echo "Deploy K8s-Kubectl ...................Successfully!";;
+        echo "Deploy K8s-Kubectl ...................Successfully!"
+        TAINT_CLUSTER
+        ;;
     N | n)
         echo "Exit."
         exit 0;;
@@ -181,7 +185,6 @@ function DEPLOY_MASTER_KUBECTL(){
         echo "Input error, please try again."
         exit 2;;
     esac
-    TAINT_CLUSTER
 }
 
 #跳版机启动kube-nginx
