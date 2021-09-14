@@ -20,7 +20,7 @@ function MASTER-CFG() {
   echo "create kube-nginx-cfg........................."
   KUBE-NGINX-CFG
   #生成master-kube-proxy配置文件
-  echo "create master-kube-proxy-cfg........................."
+  #echo "create master-kube-proxy-cfg........................."
   #KUBE-PROXY-MSTER-CFG
 }
 
