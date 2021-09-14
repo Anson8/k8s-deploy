@@ -53,27 +53,28 @@
       - /lib/systemd/system/kube-controller-manager.service 
       - /lib/systemd/system/kube-nginx.service 
       - /lib/systemd/system/kube-apiserver.service 
-      - /lib/systemd/system/etcd.service    
-  - name: delete ssl path
+      - /lib/systemd/system/etcd.service   
+   - name: delete k8s path
     file:
-      path: /opt/kubernetes/ssl
-      state: absent
+      path: "{{ item }}"
+      state: absent  
+    with_items:     
+      - /opt/kubernetes/ssl
+      - /opt/kubernetes/cfg
+      - /data/k8s/etcd
+      - /data/k8s/kube-apiserver
+      - /data/k8s/kube-controller-manager
+      - /data/k8s/kubelet
+      - /data/k8s/kube-proxy
+      - /data/k8s/kube-scheduler
   - name: create ssl path    
     file:    
       path: /opt/kubernetes/ssl
       state: directory 
-  - name: delete cfg path
-    file:
-      path: /opt/kubernetes/cfg
-      state: absent
   - name: create cfg path    
     file:    
       path: /opt/kubernetes/cfg
       state: directory 
-  - name: delete etcd path
-    file:
-      path: /data/k8s/etcd
-      state: absent
   - name: create etcd path    
     file:    
       path: /data/k8s/etcd
