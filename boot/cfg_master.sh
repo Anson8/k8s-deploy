@@ -366,7 +366,7 @@ EOF
 
 }
 
-生成kube-proxy的配置文件
+#生成kube-proxy的配置文件
 function KUBE-PROXY-CFG() {
   mkdir -p /opt/kubernetes/cfg/kube-proxy
   cd /opt/kubernetes/cfg/kube-proxy
