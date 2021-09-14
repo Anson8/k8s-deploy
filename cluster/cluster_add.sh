@@ -163,7 +163,7 @@ function DEPLOY_MASTER_KUBECTL(){
         for ((i=0; i<$len; i++))
         do
           let n=$i+1
-          hostname=master0$n
+          hostname=k8s-master0$n
             ##  部署kube-proxy
             echo "ansible-playbook deploy kubectl on this ${K8S_MASTER[i]}"
             ansible-playbook $TASKS_PATH/kubectl.yml -i ${K8S_MASTER[i]}, -e "n=${hostname}" --private-key=/home/admin/.ssh/$PRIVATEKEY

@@ -20,7 +20,7 @@ function KUBE-PROXY-MASTER-CFG() {
   for ((i=0; i<$len; i++))
   do
     let n=$i+1
-    node_name=master0$n
+    node_name=k8s-master0$n
 cat > kube-proxy-config-$node_name.yaml <<EOF
 kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
@@ -54,7 +54,7 @@ function KUBELET-MASTER-CFG(){
   for ((i=0; i<$len; i++))
   do
       let n=$i+1
-      node_name=master0$n
+      node_name=k8s-master0$n
       # 创建 token
         export BOOTSTRAP_TOKEN=$(kubeadm token create \
               --description kubelet-bootstrap-token \
