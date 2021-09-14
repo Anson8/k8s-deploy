@@ -176,7 +176,7 @@ function DEPLOY_MASTER_KUBECTL(){
         echo "Deploy K8s-Kubectl ...................Successfully!"
         sleep 10s;
         ADD_NODE_CLUSTER
-        sleep 5s;
+        sleep 10s;
         TAINT_CLUSTER
         ;;
     N | n)
@@ -247,4 +247,6 @@ function TAINT_CLUSTER(){
     kubectl taint nodes k8s-master01 key=value:NoSchedule
     kubectl taint nodes k8s-master02 key=value:NoSchedule
     kubectl taint nodes k8s-master03 key=value:NoSchedule
+    # 授权kubernetes拥有admin权限
+    kubectl create clusterrolebinding cluster-system-anonymous --clusterrole=cluster-admin --user=kubernetes
 }
