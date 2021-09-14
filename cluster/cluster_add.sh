@@ -176,7 +176,7 @@ function DEPLOY_MASTER_KUBECTL(){
         echo "Deploy K8s-Kubectl ...................Successfully!"
         sleep 10s;
         ADD_NODE_CLUSTER
-        sleep 10s;
+        sleep 5s;
         TAINT_CLUSTER
         ;;
     N | n)
