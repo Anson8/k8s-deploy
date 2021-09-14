@@ -12,18 +12,16 @@ YAML_PATH=$DEPLOY_PATH/yaml
 
 ## TODO 部署Kubernetes 集群
 function DEPLOY_CLUSTER(){
+    #部署etcd
     echo "Deploy kubernetes etcd........................."
     DEPLOY_ETCD
+    #部署master
     echo "Deploy kubernetes MASTER........................."
     DEPLOY_MASTER
-    echo "Deploy kubernetes rbac和dns........................."
-    #本地启动kube-nginx
-    echo "START KUBE-NGINX ON LOCAL........................."
-    KUBE-NGINX-LOCAL
-    echo "Deploy kubernetes RBAC........................."
-    DEPLOY_RBAC_CLUSTER
+    #部署slaves
     echo "Deploy kubernetes SLAVES........................."
     DEPLOY_SLAVES
+    #在master钟部署kubectl
     echo "Deploy kubernetes KUBECTL........................."
     DEPLOY_MASTER_KUBECTL
 }
@@ -100,6 +98,9 @@ function DEPLOY_MASTER(){
         echo "Input error, please try again."
         exit 2;;
     esac
+    #本地启动kube-nginx
+    echo "START KUBE-NGINX ON LOCAL........................."
+    KUBE-NGINX-LOCAL    
 }
 
 ## TODO 部署SLAVE工作节点
@@ -111,6 +112,7 @@ function DEPLOY_SLAVES(){
     case $answer in
     Y | y)
         echo "Start to deploy kubernetes node."
+        DEPLOY_RBAC_CLUSTER
         for ((i=0; i<$len; i++))
         do
           let n=$i+1
