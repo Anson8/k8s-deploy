@@ -1,3 +1,5 @@
+# __MACHINE_GENERATED_WARNING__
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -65,13 +67,15 @@ data:
             lameduck 5s
         }
         ready
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
+        kubernetes ${CLUSTER_DNS_DOMAIN} in-addr.arpa ip6.arpa {
             pods insecure
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
         }
         prometheus :9153
-        forward . /etc/resolv.conf
+        forward . /etc/resolv.conf {
+            max_concurrent 1000
+        }
         cache 30
         loop
         reload
@@ -89,6 +93,10 @@ metadata:
     addonmanager.kubernetes.io/mode: Reconcile
     kubernetes.io/name: "CoreDNS"
 spec:
+  # replicas: not specified here:
+  # 1. In order to make Addon Manager do not reconcile this replicas parameter.
+  # 2. Default is 1.
+  # 3. Will be tuned in real time if DNS horizontal auto-scaling is turned on.
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -105,6 +113,17 @@ spec:
     spec:
       priorityClassName: system-cluster-critical
       serviceAccountName: coredns
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: k8s-app
+                    operator: In
+                    values: ["kube-dns"]
+              topologyKey: kubernetes.io/hostname
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
@@ -112,11 +131,11 @@ spec:
         kubernetes.io/os: linux
       containers:
       - name: coredns
-        image: registry.cn-shenzhen.aliyuncs.com/4d_prom/coredns:1.6.7
+        image: registry.cn-shenzhen.aliyuncs.com/4d_prom/coredns:1.7.0
         imagePullPolicy: IfNotPresent
         resources:
           limits:
-            memory: 160Mi
+            memory: __PILLAR__DNS__MEMORY__LIMIT__
           requests:
             cpu: 100m
             memory: 70Mi
@@ -182,6 +201,7 @@ metadata:
 spec:
   selector:
     k8s-app: kube-dns
+  clusterIP: ${CLUSTER_DNS_DOMAIN}
   ports:
   - name: dns
     port: 53
