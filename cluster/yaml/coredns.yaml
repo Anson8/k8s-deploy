@@ -67,7 +67,7 @@ data:
             lameduck 5s
         }
         ready
-        kubernetes ${CLUSTER_DNS_DOMAIN} in-addr.arpa ip6.arpa {
+        kubernetes __PILLAR__DNS__DOMAIN__ in-addr.arpa ip6.arpa {
             pods insecure
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
@@ -201,7 +201,7 @@ metadata:
 spec:
   selector:
     k8s-app: kube-dns
-  clusterIP: ${CLUSTER_DNS_DOMAIN}
+  clusterIP: __PILLAR__DNS__SERVER__
   ports:
   - name: dns
     port: 53

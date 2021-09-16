@@ -231,12 +231,13 @@ function DEPLOY_RBAC_CLUSTER(){
      --key-file=/opt/kubernetes/ssl/flanneld-key.pem \
      mk ${FLANNEL_ETCD_PREFIX}/config '{"Network":"'${CLUSTER_CIDR}'", "SubnetLen": 21, "Backend": {"Type": "vxlan"}}'
 
-    kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --group=system:bootstrappers 
+    sed -i "s/__PILLAR__DNS__DOMAIN__/${CLUSTER_DNS_DOMAIN}/g" $YAML_PATH/coredns.yaml
+    sed -i "s/__PILLAR__DNS__SERVER__/${CLUSTER_DNS_SVC_IP}/g" $YAML_PATH/coredns.yaml
+    
+    kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --group=system:bootstrappers
+
     kubectl apply -f $YAML_PATH/csr-crb.yaml
     kubectl apply -f $YAML_PATH/coredns.yaml
-    
-    #sleep 5m
-    #kubectl get csr | grep Pending | awk '{print $1}' | xargs kubectl certificate approve
 }
 
 function ADD_NODE_CLUSTER(){
