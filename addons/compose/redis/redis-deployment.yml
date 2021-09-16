@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-dev
+  name: redis-sit
   namespace: common-server
   labels:
-    app: redis-dev
+    app: redis-sit
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-dev
+      app: redis-sit
   template:
     metadata:
       labels:
-        app: redis-dev
+        app: redis-sit
     spec:
       affinity:
         nodeAffinity:
@@ -40,7 +40,7 @@ spec:
           - name: sys
             mountPath: /sys
       containers:
-        - name: redis-dev
+        - name: redis-sit
           image: registry.cn-shenzhen.aliyuncs.com/4d_prom/redis:6.2.5
           command:
             - "sh"
@@ -85,10 +85,10 @@ spec:
       volumes:
         - name: data
           hostPath:
-            path: /logs/common/dev/redis
+            path: /logs/common/sit/redis
         - name: config
           configMap:
-            name: redis-dev-config
+            name: redis-sit-config
         - name: sys
           hostPath:
             path: /sys
@@ -96,15 +96,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-dev
+  name: redis-sit
   namespace: common-server
   labels:
-    app: redis-dev
+    app: redis-sit
 spec:
   ports:
   - name: port-tcp
     port: 6379
-    nodePort: 6379
+    nodePort: 26379
   selector:
-    app: redis-dev
+    app: redis-sit
   type: NodePort     

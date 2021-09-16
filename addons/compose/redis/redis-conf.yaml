@@ -1,10 +1,10 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: redis-dev-config
+  name: redis-sit-config
   namespace: common-server
   labels:
-    app: redis-dev
+    app: redis-sit
 data:
   redis.conf: |-
     dir /data

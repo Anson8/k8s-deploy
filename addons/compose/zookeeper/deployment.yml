@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zookeeper-dev
+  name: zookeeper-sit
   namespace: common-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: zookeeper-dev
+      app: zookeeper-sit
   template:
     metadata:
       labels:
-        app: zookeeper-dev
+        app: zookeeper-sit
     spec:
       affinity:
         nodeAffinity:
@@ -23,7 +23,7 @@ spec:
                 values:
                 - service
       containers:
-      - name: zookeeper-dev
+      - name: zookeeper-sit
         image: registry.cn-shenzhen.aliyuncs.com/sdtc/zookeeper:3.5.7
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -56,28 +56,46 @@ spec:
       volumes:
       - name: volume-conf
         hostPath: 
-          path: /logs/common/dev/zookeeper/conf       
+          path: /logs/common/sit/zookeeper/conf       
       - name: volume-logs
         hostPath: 
-          path: /logs/common/dev/zookeeper/log  
+          path: /logs/common/sit/zookeeper/log  
       - name: volume-data
         hostPath: 
-          path: /logs/common/dev/zookeeper/data                    
+          path: /logs/common/sit/zookeeper/data                    
       imagePullSecrets:
       - name: 4dtc          
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: zookeeper-dev
+  name: zookeeper-sit
   namespace: common-server
   labels:
-    app: zookeeper-dev
+    app: zookeeper-sit
 spec:
   ports:
   - name: port-tcp-2181
     port: 2181
-    nodePort: 2181   
+    targetPort: 2181   
   selector:
-    app: zookeeper-dev
-  type: NodePort
+    app: zookeeper-sit
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    field.cattle.io/creatorId: u-rjl9z
+    field.cattle.io/ipAddresses: "null"
+    field.cattle.io/targetDnsRecordIds: '["common-server:zookeeper-sit"]'
+    field.cattle.io/targetWorkloadIds: "null"
+  labels:
+    cattle.io/creator: norman
+  name: zookeeper
+  namespace: sit
+spec:
+  clusterIP: None
+  sessionAffinity: None
+  type: ClusterIP
