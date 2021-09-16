@@ -98,7 +98,7 @@ function PathInitSlaves(){
     nodes=${K8S_SLAVES[@]}
     read -p "Do you want to init slave path on all [$nodes] nodes?[Y/N/J]:" answer
     answer=$(echo $answer)
-    let n=1
+    let n=0
     case $answer in
     Y | y)
         echo "Start to init kubernetes slave path."
