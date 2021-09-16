@@ -11,6 +11,7 @@ TASKS_PATH=$DEPLOY_PATH/tasks
 function REMOVE_NODE(){
     # 获取node节点ip
     nodes=${K8S_SLAVES[@]}
+    let len=${#K8S_SLAVES[*]}
     read -p "Do you want to remove node [$nodes] on k8s cluster?[Y/N/J]:" answer
     answer=$(echo $answer)
     case $answer in
@@ -19,6 +20,7 @@ function REMOVE_NODE(){
         for ip in $nodes;
         do
             echo "ansible-playbook remove node $ip"
+            kubectl drain  k8s-slave01 --ignore-daemonsets --delete-local-data
             ansible-playbook $TASKS_PATH/remove_node.yml -i $ip, --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
                  echo "remove node $ip path...................Failed! Ret=$ret"
