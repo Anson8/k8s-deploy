@@ -98,13 +98,13 @@ function PathInitSlaves(){
     nodes=${K8S_SLAVES[@]}
     read -p "Do you want to init slave path on all [$nodes] nodes?[Y/N/J]:" answer
     answer=$(echo $answer)
-    let m=1
+    let n=1
     case $answer in
     Y | y)
         echo "Start to init kubernetes slave path."
         for ip in $nodes;
         do
-            hname=${HOST_NAMES[$i]}
+            hname=${HOST_NAMES[$n]}
             echo "Start to add [$ip] to known_hosts."
             ssh-keyscan -H $ip >> ~/.ssh/known_hosts
             echo "ansible-playbook create user admin on this $ip"
@@ -120,7 +120,7 @@ function PathInitSlaves(){
                  echo "Init kubernetes slave $ip path...................Failed! Ret=$ret"
                 return 1
             fi
-            m=$(($m+1))
+            n=$(($n+1))
         done
         echo "Init kubernetes slave $ip path...................Successfully!";;
     N | n)
