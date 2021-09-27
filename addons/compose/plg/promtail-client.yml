@@ -53,12 +53,12 @@ spec:
       volumes:
         - name: config-volume
           hostPath:
-            path: /logs/common/plg/promtail-client/conf
+            path: /ops/common/plg/promtail-client/conf
         - name: run
           hostPath:
-            path: /logs/common/plg/promtail-client/position
+            path: /ops/common/plg/promtail-client/position
         - hostPath:
-            path: /logs
+            path: /ops/logs
           name: logs
       imagePullSecrets:
       - name: 4dtc

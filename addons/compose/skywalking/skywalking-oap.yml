@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skywalking-oap
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skywalking-oap
+      release: skywalking
+  template:
+    metadata:
+      labels:
+        app: skywalking-oap
+        release: skywalking
+    spec:
+      containers:
+        - name: skywalking-oap
+          image: apache/skywalking-oap-server:7.0.0-es7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 11800
+              name: grpc
+            - containerPort: 12800
+              name: rest
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: SW_CORE_DAY_METRIC_DATA_TTL
+              value: "3"
+            - name: SW_CORE_MONTH_METRIC_DATA_TTL
+              value: "1"
+            - name: SW_TRACE_SAMPLE_RATE
+              value: "3000"             
+            - name: SW_STORAGE
+              value: "elasticsearch7"
+            - name: SW_STORAGE_ES_CLUSTER_NODES
+              value: "10.1.0.126:19200"
+          volumeMounts:
+            - mountPath: /skywalking/oap-libs
+              name: storage-volume
+      volumes:
+        - name: storage-volume
+          hostPath:
+            path: /ops/common/skywalking/oap-libs
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skywalking-oap
+  namespace: common-server
+  labels:
+    service: skywalking-oap
+spec:
+  ports:
+    - port: 12800
+      name: rest
+      nodePort: 30128
+    - port: 11800
+      name: grpc
+      nodePort: 30118
+  type: NodePort
+  selector:
+    app: skywalking-oap

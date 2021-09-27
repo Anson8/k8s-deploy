@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skywalking-ui
+  namespace: common-server
+  labels:
+    app: skywalking-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skywalking-ui
+  template:
+    metadata:
+      labels:
+        app: skywalking-ui
+    spec:
+      containers:
+        - name: skywalking-ui
+          image: apache/skywalking-ui:6.5.0
+          ports:
+            - containerPort: 8080
+              name: page
+          env:
+            - name: SW_OAP_ADDRESS
+              value: "skywalking-oap:12800"
+            - name: TZ
+              value: Asia/Shanghai  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skywalking-ui
+  namespace: common-server
+  labels:
+    service: skywalking-ui
+spec:
+  ports:
+    - port: 8080
+      name: page
+      nodePort: 30119
+  type: NodePort
+  selector:
+    app: skywalking-ui
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    field.cattle.io/creatorId: u-rjl9z
+    field.cattle.io/ipAddresses: "null"
+    field.cattle.io/targetDnsRecordIds: '["common-server:skywalking-oap"]'
+    field.cattle.io/targetWorkloadIds: "null"
+  labels:
+    cattle.io/creator: norman
+  name: skywalking
+  namespace: 4dtc
+spec:
+  clusterIP: None
+  sessionAffinity: None
+  type: ClusterIP    

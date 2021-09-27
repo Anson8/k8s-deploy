@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rmqnamesrv-dev
+  name: rmqserver-dev
   namespace: common-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rmqnamesrv-dev
+      app: rmqserver-dev
   template:
     metadata:
       labels:
-        app: rmqnamesrv-dev
+        app: rmqserver-dev
     spec:
       affinity:
         nodeAffinity:
@@ -23,7 +23,7 @@ spec:
                 values:
                 - service
       containers:
-      - name: rmqnamesrv-dev
+      - name: rmqserver-dev
         image: registry.cn-shenzhen.aliyuncs.com/sdtc/rocketmq:4.4.0
         imagePullPolicy: IfNotPresent
         env:
@@ -37,7 +37,7 @@ spec:
           - "sh mqnamesrv"
         volumeMounts:
         - name: volume-logs
-          mountPath: /var/app/logs        
+          mountPath: /home/rocketmq/logs        
       tolerations:
       - effect: NoSchedule
         key: role
@@ -46,17 +46,17 @@ spec:
       volumes:
       - name: volume-logs
         hostPath: 
-          path: /logs/common/dev/rocketmq/namesrv/logs                    
+          path: /logs/common/dev/rocketmq/server/logs                  
       imagePullSecrets:
       - name: 4dtc          
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rmqnamesrv-dev
+  name: rmqserver-dev
   namespace: common-server
   labels:
-    app: rmqnamesrv-dev
+    app: rmqserver-dev
 spec:
   ports:
   - name: port-tcp-9092
@@ -64,4 +64,4 @@ spec:
     targetPort: 9876
     protocol: TCP
   selector:
-    app: rmqnamesrv-dev
+    app: rmqserver-dev
