@@ -1,5 +1,5 @@
 ---
-- name: etcd deploy
+- name: flanneld deploy
   hosts: all
   become: yes
   become_user: root

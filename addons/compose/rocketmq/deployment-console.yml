@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqconsole-sit
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqconsole-sit
+  template:
+    metadata:
+      labels:
+        app: mqconsole-sit
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - service    
+      containers:
+      - name: mqconsole-sit
+        image: registry.cn-shenzhen.aliyuncs.com/sdtc/rocketmq-console:1.0
+        imagePullPolicy: IfNotPresent   
+        env:
+          - name: JAVA_OPTS
+            value: "-Drocketmq.namesrv.addr=mqnamesrv-sit:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
+      imagePullSecrets:
+      - name: 4dtc
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service               
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqconsole-sit
+  namespace: common-server
+spec:
+  ports:
+  - nodePort: 11077
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: mqconsole-sit
+  type: NodePort

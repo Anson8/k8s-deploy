@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kafka-sit-exporter
+  name: kafka-sit-exporter
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-sit-exporter
+  template:
+    metadata:
+      labels:
+        app: kafka-sit-exporter
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - service
+      containers:
+      - args:
+        - --kafka.server=kafka-sit:9092
+        name: kafka-sit-exporter
+        image: danielqsj/kafka-exporter
+        imagePullPolicy: IfNotPresent
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service                                             
+      imagePullSecrets:
+      - name: 4dtc          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-sit-exporter
+  namespace: common-server
+  labels:
+    app: kafka-sit-exporter
+spec:
+  ports:
+  - name: port-tcp-9308
+    port: 9308
+    targetPort: 9308
+    nodePort: 19308   
+  selector:
+    app: kafka-sit-exporter
+  type: NodePort

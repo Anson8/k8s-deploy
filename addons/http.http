@@ -1,0 +1,2 @@
+GET http://192.168.21.2:31000/api/prom/rules HTTP/1.1
+content-type: application/json

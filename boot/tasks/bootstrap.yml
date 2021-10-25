@@ -101,7 +101,13 @@
       name: postfix
       state: stopped
       enabled: no
-  #升级内核    
+  #升级内核  
+  - name: copy kernel-lt-5.4.144
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: "{{file_path}}/boot/kernel-lt-5.4.144-1.el7.elrepo.x86_64.rpm",dest: "{{file_path}}/" }   
   - name: copy kernel.sh 
     copy:
       src: "{{item.src}}"
@@ -111,3 +117,4 @@
       - { src: "/home/admin/k8s-deploy/boot/gen/kernel.sh",dest: "{{file_path}}/" }
   - name: update kernel to 5.14
     shell: sh {{file_path}}/kernel.sh
+

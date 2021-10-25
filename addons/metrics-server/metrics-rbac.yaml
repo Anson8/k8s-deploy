@@ -5,7 +5,7 @@ metadata:
   labels:
     k8s-app: metrics-server
   name: metrics-server
-  namespace: kube-system
+  namespace: monitoring
 ---
 ## ClusterRole aggregated-metrics-reader
 apiVersion: rbac.authorization.k8s.io/v1
@@ -48,14 +48,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: metrics-server
-  namespace: kube-system
+  namespace: monitoring
 ---
 ## RoleBinding metrics-server-auth-reader
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: metrics-server-auth-reader
-  namespace: kube-system
+  namespace: monitoring
   labels:
     k8s-app: metrics-server
 roleRef:
@@ -65,7 +65,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: metrics-server
-  namespace: kube-system
+  namespace: monitoring
 ---
 ## ClusterRoleBinding system:metrics-server
 apiVersion: rbac.authorization.k8s.io/v1
@@ -81,4 +81,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: metrics-server
-  namespace: kube-system
+  namespace: monitoring

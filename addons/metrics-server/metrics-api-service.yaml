@@ -9,7 +9,7 @@ spec:
   group: metrics.k8s.io
   service:
     name: metrics-server
-    namespace: kube-system
+    namespace: monitoring
   version: v1beta1
   groupPriorityMinimum: 100
   insecureSkipTLSVerify: true

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mqbroker-sit
+  namespace: common-server
+spec:
+  serviceName: mqbroker-sit
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqbroker-sit
+  template:
+    metadata:
+      labels:
+        app: mqbroker-sit
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: renv
+                operator: In
+                values:
+                - material    
+      containers:
+      - name: mqbroker-sit
+        image: registry.cn-shenzhen.aliyuncs.com/sdtc/rocketmq:4.4.0
+        command: ["sh","mqbroker", "-c","/opt/rocketmq-4.4.0/conf/broker.conf"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 10909
+        - containerPort: 10911
+        volumeMounts:
+        - name: volume-logs
+          mountPath: /home/rocketmq/logs
+        - name: volume-conf
+          mountPath: /opt/rocketmq-4.4.0/conf/broker.conf
+          subPath: broker-sit.conf
+      volumes:
+      - name: volume-logs
+        hostPath:
+          path: /logs/common/sit/rocketmq/broker/logs
+      - name: volume-conf
+        configMap:
+          name: broker-config
+      imagePullSecrets:
+      - name: 4dtc
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqbroker-sit
+  namespace: common-server
+spec:
+  ports:
+  - name: port-tcp-10909
+    port: 10909
+    protocol: TCP
+    targetPort: 10909
+  - name: port-tcp-10911
+    port: 10911
+    protocol: TCP
+    targetPort: 10911    
+  selector:
+    app: mqbroker-sit
+  type: ClusterIP
