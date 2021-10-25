@@ -65,7 +65,6 @@ function REMOVE_MASTER(){
     J | j)
     echo "Skip remove kubernetes master."
     ;;    
-    *)        
     *)
         echo "Input error, please try again."
         exit 2;;
