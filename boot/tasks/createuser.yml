@@ -18,13 +18,13 @@
     authorized_key: user=admin
                     key="{{ lookup('file', '/home/admin/.ssh/{{ pubkey }}.pub') }}"
                     state=present    
-  ## 关闭密码登陆通道                  
-  #- name: Close PasswordAuthentication...
-  #  lineinfile:
-  #    dest: "{{sshd_config_path}}"
-  #    regexp: "^PasswordAuthentication"
-  #    line: "PasswordAuthentication no"
-  ## 重启sshd    
-  #- name: restart sshd...
-  #  service: name=sshd state=restarted
-  #  ignore_errors: yes                    
+  # 关闭密码登陆通道                  
+  - name: Close PasswordAuthentication...
+    lineinfile:
+      dest: "{{sshd_config_path}}"
+      regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication no"
+  # 重启sshd    
+  - name: restart sshd...
+    service: name=sshd state=restarted
+    ignore_errors: yes                    
