@@ -43,7 +43,7 @@ function REMOVE_NODE(){
 function REMOVE_MASTER(){
     # 获取master节点ip
     nodes=${K8S_MASTER[@]}
-    read -p "Do you want to remove master [$nodes] on k8s cluster?[Y/N]:" answer
+    read -p "Do you want to remove master [$nodes] on k8s cluster?[Y/N/J]:" answer
     answer=$(echo $answer)
     case $answer in
     Y | y)
@@ -62,6 +62,10 @@ function REMOVE_MASTER(){
     N | n)
         echo "Exit."
         exit 0;;
+    J | j)
+    echo "Skip remove kubernetes master."
+    ;;    
+    *)        
     *)
         echo "Input error, please try again."
         exit 2;;
