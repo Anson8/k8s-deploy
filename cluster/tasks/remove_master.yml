@@ -54,7 +54,7 @@
       - /lib/systemd/system/kube-nginx.service 
       - /lib/systemd/system/kube-apiserver.service 
       - /lib/systemd/system/etcd.service   
-   - name: delete k8s path
+  - name: delete k8s path
     file:
       path: "{{ item }}"
       state: absent  
