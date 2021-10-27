@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: mongodb-sit
+  name: mongodb-sit
+  namespace: common-server
+spec:
+  type: NodePort
+  ports:
+  - name: mongodb-sit
+    port: 27017
+    targetPort: 27017
+    nodePort: 27027
+  selector:
+    name: mongodb-sit

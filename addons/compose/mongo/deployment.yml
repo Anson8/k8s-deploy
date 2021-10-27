@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-dev
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongodb-dev
+  template:
+    metadata:
+      labels:
+        name: mongodb-dev
+    spec:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: renv
+                operator: In
+                values:
+                - sit     
+      containers:
+      - env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: "root"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: "4dmongo.db"   
+        name: mongodb-dev
+        image: registry.cn-shenzhen.aliyuncs.com/4d_prom/mongo:5.0.3
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 27017
+          name: mongodb-dev
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /data/db
+        resources:
+          limits:
+            cpu: "1"
+            memory: 3Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi          
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service              
+      volumes:
+      - name: data
+        hostPath:
+          path: /data/mongodb/
+      imagePullSecrets:
+      - name: 4dtc     
