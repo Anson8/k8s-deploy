@@ -433,11 +433,11 @@ spec:
       serviceAccountName: promtail
       containers:
         - name: promtail
-          image: grafana/promtail:2.1.0
+          image: registry.cn-shenzhen.aliyuncs.com/4d_prom/promtail:2.1.0
           imagePullPolicy: IfNotPresent
           args:
             - -config.file=/etc/promtail/promtail.yml
-            - -client.url=http://loki:3100/loki/api/v1/push
+            - -client.url=http://lokidemo.common-server.svc.cluster.local:3100/loki/api/v1/push
           volumeMounts:
             - name: config-volume
               mountPath: /etc/promtail

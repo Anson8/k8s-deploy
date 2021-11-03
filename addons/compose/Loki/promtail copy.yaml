@@ -290,7 +290,7 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - -config.file=/mnt/config/promtail-config.yml
-            - -client.url=http://loki:3100/loki/api/v1/push
+            - -client.url=http://lokidemo:3100/loki/api/v1/push
             - -client.external-labels=hostname=$(NODE_NAME)
           ports:
             - containerPort: 9080

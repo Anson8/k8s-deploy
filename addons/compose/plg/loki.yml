@@ -53,11 +53,11 @@ data:
       ingestion_rate_mb: 64
 
     chunk_store_config:
-      max_look_back_period: 720h
+      max_look_back_period: 4500h
 
     table_manager:
       retention_deletes_enabled: true
-      retention_period: 720h
+      retention_period: 4500h
 
     ruler:
       storage:
@@ -129,7 +129,7 @@ spec:
       volumes:
         - name: storage-volume
           hostPath:
-            path: /ops/logs/common/plg/loki/data
+            path: /ops/common/plg/loki/data
         - configMap:
             defaultMode: 420
             items:
