@@ -65,7 +65,7 @@ function PathInitMaster(){
             ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER  disk=$DISK diskfullpath=$DISKFULLPATH" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes master path on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/.ssh/$PRIVATEKEY
-            sleep 30s;
+            sleep 60s;
             echo "ansible-playbook install docker"
             ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
@@ -113,7 +113,7 @@ function PathInitSlaves(){
             ansible-playbook $BOOT_TASKS_PATH/diskpart.yml  -i $ip, -e "user_add=$USER  disk=$DISK diskfullpath=$DISKFULLPATH" --private-key=/home/admin/.ssh/$PRIVATEKEY
             echo "ansible-playbook init kubernetes slave path on this $ip"
             ansible-playbook $BOOT_TASKS_PATH/bootstrap.yml -i $ip, -e "hostname=$hname" --private-key=/home/admin/.ssh/$PRIVATEKEY
-            sleep 30s;
+            sleep 60s;
             echo "ansible-playbook install docker $DOCKER_VERSION"
             ansible-playbook $BOOT_TASKS_PATH/docker_install.yml -i $ip, -e "docker_version=$DOCKER_VERSION docker_compose_v=$DOCKER_COMPOSE_VERSION" --private-key=/home/admin/.ssh/$PRIVATEKEY
             if [ $? -ne 0 ];then
