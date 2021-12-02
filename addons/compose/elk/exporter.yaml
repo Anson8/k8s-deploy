@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: es-poc-exporter
+  name: es-poc-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es-poc-exporter
+  template:
+    metadata:
+      labels:
+        app: es-poc-exporter
+    spec:
+      containers:
+      - args:
+        - --es.uri=http://10.3.1.171:9200
+        name: es-poc-exporter
+        image: justwatch/elasticsearch_exporter:1.1.0
+        imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+      - name: 4dtc          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-poc-exporter
+  namespace: monitoring
+  labels:
+    app: es-poc-exporter
+spec:
+  ports:
+  - name: port-tcp-9114
+    port: 9114
+    targetPort: 9114  
+  selector:
+    app: es-poc-exporter
+  type: ClusterIP

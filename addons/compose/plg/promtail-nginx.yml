@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: promtail-nginx
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: promtail-nginx
+  template:
+    metadata:
+      labels:
+        app: promtail-nginx      
+    spec:
+      nodeName: k8s-master03
+      serviceAccountName: promtail
+      containers:
+        - name: promtail-nginx
+          image: registry.cn-shenzhen.aliyuncs.com/4d_prom/promtail:2.1.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - -config.file=/etc/promtail/promtail.yml
+            - -client.url=http://loki:3100/loki/api/v1/push
+          volumeMounts:
+            - name: promtail-conf
+              mountPath: /etc/promtail
+            - name: run
+              mountPath: /run/promtail
+            - mountPath: /logs
+              name: logs
+              readOnly: true
+          env:
+          - name: HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          ports:
+            - containerPort: 9080
+              name: http-metrics
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsGroup: 0
+            runAsUser: 0
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+      volumes:
+        - name: run
+          hostPath:
+            path: /data/promtail/position
+        - configMap:
+            defaultMode: 420
+            items:
+            - key: promtail.yml
+              path: promtail.yml
+            name: promtail-nginx-config
+          name: promtail-conf
+        - name: logs
+          hostPath:
+            path: /usr/local/nginx/logs
+      imagePullSecrets:
+      - name: 4dtc 

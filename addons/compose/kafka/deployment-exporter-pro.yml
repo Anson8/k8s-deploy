@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kafka-exporter03
+  name: kafka-exporter03
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-exporter03
+  template:
+    metadata:
+      labels:
+        app: kafka-exporter03
+    spec:
+      containers:
+      - args:
+        - --kafka.server=192.168.3.12:9092
+        name: kafka-exporter03
+        image: danielqsj/kafka-exporter
+        imagePullPolicy: IfNotPresent                                           
+      imagePullSecrets:
+      - name: 4dtc          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-exporter03
+  namespace: monitoring
+  labels:
+    app: kafka-exporter03
+spec:
+  ports:
+  - name: port-tcp-9308
+    port: 9308
+    targetPort: 9308  
+  selector:
+    app: kafka-exporter03
+  type: ClusterIP

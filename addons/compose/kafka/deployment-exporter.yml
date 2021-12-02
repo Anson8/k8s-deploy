@@ -4,7 +4,7 @@ metadata:
   labels:
     app: kafka-sit-exporter
   name: kafka-sit-exporter
-  namespace: common-server
+  namespace: monitoring
 spec:
   replicas: 1
   selector:
@@ -26,7 +26,7 @@ spec:
                 - service
       containers:
       - args:
-        - --kafka.server=kafka-sit:9092
+        - --kafka.server=kafka-sit.common-server.svc.cluster.local:9092
         name: kafka-sit-exporter
         image: danielqsj/kafka-exporter
         imagePullPolicy: IfNotPresent
@@ -42,15 +42,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: kafka-sit-exporter
-  namespace: common-server
+  namespace: monitoring
   labels:
     app: kafka-sit-exporter
 spec:
   ports:
   - name: port-tcp-9308
     port: 9308
-    targetPort: 9308
-    nodePort: 19308   
+    targetPort: 9308  
   selector:
     app: kafka-sit-exporter
-  type: NodePort
+  type: ClusterIP

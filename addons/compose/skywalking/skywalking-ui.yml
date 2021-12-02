@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: skywalking-ui
-          image: apache/skywalking-ui:6.5.0
+          image: apache/skywalking-ui:7.0.0
           ports:
             - containerPort: 8080
               name: page
@@ -48,10 +48,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    field.cattle.io/creatorId: u-rjl9z
-    field.cattle.io/ipAddresses: "null"
     field.cattle.io/targetDnsRecordIds: '["common-server:skywalking-oap"]'
-    field.cattle.io/targetWorkloadIds: "null"
   labels:
     cattle.io/creator: norman
   name: skywalking

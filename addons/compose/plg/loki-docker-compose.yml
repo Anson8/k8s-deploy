@@ -1,0 +1,42 @@
+version: '3.5'
+services:
+  rmqnamesrv:
+    image: registry.cn-shenzhen.aliyuncs.com/4d_prom/loki:2.1.0
+    container_name: loki
+    restart: always
+    ports:
+      - 3100:3100
+    volumes:
+      - /ops/common/plg/loki/conf:/mnt/config
+      - /ops/common/plg/loki/data:/tmp/loki
+    command: -config.file=/mnt/config/loki-config.yaml 
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+  namespace: common-server
+spec:
+  clusterIP: None
+  ports:
+  - name: loki
+    port: 3100
+    protocol: TCP
+    targetPort: 3100
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: loki
+  namespace: common-server
+subsets:
+- addresses:
+  - ip: 10.1.0.149
+  ports:
+  - name: loki
+    port: 3100
+    protocol: TCP

@@ -36,10 +36,15 @@ spec:
             - name: SW_STORAGE
               value: "elasticsearch7"
             - name: SW_STORAGE_ES_CLUSTER_NODES
-              value: "10.1.0.126:19200"
+              value: "192.168.19.21:19200"
           volumeMounts:
             - mountPath: /skywalking/oap-libs
               name: storage-volume
+          resources:
+            requests:
+              memory: 1000Mi
+            limits:
+              memory: 4000Mi
       volumes:
         - name: storage-volume
           hostPath:

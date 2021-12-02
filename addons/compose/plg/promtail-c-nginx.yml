@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promtail-nginx-config
+  namespace: common-server
+data:
+  promtail.yml: |
+    server:
+      http_listen_port: 9080
+      grpc_listen_port: 0  
+    
+    positions:
+      filename: /run/promtail/positions.yaml
+    
+    client:
+      backoff_config:
+        max_period: 5m
+        max_retries: 10
+        min_period: 500ms
+      batchsize: 1048576
+      batchwait: 1s
+      external_labels: {}
+      timeout: 10s      
+    target_config:
+      sync_period: 10s
+    scrape_configs:
+    - job_name: dev-sit-nginx
+      static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx
+          __path__: /logs/*log

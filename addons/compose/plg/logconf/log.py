@@ -1,7 +1,7 @@
 import sys
 
 result=[]
-with open('proserver','r') as f:
+with open('uatserver','r') as f:
    for line in f:
        result.append(line.strip('\n'))
 #print(result)

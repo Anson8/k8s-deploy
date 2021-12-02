@@ -294,4 +294,32 @@ scrape_configs:
       - localhost
     labels:
       procn: synccenter
-      __path__: /logs/synccenter/*/*.log      
+      __path__: /logs/synccenter/*/*.log
+- job_name: pro-cn-idemera
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: idemera
+      __path__: /logs/idemera/*/*.log
+- job_name: pro-cn-idealab-dispatch-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: idealab-dispatch-server
+      __path__: /logs/idealab-dispatch-server/*/*.log
+- job_name: pro-cn-idealab-message-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: idealab-message-server
+      __path__: /logs/idealab-message-server/*/*.log   
+- job_name: pro-cn-srm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: srm
+      __path__: /logs/srm/*/*.log

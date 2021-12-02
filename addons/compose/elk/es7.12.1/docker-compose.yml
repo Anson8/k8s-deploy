@@ -13,6 +13,8 @@ services:
       - cluster.name=pro-es-cluster     # 集群名称，相同名称为一个集群， 三个es节点须一致
       - bootstrap.memory_lock=true      # 内存交换的选项，官网建议为true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    # 设置内存，如内存不足，可以尝试调低点
+      - index.codec=best_compression
+      - indices.memory.index_buffer_size=25%
     ulimits:        # 栈内存的上限
       memlock:
         soft: -1    # 不限制
@@ -26,6 +28,10 @@ services:
       - "9300:9300"
     networks:
       - es-catalog
+    deploy:
+      resources:
+        limits:
+          memory: 5G
   kibana:
     image: registry.cn-shenzhen.aliyuncs.com/4d_prom/kibana:7.12.1
     container_name: kibana
