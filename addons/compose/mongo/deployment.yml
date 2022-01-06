@@ -22,7 +22,7 @@ spec:
               - key: renv
                 operator: In
                 values:
-                - sit     
+                - sit
       containers:
       - env:
         - name: MONGO_INITDB_ROOT_USERNAME
