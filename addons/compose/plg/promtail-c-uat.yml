@@ -631,3 +631,87 @@ scrape_configs:
     labels:
       poc: notification-center
       __path__: /ops/logs/poc/notification-center/*/*.log
+- job_name: uat-cn-data-transit
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: data-transit
+      __path__: /ops/logs/uat-cn/data-transit/*/*.log
+- job_name: poc-data-transit
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: data-transit
+      __path__: /ops/logs/poc/data-transit/*/*.log
+- job_name: uat-cn-idealab-gw
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: idealab-gw
+      __path__: /ops/logs/uat-cn/idealab-gw/*/*.log
+- job_name: poc-idealab-gw
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: idealab-gw
+      __path__: /ops/logs/poc/idealab-gw/*/*.log
+- job_name: uat-cn-idealab-manage-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: idealab-manage-server
+      __path__: /ops/logs/uat-cn/idealab-manage-server/*/*.log
+- job_name: poc-idealab-manage-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: idealab-manage-server
+      __path__: /ops/logs/poc/idealab-manage-server/*/*.log
+- job_name: uat-cn-idealab-passport
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: idealab-passport
+      __path__: /ops/logs/uat-cn/idealab-passport/*/*.log
+- job_name: poc-idealab-passport
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: idealab-passport
+      __path__: /ops/logs/poc/idealab-passport/*/*.log
+- job_name: uat-cn-mcl
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: mcl
+      __path__: /ops/logs/uat-cn/mcl/*/*.log
+- job_name: poc-mcl
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: mcl
+      __path__: /ops/logs/poc/mcl/*/*.log
+- job_name: uat-cn-pdm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: pdm
+      __path__: /ops/logs/uat-cn/pdm/*/*.log
+- job_name: poc-pdm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      poc: pdm
+      __path__: /ops/logs/poc/pdm/*/*.log

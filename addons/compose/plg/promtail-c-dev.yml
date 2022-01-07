@@ -2,7 +2,9 @@ server:
   http_listen_port: 9080
   grpc_listen_port: 0  
 positions:
-  filename: /run/promtail/positions.yaml
+  filename: /data/plg/promtail/position/positions.yaml
+clients:
+  - url: http://192.168.21.3:31000/loki/api/v1/push
 client:
   backoff_config:
     max_period: 5m
@@ -21,28 +23,28 @@ scrape_configs:
       - localhost
     labels:
       dev: anta-material
-      __path__: /logs/dev/anta-material/*/*log
+      __path__: /logs/dev/anta-material/*/*.log
 - job_name: sit-anta-material
   static_configs:
   - targets:
       - localhost
     labels:
       sit: anta-material
-      __path__: /logs/sit/anta-material/*/*log
+      __path__: /logs/sit/anta-material/*/*.log
 - job_name: dev-authcenter
   static_configs:
   - targets:
       - localhost
     labels:
       dev: authcenter
-      __path__: /logs/dev/authcenter/*/*log
+      __path__: /logs/dev/authcenter/*/*.log
 - job_name: sit-authcenter
   static_configs:
   - targets:
       - localhost
     labels:
       sit: authcenter
-      __path__: /logs/sit/authcenter/*/*log
+      __path__: /logs/sit/authcenter/*/*.log
 - job_name: dev-bff-center
   static_configs:
   - targets:
@@ -99,34 +101,20 @@ scrape_configs:
     labels:
       sit: catalogue-search
       __path__: /logs/sit/catalogue-search/*/*log
-- job_name: dev-catcatalogue-search-sync-stream
-  static_configs:
-  - targets:
-      - localhost
-    labels:
-      dev: catcatalogue-search-sync-stream
-      __path__: /logs/dev/catcatalogue-search-sync-stream/*/*log
-- job_name: sit-catcatalogue-search-sync-stream
-  static_configs:
-  - targets:
-      - localhost
-    labels:
-      sit: catcatalogue-search-sync-stream
-      __path__: /logs/sit/catcatalogue-search-sync-stream/*/*log  
 - job_name: dev-datapipe
   static_configs:
   - targets:
       - localhost
     labels:
       dev: datapipe
-      __path__: /logs/dev/datapipe/*/*log
+      __path__: /logs/dev/datapipe/*/*.log
 - job_name: sit-datapipe
   static_configs:
   - targets:
       - localhost
     labels:
       sit: datapipe
-      __path__: /logs/sit/datapipe/*/*log
+      __path__: /logs/sit/datapipe/*/*.log
 - job_name: dev-db-sync
   static_configs:
   - targets:
@@ -315,14 +303,14 @@ scrape_configs:
       - localhost
     labels:
       dev: pdm
-      __path__: /logs/dev/pdm/*/*log
+      __path__: /logs/dev/pdm/*/*.log
 - job_name: sit-pdm
   static_configs:
   - targets:
       - localhost
     labels:
       sit: pdm
-      __path__: /logs/sit/pdm/*/*log
+      __path__: /logs/sit/pdm/*/*.log
 - job_name: dev-pg-subscription
   static_configs:
   - targets:
@@ -449,3 +437,199 @@ scrape_configs:
     labels:
       sit: third-platform-center
       __path__: /logs/sit/third-platform-center/*/*log
+- job_name: dev-client-hardware
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      clientlog: dev-hardware
+      __path__: /logs/dev/message-center/*/MsgCenter_info_Client_Calibration_Report.log
+- job_name: dev-client-software
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      clientlog: dev-software
+      __path__: /logs/dev/message-center/*/MsgCenter_info_Client_Log.log
+- job_name: sit-client-hardware
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      clientlog: sit-hardware
+      __path__: /logs/sit/message-center/*/MsgCenter_info_Client_Calibration_Report.log
+- job_name: sit-client-software
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      clientlog: sit-software
+      __path__: /logs/sit/message-center/*/MsgCenter_info_Client_Log.log  
+- job_name: dev-catalogue-search-sync-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: catalogue-search-sync-stream
+      __path__: /logs/dev/catalogue-search-sync-stream/*/*.log
+- job_name: dev-central-storage
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: central-storage
+      __path__: /logs/dev/central-storage/*/*.log
+- job_name: dev-idealab-material-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: idealab-material-server
+      __path__: /logs/dev/idealab-material-server/*/*.log
+- job_name: dev-mall-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: mall-center
+      __path__: /logs/dev/mall-center/*/*.log
+- job_name: dev-order-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: order-center
+      __path__: /logs/dev/order-center/*/*.log
+- job_name: dev-pic-search
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: pic-search
+      __path__: /logs/dev/pic-search/*/*.log
+- job_name: dev-pic-search-biz-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: pic-search-biz-stream
+      __path__: /logs/dev/pic-search-biz-stream/*/*.log
+- job_name: dev-resource-sync-io
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: resource-sync-io
+      __path__: /logs/dev/resource-sync-io/*/*.log
+- job_name: dev-synccenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: synccenter
+      __path__: /logs/dev/synccenter/*/*.log
+- job_name: dev-idemera
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: idemera
+      __path__: /logs/dev/idemera/*/*.log
+- job_name: sit-catalogue-search-sync-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: catalogue-search-sync-stream
+      __path__: /logs/sit/catalogue-search-sync-stream/*/*.log
+- job_name: sit-central-storage
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: central-storage
+      __path__: /logs/sit/central-storage/*/*.log
+- job_name: sit-idealab-material-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: idealab-material-server
+      __path__: /logs/sit/idealab-material-server/*/*.log
+- job_name: sit-mall-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: mall-center
+      __path__: /logs/sit/mall-center/*/*.log
+- job_name: sit-order-center 
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: order-center
+      __path__: /logs/sit/order-center/*/*.log
+- job_name: sit-pic-search
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: pic-search
+      __path__: /logs/sit/pic-search/*/*.log
+- job_name: sit-pic-search-biz-stream
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: pic-search-biz-stream
+      __path__: /logs/sit/pic-search-biz-stream/*/*.log
+- job_name: sit-resource-sync-io
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: resource-sync-io
+      __path__: /logs/sit/resource-sync-io/*/*.log
+- job_name: sit-synccenter
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: synccenter
+      __path__: /logs/sit/synccenter/*/*.log
+- job_name: sit-idemera
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: idemera
+      __path__: /logs/sit/idemera/*/*.log
+- job_name: dev-data-transit
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: data-transit
+      __path__: /logs/dev/data-transit/*/*.log
+- job_name: sit-data-transit
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: data-transit
+      __path__: /logs/sit/data-transit/*/*.log
+- job_name: dev-idealab-gw
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: idealab-gw
+      __path__: /logs/dev/idealab-gw/*/*.log
+- job_name: sit-idealab-gw
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: idealab-gw
+      __path__: /logs/sit/idealab-gw/*/*.log

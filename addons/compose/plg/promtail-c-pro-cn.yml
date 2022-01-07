@@ -323,3 +323,38 @@ scrape_configs:
     labels:
       procn: srm
       __path__: /logs/srm/*/*.log
+- job_name: pro-cn-data-transit
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: data-transit
+      __path__: /logs/data-transit/*/*.log
+- job_name: pro-cn-idealab-gw
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: idealab-gw
+      __path__: /logs/idealab-gw/*/*.log
+- job_name: pro-cn-idealab-manage-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: idealab-manage-server
+      __path__: /logs/idealab-manage-server/*/*.log
+- job_name: pro-cn-idealab-passport
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: idealab-passport
+      __path__: /logs/idealab-passport/*/*.log
+- job_name: pro-cn-mcl
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: mcl
+      __path__: /logs/mcl/*/*.log
