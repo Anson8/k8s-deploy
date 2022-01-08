@@ -49,3 +49,20 @@
 
 # 二进制包
 https://sdtc-public.oss-cn-shenzhen.aliyuncs.com/deployment/k8s-data.zip
+
+# 部署Master，同时使用master做node节点
+  1.生成证书（y）
+    Do you want to create ssl ?[Y/N/J]
+  2.初始化master服务器(y)
+    Do you want to init master path on all [$nodes] nodes?[Y/N/J]
+  3.跳过初始化node服务器(j)
+    Do you want to init slave path on all [$nodes] nodes?[Y/N/J]
+  4.安装ETCD(y)
+    Do you want to deploy etcd on [$nodes]?[Y/N/j]
+  5.安装Master节点(y)
+    Do you want to deploy K8s-Master on [$nodes]?[Y/N/j]
+  6.安装Node节点(y)
+    Do you want to deploy kubernetes node on [$nodes]?[Y/N/J]
+  7.删除Node节点
+    
+    kubectl delete node k8s-slave01 k8s-slave02 k8s-slave03
