@@ -64,6 +64,6 @@ https://sdtc-public.oss-cn-shenzhen.aliyuncs.com/deployment/k8s-data.zip
     Do you want to deploy K8s-Master on [$nodes]?[Y/N/j]
   6.安装Node节点(y)
     Do you want to deploy kubernetes node on [$nodes]?[Y/N/J]
-  7.删除Node节点
-    kubectl delete node k8s-slave01 k8s-slave02 k8s-slave03
+  7.部署kubectl到master节点上
+    Do you want to deploy Kubectl on [$nodes]?[Y/N/j]
   ```
