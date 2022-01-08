@@ -66,4 +66,8 @@ https://sdtc-public.oss-cn-shenzhen.aliyuncs.com/deployment/k8s-data.zip
     Do you want to deploy kubernetes node on [$nodes]?[Y/N/J]
   7.部署kubectl到master节点上
     Do you want to deploy Kubectl on [$nodes]?[Y/N/j]
+  8.移除污点
+    kubectl taint nodes k8s-master01 key:NoSchedule-
+    kubectl taint nodes k8s-master02 key:NoSchedule-  
+    kubectl taint nodes k8s-master03 key:NoSchedule-  
   ```
