@@ -51,6 +51,7 @@
 https://sdtc-public.oss-cn-shenzhen.aliyuncs.com/deployment/k8s-data.zip
 
 # 部署Master，同时使用master做node节点
+  ```
   1.生成证书（y）
     Do you want to create ssl ?[Y/N/J]
   2.初始化master服务器(y)
@@ -64,5 +65,5 @@ https://sdtc-public.oss-cn-shenzhen.aliyuncs.com/deployment/k8s-data.zip
   6.安装Node节点(y)
     Do you want to deploy kubernetes node on [$nodes]?[Y/N/J]
   7.删除Node节点
-
     kubectl delete node k8s-slave01 k8s-slave02 k8s-slave03
+  ```
