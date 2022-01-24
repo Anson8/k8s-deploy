@@ -46,7 +46,12 @@
     sudo yum -y install wget fuse fuse-libs
     sudo yum install glusterfs-* -y
    ```
- 4. 添加到master服务器(192.168.21.2 192.168.21.3 192.168.21.4)中的hosts进行解析,配置/etc/hosts
+ 4. 配置自动挂着日志目录 /etc/fstab，配置完成后执行:mount -a 进行挂着
+   ```
+    192.168.19.31:/local_volume1 /logs/ glusterfs defaults,_netdev,acl 0 0
+   ```
+
+ 5. 添加到master服务器(192.168.21.2 192.168.21.3 192.168.21.4)中的hosts进行解析,配置/etc/hosts
    ```
     192.168.21.48  k8s-slave14
    ```
