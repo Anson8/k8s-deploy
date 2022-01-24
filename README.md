@@ -46,7 +46,11 @@
     sudo yum -y install wget fuse fuse-libs
     sudo yum install glusterfs-* -y
    ```
-
+ 4. 添加到master服务器(192.168.21.2 192.168.21.3 192.168.21.4)中的hosts进行解析,配置/etc/hosts
+   ```
+    192.168.21.48  k8s-slave14
+   ```
+    
 # 二进制包
 https://sdtc-public.oss-cn-shenzhen.aliyuncs.com/deployment/k8s-data.zip
 
