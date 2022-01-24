@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: promtail-anta
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: promtail-anta
+  template:
+    metadata:
+      labels:
+        app: promtail-anta      
+    spec:
+      serviceAccountName: promtail
+      containers:
+        - name: promtail-anta
+          image: registry.cn-shenzhen.aliyuncs.com/4d_prom/promtail:2.1.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - -config.file=/etc/promtail/promtail.yml
+            - -client.url=http://10.1.0.149:3200/loki/api/v1/push
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/promtail
+            - name: run
+              mountPath: /run/promtail
+            - mountPath: /logs/anta-material
+              name: logs
+              readOnly: true
+          env:
+          - name: HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          ports:
+            - containerPort: 9080
+              name: http-metrics
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsGroup: 0
+            runAsUser: 0
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1       
+      volumes:
+        - name: config-volume
+          hostPath:
+            path: /ops/common/plg/promtail-anta/conf
+        - name: run
+          hostPath:
+            path: /ops/common/plg/promtail-anta/position
+        - hostPath:
+            path: /ops/logs/anta-material
+          name: logs
+      imagePullSecrets:
+      - name: 4dtc

@@ -29,6 +29,13 @@ scrape_configs:
     labels:
       uatcn: anta-material
       __path__: /ops/logs/uat-cn/anta-material/*/*log
+- job_name: uat-cn-anta-material-scm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      uatcn: anta-material-scm
+      __path__: /ops/logs/uat-cn/anta-material/*/*scm.log
 - job_name: poc-authcenter
   static_configs:
   - targets:
