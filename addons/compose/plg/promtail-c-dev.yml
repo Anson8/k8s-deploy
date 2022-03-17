@@ -633,3 +633,31 @@ scrape_configs:
     labels:
       sit: idealab-gw
       __path__: /logs/sit/idealab-gw/*/*.log
+- job_name: dev-srm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: srm
+      __path__: /logs/dev/srm/*/*.log
+- job_name: sit-srm
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: srm
+      __path__: /logs/sit/srm/*/*.log
+- job_name: dev-notification-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      dev: notification-center
+      __path__: /logs/dev/notification-center/*/*.log
+- job_name: sit-notification-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      sit: notification-center
+      __path__: /logs/sit/notification-center/*/*.log      

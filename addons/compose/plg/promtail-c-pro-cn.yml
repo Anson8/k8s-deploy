@@ -1,6 +1,6 @@
 server:
   http_listen_port: 9080
-  grpc_listen_port: 0  
+  grpc_listen_port: 0
 positions:
   filename: /run/promtail/positions.yaml
 client:
@@ -11,7 +11,7 @@ client:
   batchsize: 1048576
   batchwait: 1s
   external_labels: {}
-  timeout: 10s      
+  timeout: 10s
 target_config:
   sync_period: 10s
 scrape_configs:
@@ -49,7 +49,7 @@ scrape_configs:
       - localhost
     labels:
       procn: catalogue
-      __path__: /logs/catalogue/*/*.log 
+      __path__: /logs/catalogue/*/*.log
 - job_name: pro-cn-catalogue-search
   static_configs:
   - targets:
@@ -63,7 +63,7 @@ scrape_configs:
       - localhost
     labels:
       procn: catcatalogue-search-sync-stream
-      __path__: /logs/catcatalogue-search-sync-stream/*/*.log  
+      __path__: /logs/catcatalogue-search-sync-stream/*/*.log
 - job_name: pro-cn-datapipe
   static_configs:
   - targets:
@@ -112,7 +112,7 @@ scrape_configs:
       - localhost
     labels:
       procn: gateway
-      __path__: /logs/gateway/*/*.log 
+      __path__: /logs/gateway/*/*.log
 - job_name: pro-cn-im
   static_configs:
   - targets:
@@ -315,7 +315,7 @@ scrape_configs:
       - localhost
     labels:
       procn: idealab-message-server
-      __path__: /logs/idealab-message-server/*/*.log   
+      __path__: /logs/idealab-message-server/*/*.log
 - job_name: pro-cn-srm
   static_configs:
   - targets:
@@ -358,3 +358,38 @@ scrape_configs:
     labels:
       procn: mcl
       __path__: /logs/mcl/*/*.log
+- job_name: pro-cn-notification-center
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: notification-center
+      __path__: /logs/notification-center/*/*.log
+- job_name: pro-cn-catalog-bff
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: catalog-bff
+      __path__: /logs/catalog-bff/*/*.log
+- job_name: pro-cn-csc
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: csc
+      __path__: /logs/csc/*/*.log
+- job_name: pro-cn-oms-center-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: oms-center-server
+      __path__: /logs/oms-center-server/*/*.log
+- job_name: pro-cn-tmp-server
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      procn: tmp-serve
+      __path__: /logs/tmp-server/*/*.log

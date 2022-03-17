@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana-log
+  name: grafana-log
+  namespace: monitoring
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: grafana-log
+  template:
+    metadata:
+      labels:
+        app: grafana-log
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - monitor
+      containers:
+      - image: registry.cn-shenzhen.aliyuncs.com/4d_prom/grafana:8.2.7
+        imagePullPolicy: IfNotPresent
+        name: grafana-log
+        volumeMounts:
+        - mountPath: /etc/grafana
+          name: grafana-conf
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service
+      volumes:
+      - hostPath:
+          path: /data/grafana-log
+          type: ""
+        name: grafana-conf

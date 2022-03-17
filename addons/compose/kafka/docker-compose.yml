@@ -1,7 +1,7 @@
 version: '3'
 services:
   kafka:
-    image: registry.cn-shenzhen.aliyuncs.com/sdtc/kafka:2.12-2.4.1
+    image: registry.cn-shenzhen.aliyuncs.com/4d_prom/kafka:2.12-2.4.1
     restart: always
     container_name: kafka
     ports:
@@ -11,7 +11,25 @@ services:
       - /data/kafka/data:/kafka:rw
     environment:
       KAFKA_BROKER_ID: "0" 
-      KAFKA_ZOOKEEPER_CONNECT: "192.168.3.42:2181" 
-      KAFKA_ADVERTISED_HOST_NAME: "192.168.3.43" 
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181" 
+      KAFKA_ADVERTISED_HOST_NAME: "10.1.0.168" 
       KAFKA_ADVERTISED_PORT: "9092" 
       KAFKA_HEAP_OPTS: "-Xmx4G -Xms4G"
+    networks:
+      - kafka 
+    depends_on:
+      - zookeeper
+  zookeeper:
+    image: registry.cn-shenzhen.aliyuncs.com/sdtc/zookeeper:3.5.7
+    restart: always
+    volumes:
+      - "/data/zookeeper/data:/data"
+      - "/data/zookeeper/datalog:/datalog"
+      - "/data/zookeeper/conf:/conf"
+    ports:
+      - "2181:2181"
+    networks:
+      - kafka 
+networks:
+  kafka:
+    driver: bridge

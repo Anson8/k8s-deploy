@@ -3,6 +3,7 @@ anta-admin
 anta-material
 authcenter
 bff-center
+cad
 catalog-adapter
 catalog-bff
 catalog-paas-use-case
@@ -19,6 +20,7 @@ demonhome
 enterprise-lib
 entlib
 es-center
+front-oms
 front-srm
 gateway
 idealab-dispatch-server
@@ -40,6 +42,7 @@ message-center
 metadata
 mobile-website
 notification-center
+oms-center-server
 operating
 operating-admin
 order-center
@@ -52,13 +55,16 @@ python-ai-color-matching
 registry-data
 render-dispatch
 render-rest
+resource-io
 search-center
 search-sync
+shoes-trend
 show
 show-catalog-model
 srm
 synccenter
 system-tunnel
 third-platform-center
+tmp-server
 web-operation-admin
 web-service-center
