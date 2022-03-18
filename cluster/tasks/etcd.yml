@@ -10,6 +10,12 @@
   tasks:
   #TODO: 创建文件目录
   - name: Create bin dir
+    file: path={{file_path}}/bin state=directory recurse=yes  
+  - name: Create ssl dir
+    file: path={{file_path}}/ssl state=directory recurse=yes
+  - name: Create cfg dir
+    file: path={{file_path}}/cfg state=directory recurse=yes
+  - name: Create bin dir
     file: path=/data/k8s/etcd/data state=directory recurse=yes  
   - name: Create ssl dir
     file: path=/data/k8s/etcd/wal state=directory recurse=yes

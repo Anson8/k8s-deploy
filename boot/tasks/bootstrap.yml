@@ -5,6 +5,20 @@
   become_user: root
   vars:
     file_path: /opt/kubernetes
+    system_packages:
+      - epel-release
+      - conntrack
+      - ntpdate
+      - ntp
+      - ipvsadm
+      - ipset
+      - iptables
+      - curl
+      - sysstat
+      - libseccomp
+      - wget
+      - vim
+      - net-tools  
   tasks:
   #TODO: 设置主机名
   - name: Set Hostname
@@ -18,22 +32,9 @@
     file: path={{file_path}}/cfg state=directory recurse=yes  
   #TODO: 安装依赖包
   - name: yum packages depend
-    yum: name={{ item }}
-    with_items:
-      - epel-release
-      - conntrack
-      - ntpdate
-      - ntp
-      - ipvsadm
-      - ipset
-      - jq
-      - iptables
-      - curl
-      - sysstat
-      - libseccomp
-      - wget
-      - vim
-      - net-tools
+    yum: 
+      name: "{{ system_packages }}"
+      state: present
 
   #关闭防火墙
   - name: stop firewalld and disable firewalld
