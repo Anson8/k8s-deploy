@@ -121,3 +121,21 @@ data:
    		}
 		}'
 
+# 自定义webhook消息体
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-webhook
+  namespace: kube-system
+data:
+  content: >-
+
+{
+    "Cluster":"开发环境",
+    "receiver":"webhook-k8s",
+    "alerts":[
+        {"EventType": "{{ .Type }}\n","EventNamespace": "{{ .InvolvedObject.Namespace }}\n","EventKind": "{{ .InvolvedObject.Kind }}\n","EventObject": "{{ .InvolvedObject.Name }}\n","EventReason": "{{.Reason }}\n","EventTime": "{{ .LastTimestamp }}\n","EventMessage": "{{ .Message}}"}
+    ]
+}
+
