@@ -8,7 +8,7 @@ TASKS_PATH=$DEPLOY_PATH/tasks
 
 
 ## TODO 移除集群Node节点
-function REMOVE_NODE(){
+function REMOVE_NODE(){
     # 获取node节点ip
     nodes=${K8S_SLAVES[@]}
     read -p "Do you want to remove node [$nodes] on k8s cluster?[Y/N/J]:" answer
@@ -40,7 +40,7 @@ function REMOVE_NODE(){
 }
 
 ## TODO 移除集群Master节点
-function REMOVE_MASTER(){
+function REMOVE_MASTER(){
     # 获取master节点ip
     nodes=${K8S_MASTER[@]}
     read -p "Do you want to remove master [$nodes] on k8s cluster?[Y/N/J]:" answer
@@ -69,12 +69,12 @@ function REMOVE_MASTER(){
         echo "Input error, please try again."
         exit 2;;
     esac
-    REMOVE_NGINX_LOCAL
+    REMOVE_NGINX_LOCAL
     
 }
 
 # TODO 移除本地NGINX服务
-function REMOVE_NGINX_LOCAL(){
+function REMOVE_NGINX_LOCAL(){
   sudo systemctl stop kube-nginx
   sudo rm /lib/systemd/system/kube-nginx.service
   rm -rf /opt/kubernetes/cfg/*
