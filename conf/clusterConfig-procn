@@ -65,3 +65,5 @@ export NODE_PORT_RANGE="30000-32767"
 
 # flanneld 网络配置前缀
 export FLANNEL_ETCD_PREFIX="/kubernetes/network"
+# nfs地址
+NFS_ADDR=21e9e48d40-bqf61.cn-shenzhen.nas.aliyuncs.com

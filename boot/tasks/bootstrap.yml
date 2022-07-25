@@ -18,18 +18,18 @@
       - libseccomp
       - wget
       - vim
-      - net-tools  
+      - net-tools
   tasks:
   #TODO: 设置主机名
   - name: Set Hostname
     shell: hostnamectl set-hostname {{ hostname }}
   #TODO: 创建文件目录
   - name: Create bin dir
-    file: path={{file_path}}/bin state=directory recurse=yes  
+    file: path={{file_path}}/bin state=directory recurse=yes
   - name: Create ssl dir
     file: path={{file_path}}/ssl state=directory recurse=yes
   - name: Create cfg dir
-    file: path={{file_path}}/cfg state=directory recurse=yes  
+    file: path={{file_path}}/cfg state=directory recurse=yes
   #TODO: 安装依赖包
   - name: yum packages depend
     yum: 
@@ -82,9 +82,15 @@
         vm.max_map_count=655360
         EOF
 
-  #TODO: 安装glusterf客户端
-  - name: yum install glusterfs-client
-    yum: name=glusterfs-client state=present
+  #TODO: 安装nfs客户端
+  #- name: yum install glusterfs-client
+  #  yum: name=glusterfs-client state=present
+  - name: yum install nfs-util
+    yum: name=nfs-util state=present
+  # 将nfs写入/etc/fstab
+  - name: mount nfs
+    shell:
+      "echo {{nfs_addr}}:/data/k8sdata /ops nfs defaults 0 0 >>/etc/fstab"
   #调整系统时区
   - name: update time
     shell: timedatectl set-timezone Asia/Shanghai && timedatectl set-local-rtc 0

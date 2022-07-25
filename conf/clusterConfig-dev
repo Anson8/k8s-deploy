@@ -10,7 +10,7 @@ K8S_VERSION="1.19.12"
 ## SSH for ansible
 ### TODO: 安全账号, 防止滥用root权限
 USER_INIT="root"
-PASSWD_INIT="4duat.com"
+PASSWD_INIT="4ddev.com"
 ### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
 USER="admin"
 PASSWD="4dops.com"
@@ -68,3 +68,5 @@ export NODE_PORT_RANGE="30000-32767"
 
 # flanneld 网络配置前缀
 export FLANNEL_ETCD_PREFIX="/kubernetes/network"
+# nfs地址
+NFS_ADDR=192.168.19.72

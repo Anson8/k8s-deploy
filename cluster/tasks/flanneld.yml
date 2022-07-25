@@ -31,7 +31,16 @@
       name: flanneld
       state: started
       daemon_reload: yes
-      enabled: yes       
+      enabled: yes
+  # 等待10s，等flanneld启动    
+  - name: Sleep 10s
+    shell:
+      "sleep 10s"
+    async: 5
+    poll: 1
+  - name: get flannel_subent
+    shell:
+      "source /run/flannel/subnet.env && fconfig docker0 ${FLANNEL_SUBNET}"       
   - name: restart docker
     service:
       name: docker
