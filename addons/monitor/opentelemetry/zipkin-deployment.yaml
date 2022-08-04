@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: zipkin
+  template:
+    metadata:
+      labels:
+        name: zipkin
+    spec:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: renv
+                operator: In
+                values:
+                - monitor
+      containers:
+      - name: zipkin
+        image: openzipkin/zipkin:latest
+        imagePullPolicy: IfNotPresent
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service              
+      imagePullSecrets:
+      - name: 4dtc
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: zipkin
+  name: zipkin
+  namespace: common-server
+spec:
+  type: NodePort
+  ports:
+  - name: http-9411
+    port: 9411
+    targetPort: 9411
+  selector:
+    name: zipkin

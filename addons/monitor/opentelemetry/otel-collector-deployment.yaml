@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: common-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: otel-collector
+  template:
+    metadata:
+      labels:
+        name: otel-collector
+    spec:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: renv
+                operator: In
+                values:
+                - monitor
+      containers:
+      - name: otel-collector
+        image: otel/opentelemetry-collector-contrib:0.51.0
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: config
+          mountPath: /etc/otel-collector-config.yaml
+          subPath: redis.conf
+      tolerations:
+      - effect: NoSchedule
+        key: role
+        operator: Equal
+        value: service              
+      imagePullSecrets:
+      - name: 4dtc
+      volumes:
+        - name: config
+          configMap:
+            name: otel-collector-config
+            defaultMode: 420
+            items:
+            - key: otel-collector-config.yaml
+              path: otel-collector-config.yaml
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: otel-collector
+  name: otel-collector
+  namespace: common-server
+spec:
+  ports:
+  - name: http-1888
+    port: 1888
+    targetPort: 1888
+  - name: http-8888
+    port: 8888
+    targetPort: 8888
+  - name: http-8889
+    port: 8889
+    targetPort: 8889
+  - name: http-4350
+    port: 4350
+    targetPort: 4317
+  - name: http-55670
+    port: 55670
+    targetPort: 55679
+  - name: http-4318
+    port: 4318
+    targetPort: 4318
+  selector:
+    name: otel-collector
