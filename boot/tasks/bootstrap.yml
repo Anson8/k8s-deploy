@@ -85,8 +85,8 @@
   #TODO: 安装nfs客户端
   #- name: yum install glusterfs-client
   #  yum: name=glusterfs-client state=present
-  - name: yum install nfs-util
-    yum: name=nfs-util state=present
+  - name: yum install nfs-utils
+    yum: name=nfs-utils state=present
   # 将nfs写入/etc/fstab
   - name: mount nfs
     shell:
