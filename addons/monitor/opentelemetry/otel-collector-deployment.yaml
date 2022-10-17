@@ -3,16 +3,22 @@ kind: Deployment
 metadata:
   name: otel-collector
   namespace: common-server
+  labels:
+    app: opentelemetry
+    component: otel-collector
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      name: otel-collector
+      app: opentelemetry
+      component: otel-collector
+  minReadySeconds: 5
+  progressDeadlineSeconds: 120
+  replicas: 1 #TODO - adjust this to your own requirements
   template:
     metadata:
       labels:
-        name: otel-collector
-    spec:
+        app: opentelemetry
+        component: otel-collector
     spec:
       affinity:
         nodeAffinity:
@@ -24,56 +30,59 @@ spec:
                 values:
                 - monitor
       containers:
-      - name: otel-collector
-        image: otel/opentelemetry-collector-contrib:0.51.0
-        imagePullPolicy: IfNotPresent
+      - image: otel/opentelemetry-collector-contrib:0.57.2
+        name: otel-collector
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 200m
+            memory: 400Mi
+        ports:
+        - containerPort: 55679 # Default endpoint for ZPages.
+        - containerPort: 4317 # Default endpoint for OpenTelemetry grpc receiver.
+        - containerPort: 4318 # Default endpoint for OpenTelemetry http receiver.
+        - containerPort: 14250 # Default endpoint for Jaeger gRPC receiver.
+        - containerPort: 14268 # Default endpoint for Jaeger HTTP receiver.
+        - containerPort: 9411 # Default endpoint for Zipkin receiver.
+        - containerPort: 8888  # Default endpoint for querying metrics.
         volumeMounts:
-        - name: config
-          mountPath: /etc/otel-collector-config.yaml
-          subPath: redis.conf
+        - mountPath: /etc/otelcol-contrib
+          name: otel-collector-config-vol
       tolerations:
       - effect: NoSchedule
         key: role
         operator: Equal
-        value: service              
-      imagePullSecrets:
-      - name: 4dtc
+        value: service    
       volumes:
-        - name: config
-          configMap:
-            name: otel-collector-config
-            defaultMode: 420
-            items:
-            - key: otel-collector-config.yaml
-              path: otel-collector-config.yaml
-
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: otel-collector-config
+            path: config.yaml
+          name: otel-collector-config
+        name: otel-collector-config-vol
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  labels:
-    name: otel-collector
   name: otel-collector
   namespace: common-server
+  labels:
+    app: opentelemetry
+    component: otel-collector
 spec:
   ports:
-  - name: http-1888
-    port: 1888
-    targetPort: 1888
-  - name: http-8888
-    port: 8888
-    targetPort: 8888
-  - name: http-8889
-    port: 8889
-    targetPort: 8889
-  - name: http-4350
-    port: 4350
+  - name: otlp-grpc # Default endpoint for OpenTelemetry gRPC receiver.
+    port: 4317
+    protocol: TCP
     targetPort: 4317
-  - name: http-55670
-    port: 55670
-    targetPort: 55679
-  - name: http-4318
+  - name: otlp-http # Default endpoint for OpenTelemetry HTTP receiver.
     port: 4318
+    protocol: TCP
     targetPort: 4318
+  - name: metrics # Default endpoint for querying metrics.
+    port: 8888
   selector:
-    name: otel-collector
+    component: otel-collector

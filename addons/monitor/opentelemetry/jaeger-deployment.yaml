@@ -1,3 +1,18 @@
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jaeger
+  namespace: common-server
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 30Gi
+  storageClassName: nfs-common-data
+  
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,9 +39,21 @@ spec:
                 values:
                 - monitor
       containers:
-      - name: jaeger
-        image: jaegertracing/all-in-one:1.29
+      - env:
+        - name: BADGER_DIRECTORY_KEY
+          value: /badger/key
+        - name: BADGER_DIRECTORY_VALUE
+          value: /badger/data
+        - name: BADGER_EPHEMERAL
+          value: "false"
+        - name: SPAN_STORAGE_TYPE
+          value: badger
+        image: jaegertracing/all-in-one:1.37
         imagePullPolicy: IfNotPresent
+        name: jaeger
+        volumeMounts:
+        - mountPath: /badger
+          name: data
       tolerations:
       - effect: NoSchedule
         key: role
@@ -34,6 +61,10 @@ spec:
         value: service              
       imagePullSecrets:
       - name: 4dtc
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: jaeger
 
 ---
 kind: Service
