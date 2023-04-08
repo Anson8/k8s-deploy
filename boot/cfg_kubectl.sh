@@ -126,7 +126,7 @@ kubeletCgroups: ""
 systemCgroups: ""
 cgroupRoot: ""
 cgroupsPerQOS: true
-cgroupDriver: cgroupfs
+cgroupDriver: systemd
 runtimeRequestTimeout: 10m
 hairpinMode: promiscuous-bridge
 maxPods: 220
