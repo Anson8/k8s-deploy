@@ -1,4 +1,12 @@
 # k8s-deploy
+二进制下载地址：https://storage.googleapis.com/kubernetes-release/release/v1.20.11/kubernetes-server-linux-amd64.tar.gz -P /opt/
+下载CFSSL：
+  wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -P /opt/kubernetes/bin/
+  wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -P /opt/kubernetes/bin/
+  wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -P /opt/kubernetes/bin/
+下载内核：wget https://elrepo.org/linux/kernel/el7/x86_64/RPMS/kernel-lt-5.4.144-1.el7.elrepo.x86_64.rpm -P /opt/kubernetes/bin/
+
+
 # ansible服务器
   - 创建admin用户并授权root权限
   - 创建 目录 存储 二进制文件sudo mkdir -p /opt/kubernetes/{bin,cfg,ssl} && sudo chown -R admin:admin /opt/kubernetes

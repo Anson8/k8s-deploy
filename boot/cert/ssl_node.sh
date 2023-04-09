@@ -26,7 +26,7 @@ function FLANNEL-SSL(){
         "ST": "BeiJing",
         "L": "BeiJing",
         "O": "k8s",
-        "OU": "4Paradigm"
+        "OU": "WinBull"
       }
     ]
   }
@@ -53,7 +53,7 @@ cat > kube-proxy-csr.json <<EOF
       "ST": "BeiJing",
       "L": "BeiJing",
       "O": "k8s",
-      "OU": "4Paradigm"
+      "OU": "WinBull"
     }
   ]
 }

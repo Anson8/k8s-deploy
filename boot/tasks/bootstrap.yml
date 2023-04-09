@@ -82,9 +82,10 @@
         vm.max_map_count=655360
         EOF
 
-  #TODO: 安装nfs客户端
+  #TODO: 安装glusterfs客户端
   #- name: yum install glusterfs-client
   #  yum: name=glusterfs-client state=present
+  #TODO: 安装nfs客户端
   - name: yum install nfs-utils
     yum: name=nfs-utils state=present
   # 将nfs写入/etc/fstab

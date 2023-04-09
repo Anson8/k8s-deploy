@@ -24,7 +24,7 @@ function DownLoadCFSSL(){
 #生成证书
 function CREATE-SSL() {
   # 下载生成证书工具
-  ##DownLoadCFSSL
+  #DownLoadCFSSL
 
   sudo mkdir -p /opt/kubernetes/{bin,cfg,ssl}
   sudo chown -R admin:admin /opt/kubernetes
@@ -88,7 +88,7 @@ EOF
       "ST": "BeiJing",
       "L": "BeiJing",
       "O": "k8s",
-      "OU": "4Paradigm"
+      "OU": "WinBull"
     }
   ],
   "ca": {
@@ -132,7 +132,7 @@ function ETCD-SSL(){
         "ST": "BeiJing",
         "L": "BeiJing",
         "O": "k8s",
-        "OU": "4Paradigm"
+        "OU": "WinBull"
       }
     ]
   }
@@ -181,7 +181,7 @@ function KUBERNETES-SSL(){
         "ST": "BeiJing",
         "L": "BeiJing",
         "O": "k8s",
-        "OU": "4Paradigm"
+        "OU": "WinBull"
       }
     ]
   }
@@ -223,7 +223,7 @@ function CONTROLLER-MANAGER-SSL(){
         "ST": "BeiJing",
         "L": "BeiJing",
         "O": "system:kube-controller-manager",
-        "OU": "4Paradigm"
+        "OU": "WinBull"
       }
     ]
   }
@@ -286,15 +286,15 @@ cat > kube-scheduler-csr.json <<EOF
         "ST": "BeiJing",
         "L": "BeiJing",
         "O": "system:kube-scheduler",
-        "OU": "4Paradigm"
+        "OU": "WinBull"
       }
     ]
   }
 EOF
 
-cfssl gencert -ca=/opt/kubernetes/ssl//ca.pem \
-  -ca-key=/opt/kubernetes/ssl//ca-key.pem \
-  -config=/opt/kubernetes/ssl//ca-config.json \
+cfssl gencert -ca=/opt/kubernetes/ssl/ca.pem \
+  -ca-key=/opt/kubernetes/ssl/ca-key.pem \
+  -config=/opt/kubernetes/ssl/ca-config.json \
   -profile=kubernetes kube-scheduler-csr.json | cfssljson -bare kube-scheduler
 
 
@@ -335,7 +335,7 @@ cat > admin-csr.json <<EOF
       "ST": "BeiJing",
       "L": "BeiJing",
       "O": "system:masters",
-      "OU": "4Paradigm"
+      "OU": "WinBull"
     }
   ]
 }
@@ -355,7 +355,7 @@ cat > admin-csr.json <<EOF
       "ST": "BeiJing",
       "L": "BeiJing",
       "O": "system:masters",
-      "OU": "4Paradigm"
+      "OU": "WinBull"
     }
   ]
 }
@@ -412,7 +412,7 @@ function PROXY-CLIENT-SSL(){
       "ST": "BeiJing",
       "L": "BeiJing",
       "O": "k8s",
-      "OU": "4Paradigm"
+      "OU": "WinBull"
     }
   ]
 }

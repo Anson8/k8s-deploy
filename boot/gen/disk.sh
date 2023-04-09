@@ -26,6 +26,7 @@ pvcreate $DISK"1"
 vgcreate vgdata $DISK"1"
 # 新建逻辑卷
 lvcreate -l 100%FREE -n lvdata1 vgdata
+# 如下三个操作已在diskpart.yml中实现
 # 格式化逻辑卷
 #mkfs.xfs /dev/mapper/vgdata-lvdata1 
 # 挂在卷组到 /data下

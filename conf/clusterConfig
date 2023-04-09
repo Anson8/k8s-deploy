@@ -5,20 +5,20 @@
 DOCKER_VERSION="19.03.7"
 DOCKER_COMPOSE_VERSION="1.27.0"
 ### TODO:  预安装的K8S版本号
-K8S_VERSION="1.19.12"
+K8S_VERSION="1.20.11"
 
 ## SSH for ansible
 ### TODO: 安全账号, 防止滥用root权限
 USER_INIT="root"
-PASSWD_INIT="4duat.com"
+PASSWD_INIT="xxxx"
 ### TODO: 提供拥有root权限的账号密码,便于ansible进行安装使用
-USER="admin"
-PASSWD="4dops.com"
-### TODO: USER切换成admin后，使用密钥操作
-PRIVATEKEY="opsuat"
+USER="winbull"
+PASSWD="wbops.com"
+### TODO: USER切换成winbull后，使用密钥操作
+PRIVATEKEY="opssit"
 
-## TOTO: 部署环境（新增节点需要，demo、dev、cn-uat、cn-pro、us-uat、us-pro）
-ENV="uat"
+## TOTO: 部署环境（新增节点需要，demo、dev、sit、uat、prod）
+ENV="sit"
 
 ## 数据卷
 DISK="/dev/vdb"
@@ -26,13 +26,10 @@ DISKFULLPATH="/dev/mapper/vgdata-lvdata1"
 
 ## Master 
 ### TODO: 集群资源管理，根据自身集群情况配置IPs
-### TODO: 集群资源管理，根据自身集群情况配置IPs
-K8S_MASTER=(10.3.2.250 10.3.2.251 10.3.2.252)
+K8S_MASTER=(192.168.1.151 192.168.1.152 192.168.1.153)
 ## kube-apiserver 的反向代理(kube-nginx)地址端口
 KUBE_APISERVER="https://127.0.0.1:8443"
-## ETCD配置(dev-->[10.3.2.250 10.3.2.251 10.3.2.252];uat-->[])
-#K8S_ETCD=(10.3.2.250 10.3.2.251 10.3.2.252)
-K8S_ETCD=(10.3.2.250 10.3.2.251 10.3.2.252)
+K8S_ETCD=(192.168.1.151 192.168.1.152 192.168.1.153)
 ### TODO: etcd 数据目录
 ETCD_DATA_DIR="/data/k8s/etcd/data"
 ETCD_WAL_DIR="/data/k8s/etcd/wal"
@@ -44,9 +41,9 @@ export K8S_DIR="/data/k8s"
 export ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 
 ## TODO: 集群资源Node资源部署
-K8S_SLAVES=(10.3.2.101 10.3.2.102 10.3.2.103 10.3.2.104 10.3.2.105)
+K8S_SLAVES=(1192.168.1.154 192.168.1.155)
 ## TODO: Node节点服务器名字
-HOST_NAMES=(k8s-slave01 k8s-slave02 k8s-slave03 k8s-slave04 k8s-slave05)
+HOST_NAMES=(k8s-slave01 k8s-slave02)
 
 # 服务网段，部署前路由不可达，部署后集群内路由可达(kube-proxy 保证)
 SERVICE_CIDR="10.49.0.0/16"
@@ -70,4 +67,4 @@ export NODE_PORT_RANGE="30000-32767"
 export FLANNEL_ETCD_PREFIX="/kubernetes/network"
 
 # nfs地址
-NFS_ADDR=10.3.3.171
+NFS_ADDR=192.168.1.162
