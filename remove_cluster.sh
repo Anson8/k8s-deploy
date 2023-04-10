@@ -11,9 +11,9 @@ case $answer in
 Y | y)
     echo "Start to remove Kuberbetes cluster..."
     ## 移除node节点
-    REMOVE_NODE
+    REMOVE_NODE
     ## 移除master节点
-    REMOVE_MASTER
+    REMOVE_MASTER
     ;;
 N | n)
     echo "Exit."
