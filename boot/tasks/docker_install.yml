@@ -31,8 +31,8 @@
     template:
       src: ../genconf/daemon.json
       dest: "/etc/docker/daemon.json"  
-  - name: docker run for admin
-    shell: usermod -a -G docker admin
+  - name: docker run for winbull
+    shell: usermod -a -G docker winbull
   - name: startup docker
     service:
       name: docker

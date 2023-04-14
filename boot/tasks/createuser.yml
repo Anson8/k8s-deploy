@@ -15,16 +15,34 @@
     with_items:
       - "{{ user_add}} ALL=(ALL) NOPASSWD: ALL"
   - name: deploy ssh key
-    authorized_key: user=admin
-                    key="{{ lookup('file', '/home/admin/.ssh/{{ pubkey }}.pub') }}"
+    authorized_key: user={{ user_add}}
+                    key="{{ lookup('file', '/home/{{ user_add}}/.ssh/{{ pubkey }}.pub') }}"
                     state=present    
-  # 关闭密码登陆通道                  
-  - name: Close PasswordAuthentication...
+  # 开启 PubkeyAuthentication               
+  - name: Open PubkeyAuthentication...
     lineinfile:
       dest: "{{sshd_config_path}}"
-      regexp: "^PasswordAuthentication"
-      line: "PasswordAuthentication no"
+      regexp: "^PubkeyAuthentication"
+      line: "PubkeyAuthentication yes"
+  # 开启 关闭DNS缓存               
+  - name: Close UseDNS...
+    lineinfile:
+      dest: "{{sshd_config_path}}"
+      regexp: "^UseDNS"
+      line: "UseDNS no"
+  ## 关闭密码登陆通道                  
+  #- name: Close PasswordAuthentication...
+  #  lineinfile:
+  #    dest: "{{sshd_config_path}}"
+  #    regexp: "^PasswordAuthentication"
+  #    line: "PasswordAuthentication no"
   # 重启sshd    
   - name: restart sshd...
     service: name=sshd state=restarted
     ignore_errors: yes                    
+
+
+
+UseDNS yes
+
+PubkeyAuthentication yes

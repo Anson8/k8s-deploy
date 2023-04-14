@@ -1,5 +1,6 @@
 # k8s-deploy
 二进制下载地址：https://storage.googleapis.com/kubernetes-release/release/v1.20.11/kubernetes-server-linux-amd64.tar.gz -P /opt/
+nginx下载地址：https://nginx.org/download/nginx-1.22.1.tar.gz
 下载CFSSL：
   wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -P /opt/kubernetes/bin/
   wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -P /opt/kubernetes/bin/
